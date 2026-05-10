@@ -21,7 +21,7 @@
   padding: 10rpx 18rpx;
   border-radius: 999rpx;
   background: rgba(244, 235, 221, 0.9);
-  color: #8f7b66;
+  color: var(--ink-500);
   font-size: 22rpx;
 }
 
