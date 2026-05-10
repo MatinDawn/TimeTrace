@@ -1,5 +1,9 @@
 const { getTodoCalendarData, completePlanWithTrace } = require("../../services/appService");
 const { getToday, toDateId } = require("../../utils/date");
+const perf = require("../../utils/perf");
+
+const PAGE_PATH = "/pages/todo-list/todo-list";
+const MONTH_CACHE_TTL = 30000;
 
 function monthStart(date) {
   return new Date(date.getFullYear(), date.getMonth(), 1);
@@ -88,6 +92,9 @@ Page({
   },
 
   onLoad() {
+    perf.markPageLoad(PAGE_PATH);
+    this.monthCache = {};
+    this.overdueCache = null;
     const today = getToday();
     const month = monthStart(today);
     this.setData({
@@ -98,44 +105,115 @@ Page({
     });
   },
 
-  async onShow() {
-    await this.refreshTodoCalendar();
+  onHide() {
+    perf.markPageHide(PAGE_PATH);
   },
 
-  async refreshTodoCalendar() {
-    const anchorMonth = new Date(this.data.anchorMonthId);
-    const monthValue = toMonthValue(anchorMonth);
-    const summary = await getTodoCalendarData(monthValue, this.data.selectedDateId);
-    const dayCounts = summary.dayCounts || {};
+  onUnload() {
+    perf.markPageUnload(PAGE_PATH);
+  },
 
-    this.setData({
+  async onShow() {
+    perf.markPageShow(PAGE_PATH);
+    const cached = getApp().globalData.lastTodoCalendar;
+    if (cached) {
+      this.setData(cached);
+    }
+    await this.refreshTodoCalendar();
+    perf.log("onShow.done", PAGE_PATH);
+  },
+
+  async onPullDownRefresh() {
+    try {
+      await this.refreshTodoCalendar({ force: true });
+    } finally {
+      wx.stopPullDownRefresh();
+    }
+  },
+
+  applyMonthCache(monthValue) {
+    const monthEntry = this.monthCache && this.monthCache[monthValue];
+    if (!monthEntry) {
+      return false;
+    }
+    const anchorMonth = new Date(this.data.anchorMonthId);
+    const selectedDateId = this.data.selectedDateId;
+    const monthPlans = monthEntry.monthPlans || [];
+    const dayCounts = monthEntry.dayCounts || {};
+    const overduePlans = (this.overdueCache && this.overdueCache.plans) || [];
+
+    const patch = {
       monthLabel: `${anchorMonth.getFullYear()}\u5e74${anchorMonth.getMonth() + 1}\u6708`,
       monthValue,
-      calendarDays: buildCalendarDays(anchorMonth, this.data.selectedDateId, dayCounts),
-      plans: summary.plans || [],
-      overduePlans: summary.overduePlans || []
-    });
+      calendarDays: buildCalendarDays(anchorMonth, selectedDateId, dayCounts),
+      plans: monthPlans.filter((item) => item.dueDate === selectedDateId),
+      overduePlans
+    };
+    this.setData(patch);
+    getApp().globalData.lastTodoCalendar = patch;
+    return true;
+  },
+
+  async refreshTodoCalendar(options) {
+    const force = !!(options && options.force);
+    const monthValue = this.data.monthValue;
+    const monthEntry = this.monthCache && this.monthCache[monthValue];
+    const monthFresh = monthEntry && Date.now() - monthEntry.fetchedAt < MONTH_CACHE_TTL;
+    const overdueFresh = this.overdueCache && Date.now() - this.overdueCache.fetchedAt < MONTH_CACHE_TTL;
+
+    if (!force && monthEntry) {
+      this.applyMonthCache(monthValue);
+      if (monthFresh && overdueFresh) {
+        return;
+      }
+    }
+
+    const summary = await getTodoCalendarData(monthValue, this.data.selectedDateId);
+    const monthPlans = summary.monthPlans || summary.plans || [];
+    this.monthCache = this.monthCache || {};
+    this.monthCache[monthValue] = {
+      monthPlans,
+      dayCounts: summary.dayCounts || {},
+      fetchedAt: Date.now()
+    };
+    this.overdueCache = {
+      plans: summary.overduePlans || [],
+      fetchedAt: Date.now()
+    };
+    this.applyMonthCache(monthValue);
   },
 
   onMonthPickerChange(event) {
     const month = parseMonthValue(event.detail.value);
+    const monthValue = event.detail.value;
     this.setData({
       anchorMonthId: toDateId(month),
-      monthValue: event.detail.value,
+      monthValue,
       selectedDateId: getDefaultSelectedDateForMonth(month)
     });
-    this.refreshTodoCalendar();
+    const hit = this.applyMonthCache(monthValue);
+    const entry = this.monthCache && this.monthCache[monthValue];
+    const stale = !entry || Date.now() - entry.fetchedAt >= MONTH_CACHE_TTL;
+    if (!hit || stale) {
+      this.refreshTodoCalendar();
+    }
   },
 
   jumpToToday() {
     const today = getToday();
     const month = monthStart(today);
+    const monthValue = toMonthValue(month);
     this.setData({
       anchorMonthId: toDateId(month),
       selectedDateId: toDateId(today),
-      monthValue: toMonthValue(month)
+      monthValue
     });
-    this.refreshTodoCalendar();
+    const hit = this.applyMonthCache(monthValue);
+    const entry = this.monthCache && this.monthCache[monthValue];
+    const stale = !entry || Date.now() - entry.fetchedAt >= MONTH_CACHE_TTL;
+    if (!hit || stale) {
+      this.refreshTodoCalendar();
+    }
   },
 
   selectDate(event) {
@@ -146,7 +224,9 @@ Page({
     this.setData({
       selectedDateId: dateid
     });
-    this.refreshTodoCalendar();
+    if (!this.applyMonthCache(this.data.monthValue)) {
+      this.refreshTodoCalendar();
+    }
   },
 
   openRecord(event) {
@@ -161,6 +241,8 @@ Page({
       title: this.data.ui.quickTraceDone,
       icon: "success"
     });
-    await this.refreshTodoCalendar();
-  },
+    this.monthCache = {};
+    this.overdueCache = null;
+    await this.refreshTodoCalendar({ force: true });
+  }
 });

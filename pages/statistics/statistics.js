@@ -1,5 +1,8 @@
 const { getStatisticsData } = require("../../services/appService");
 const { parseDateId, toDateId, addDays, addMonths, addYears } = require("../../utils/date");
+const perf = require("../../utils/perf");
+
+const PAGE_PATH = "/pages/statistics/statistics";
 
 function clampDateToYear(date, year) {
   const yearStart = new Date(year, 0, 1);
@@ -76,7 +79,30 @@ Page({
   },
 
   async onShow() {
+    perf.markPageShow(PAGE_PATH);
+    // 预填上次缓存，避免空白
+    const cached = getApp().globalData.lastStatistics;
+    if (cached) {
+      this.setData({
+        stats: cached.stats,
+        scopeLabel: cached.scopeLabel,
+        scope: cached.scope
+      });
+    }
     await this.loadStats();
+    perf.log("onShow.done", PAGE_PATH);
+  },
+
+  onLoad() {
+    perf.markPageLoad(PAGE_PATH);
+  },
+
+  onHide() {
+    perf.markPageHide(PAGE_PATH);
+  },
+
+  onUnload() {
+    perf.markPageUnload(PAGE_PATH);
   },
 
   async loadStats() {
@@ -86,6 +112,11 @@ Page({
       scopeLabel: stats.scope.label,
       scope: stats.scope
     });
+    getApp().globalData.lastStatistics = {
+      stats,
+      scopeLabel: stats.scope.label,
+      scope: stats.scope
+    };
   },
 
   async changeGranularity(event) {

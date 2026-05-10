@@ -10,6 +10,9 @@ const { logError, showErrorToast } = require("../../utils/error-handler");
 const { clearCurrentSpace } = require("../../utils/session");
 const { navigateMainPage } = require("../../utils/navigation");
 const { invalidateRemoteCache } = require("../../services/app/record-cache");
+const perf = require("../../utils/perf");
+
+const PAGE_PATH = "/pages/home/home";
 
 const DAILY_TARGET = 3;
 const VOICE_MIN_DURATION = 700;
@@ -115,17 +118,48 @@ Page({
   },
 
   onLoad() {
+    perf.markPageLoad(PAGE_PATH);
     this.setupCustomNav();
     this.initRecorder();
   },
 
+  onHide() {
+    perf.markPageHide(PAGE_PATH);
+  },
+
   async onShow() {
+    perf.markPageShow(PAGE_PATH);
+    // 1) 立即从 globalData 快照预填，避免空白
+    this.hydrateFromCache();
+    // 2) syncBootstrap 与 loadHome 并行（loadHome 不依赖 bootstrap 结果）
     try {
-      await this.syncBootstrap();
-      await this.loadHome();
+      await Promise.all([
+        this.syncBootstrap().catch((error) => {
+          logError("home.syncBootstrap", error);
+        }),
+        this.loadHome().catch((error) => {
+          logError("home.loadHome", error);
+          showErrorToast(error, "首页加载失败，请稍后重试");
+        })
+      ]);
     } catch (error) {
       logError("home.onShow", error);
       showErrorToast(error, "首页加载失败，请稍后重试");
+    }
+    perf.log("onShow.done", PAGE_PATH);
+  },
+
+  hydrateFromCache() {
+    const app = getApp();
+    const cachedHome = app.globalData.lastHomeData;
+    if (cachedHome) {
+      this.applyHomeData(cachedHome, true);
+    }
+    const activeSpace = app.globalData.activeSpace;
+    if (activeSpace || this.data.ui.personalMode) {
+      this.setData({
+        currentScopeLabel: activeSpace ? activeSpace.name : this.data.ui.personalMode
+      });
     }
   },
 
@@ -161,6 +195,11 @@ Page({
 
   async loadHome() {
     const homeData = await getHomeData();
+    getApp().globalData.lastHomeData = homeData; // 写回快照供下次 onShow 命中
+    this.applyHomeData(homeData, false);
+  },
+
+  applyHomeData(homeData, fromCache) {
     const todayCompletedCount = (homeData.todayCompleted || []).length;
     const todayPlanCount = (homeData.todayPlans || []).length;
     const todayRecordCount = Number(homeData.todayRecordCount || 0);
@@ -664,6 +703,7 @@ Page({
   },
 
   onUnload() {
+    perf.markPageUnload(PAGE_PATH);
     this.clearComposerHintTimer();
     this.clearVoiceTimer();
     clearTimeout(this.heroHoldTimer);

@@ -1,5 +1,8 @@
 const { getAccountingData, saveAnnualGoal } = require("../../services/appService");
 const { parseDateId, toDateId, addDays, addMonths } = require("../../utils/date");
+const perf = require("../../utils/perf");
+
+const PAGE_PATH = "/pages/accounting/accounting";
 
 const PIE_COLORS = ["#ca6a4a", "#2c6e49", "#d7b074", "#8e6d53", "#7da58b", "#d89e6a"];
 
@@ -122,13 +125,31 @@ Page({
   },
 
   async onShow() {
+    perf.markPageShow(PAGE_PATH);
+    const cached = getApp().globalData.lastAccounting;
+    if (cached) {
+      this.setData(cached);
+    }
     await this.loadAccounting();
+    perf.log("onShow.done", PAGE_PATH);
+  },
+
+  onLoad() {
+    perf.markPageLoad(PAGE_PATH);
+  },
+
+  onHide() {
+    perf.markPageHide(PAGE_PATH);
+  },
+
+  onUnload() {
+    perf.markPageUnload(PAGE_PATH);
   },
 
   async loadAccounting() {
     const data = await getAccountingData(this.data.selectedYear, this.data.granularity, this.data.selectedDate);
     const pieData = buildPieVisualization(data.categoryStats);
-    this.setData({
+    const patch = {
       selectedYear: data.year,
       scopeLabel: data.scopeLabel,
       scope: data.scope,
@@ -141,7 +162,9 @@ Page({
       recentFinance: data.recentFinance,
       trend: data.trend,
       trendTitle: data.trendTitle
-    });
+    };
+    this.setData(patch);
+    getApp().globalData.lastAccounting = patch;
   },
 
   async shiftYear(event) {

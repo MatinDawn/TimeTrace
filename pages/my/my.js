@@ -7,6 +7,9 @@ const {
   getAppBootstrap,
   saveUserProfile
 } = require("../../services/appService");
+const perf = require("../../utils/perf");
+
+const PAGE_PATH = "/pages/my/my";
 
 Page({
   data: {
@@ -64,20 +67,66 @@ Page({
   },
 
   async onShow() {
-    await this.loadBootstrap();
-    const records = await getRecords();
-    const reminders = await getReminderItems();
-    const plans = await getPlans("todo");
-    const drafts = await getDrafts();
-    this.setData({
-      overview: {
-        recordCount: records.filter((item) => !item.isDraft).length,
-        categoryCount: getCategories().length,
-        draftCount: drafts.length,
-        reminderCount: reminders.length,
-        todoCount: plans.length
-      }
-    });
+    perf.markPageShow(PAGE_PATH);
+    // 1) 立即用 globalData 中的快照预填，避免空白
+    this.hydrateFromCache();
+    // 2) bootstrap 与 4 个数据并行获取
+    try {
+      const [bootstrap, records, reminders, plans, drafts] = await Promise.all([
+        getAppBootstrap(),
+        getRecords(),
+        getReminderItems(),
+        getPlans("todo"),
+        getDrafts()
+      ]);
+      const profile = (bootstrap && bootstrap.profile) || {};
+      this.setData({
+        currentUser: profile,
+        activeSpace: (bootstrap && bootstrap.activeSpace) || null,
+        nicknameDraft: profile.displayName || "",
+        avatarDraft: profile.avatarUrl || "",
+        overview: {
+          recordCount: records.filter((item) => !item.isDraft).length,
+          categoryCount: getCategories().length,
+          draftCount: drafts.length,
+          reminderCount: reminders.length,
+          todoCount: plans.length
+        }
+      });
+      getApp().globalData.lastMyOverview = this.data.overview;
+    } catch (error) {
+      // 使用既有 console，不引入新依赖
+      console.warn("[my.onShow] failed", error);
+    }
+    perf.log("onShow.done", PAGE_PATH);
+  },
+
+  onLoad() {
+    perf.markPageLoad(PAGE_PATH);
+  },
+
+  onHide() {
+    perf.markPageHide(PAGE_PATH);
+  },
+
+  onUnload() {
+    perf.markPageUnload(PAGE_PATH);
+  },
+
+  hydrateFromCache() {
+    const app = getApp();
+    const cachedOverview = app.globalData.lastMyOverview;
+    const profile = app.globalData.currentUser || {};
+    const patch = {
+      currentUser: profile,
+      activeSpace: app.globalData.activeSpace || null,
+      nicknameDraft: profile.displayName || "",
+      avatarDraft: profile.avatarUrl || ""
+    };
+    if (cachedOverview) {
+      patch.overview = cachedOverview;
+    }
+    this.setData(patch);
   },
 
   async loadBootstrap() {
