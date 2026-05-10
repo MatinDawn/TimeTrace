@@ -49,7 +49,7 @@
   margin-top: 18rpx;
   font-size: 22rpx;
   line-height: 1.7;
-  color: #8f7b66;
+  color: var(--ink-500);
   text-align: center;
 }
 

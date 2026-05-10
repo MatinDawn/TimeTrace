@@ -155,7 +155,7 @@
   margin-top: 12rpx;
   font-size: 42rpx;
   font-weight: 700;
-  color: #2f271f;
+  color: var(--ink-800);
 }
 
 .stats-caption {
