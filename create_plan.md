@@ -60,3 +60,9 @@ git checkout <commit> -- path/to/file
 
 - 路径 A：用户在 GitHub 网页手动创建私有仓库 `timetrace`，然后由 Codex 绑定远程并推送。
 - 路径 B：用户安装并登录 GitHub CLI 后，由 Codex 使用 `gh repo create` 自动创建并推送。
+
+## 实际执行记录
+
+- 用户已在 GitHub 手动创建远程仓库：`git@github.com:MatinDawn/TimeTrace.git`
+- 本次不再依赖 GitHub CLI 创建仓库，改为使用 Git 原生 SSH remote 推送。
+- 推送前需要先提交当前工作区中已有的样式变量调整，确保远程备份包含当前真实版本。

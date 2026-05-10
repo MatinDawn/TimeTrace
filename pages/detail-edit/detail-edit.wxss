@@ -74,7 +74,7 @@
   margin-top: 8rpx;
   font-size: 24rpx;
   line-height: 1.7;
-  color: #8f7b66;
+  color: var(--ink-500);
 }
 
 .ghost-button-disabled,

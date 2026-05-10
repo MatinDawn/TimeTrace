@@ -18,13 +18,13 @@
 .category-name {
   font-size: 28rpx;
   font-weight: 600;
-  color: #2f271f;
+  color: var(--ink-800);
 }
 
 .category-meta {
   margin-top: 8rpx;
   font-size: 24rpx;
-  color: #8f7b66;
+  color: var(--ink-500);
 }
 
 .action-group {

@@ -5,7 +5,7 @@
 .mode-title,
 .space-meta {
   font-size: 24rpx;
-  color: #8f7b66;
+  color: var(--ink-500);
 }
 
 .mode-name {
@@ -13,7 +13,7 @@
   font-family: "STKaiti", "Kaiti SC", "Songti SC", serif;
   font-size: 38rpx;
   font-weight: 700;
-  color: #2f271f;
+  color: var(--ink-800);
 }
 
 .mode-hint {
@@ -145,7 +145,7 @@
   min-width: 0;
   font-size: 32rpx;
   font-weight: 700;
-  color: #2f271f;
+  color: var(--ink-800);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -286,7 +286,7 @@
 .sheet-title {
   font-size: 36rpx;
   font-weight: 700;
-  color: #2f271f;
+  color: var(--ink-800);
 }
 
 .sheet-subtitle {

@@ -61,14 +61,14 @@
 .space-name {
   font-size: 30rpx;
   font-weight: 600;
-  color: #2f271f;
+  color: var(--ink-800);
 }
 
 .active-tag {
   padding: 8rpx 14rpx;
   border-radius: 999rpx;
   background: rgba(227, 240, 231, 0.92);
-  color: #2d6b4b;
+  color: var(--green-700);
   font-size: 22rpx;
 }
 

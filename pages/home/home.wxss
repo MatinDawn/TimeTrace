@@ -33,7 +33,7 @@
   line-height: 1.08;
   font-weight: 700;
   letter-spacing: 4rpx;
-  color: #2e271f;
+  color: var(--ink-900);
 }
 
 .scope-button {
@@ -229,13 +229,13 @@
   align-items: flex-end;
   gap: 10rpx;
   flex-wrap: wrap;
-  color: #2e271f;
+  color: var(--ink-900);
 }
 
 .progress-number {
   font-size: 64rpx;
   line-height: 1;
-  color: #2d6b4b;
+  color: var(--green-700);
 }
 
 .progress-separator,
@@ -668,7 +668,7 @@
   align-items: center;
   gap: 18rpx;
   padding: 24rpx 0;
-  border-bottom: 1rpx solid rgba(110, 87, 58, 0.12);
+  border-bottom: 1rpx solid var(--hairline);
 }
 
 .feed-item:last-of-type {
@@ -761,7 +761,7 @@
 }
 
 .feed-side.done-amount {
-  color: #2d6b4b;
+  color: var(--green-700);
 }
 
 .feed-side.done-text {

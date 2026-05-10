@@ -80,7 +80,7 @@
   white-space: nowrap;
   font-size: 36rpx;
   font-weight: 700;
-  color: #2f271f;
+  color: var(--ink-800);
 }
 
 .profile-edit {
@@ -88,7 +88,7 @@
   padding: 6rpx 12rpx;
   border-radius: 999rpx;
   background: rgba(244, 235, 221, 0.86);
-  color: #8f7b66;
+  color: var(--ink-500);
   font-size: 20rpx;
 }
 
@@ -96,8 +96,8 @@
   flex-shrink: 0;
   width: 16rpx;
   height: 16rpx;
-  border-top: 3rpx solid #a08a73;
-  border-right: 3rpx solid #a08a73;
+  border-top: 3rpx solid var(--ink-400);
+  border-right: 3rpx solid var(--ink-400);
   transform: rotate(45deg);
 }
 
@@ -112,7 +112,7 @@
   padding: 10rpx 18rpx;
   border-radius: 999rpx;
   background: rgba(227, 240, 231, 0.92);
-  color: #2d6b4b;
+  color: var(--green-700);
   font-size: 22rpx;
 }
 
@@ -216,7 +216,7 @@
   text-align: center;
   font-size: 32rpx;
   font-weight: 700;
-  color: #2f271f;
+  color: var(--ink-800);
 }
 
 .avatar-editor {
@@ -284,7 +284,7 @@
   padding: 0 24rpx;
   border-radius: 24rpx;
   background: rgba(249, 244, 236, 0.94);
-  color: #2f271f;
+  color: var(--ink-800);
   font-size: 28rpx;
   text-align: center;
 }

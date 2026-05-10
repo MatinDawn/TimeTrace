@@ -63,7 +63,7 @@
 .toolbar-text,
 .submit-hint {
   font-size: 24rpx;
-  color: #8f7b66;
+  color: var(--ink-500);
 }
 
 .example-title {
