@@ -1,0 +1,25 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/todo-list/todo-list",
+    "pages/accounting/accounting",
+    "pages/statistics/statistics",
+    "pages/my/my",
+    "pages/workspace/workspace",
+    "pages/draft-list/draft-list",
+    "pages/detail-edit/detail-edit",
+    "pages/category-manage/category-manage",
+    "pages/reminder-manage/reminder-manage",
+    "pages/search-result/search-result"
+  ],
+  "window": {
+    "navigationBarTitleText": "\u7559\u75d5",
+    "navigationBarBackgroundColor": "#f7f2e9",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f3efe6",
+    "backgroundTextStyle": "dark"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

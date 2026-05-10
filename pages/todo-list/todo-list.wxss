@@ -1,0 +1,239 @@
+.planner-card,
+.locator-row,
+.week-row,
+.calendar-grid,
+.plan-main,
+.plan-item {
+  display: flex;
+}
+
+.todo-screen {
+  padding-bottom: var(--screen-bottom-pad);
+}
+
+.planner-card {
+  flex-direction: column;
+}
+
+.locator-row,
+.plan-item {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.locator-row {
+  margin-top: 22rpx;
+  gap: 18rpx;
+}
+
+.month-picker-pill {
+  min-width: 210rpx;
+  height: 68rpx;
+  padding: 0 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999rpx;
+  background: linear-gradient(180deg, #f9f0e2 0%, #f0e2cd 100%);
+  color: #755f47;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.month-tip {
+  flex: 1;
+  text-align: right;
+  font-size: 22rpx;
+  color: #a18b73;
+}
+
+.calendar-panel {
+  margin-top: 22rpx;
+  width: 100%;
+}
+
+.week-row {
+  margin-bottom: 12rpx;
+}
+
+.week-cell {
+  width: calc(100% / 7);
+  text-align: center;
+  font-size: 22rpx;
+  color: #998571;
+}
+
+.calendar-grid {
+  flex-wrap: wrap;
+  gap: 14rpx 0;
+  width: 100%;
+}
+
+.date-cell {
+  width: calc(100% / 7);
+  min-height: 104rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.date-cell.empty {
+  visibility: hidden;
+}
+
+.date-cell.disabled {
+  opacity: 0.32;
+}
+
+.date-number {
+  width: 66rpx;
+  height: 66rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5a4a3b;
+  font-size: 24rpx;
+  background: rgba(255, 255, 255, 0.46);
+}
+
+.date-cell.today .date-number {
+  border: 2rpx solid #8eb07a;
+}
+
+.date-cell.selected .date-number {
+  background: linear-gradient(180deg, #5f966f 0%, #2d6b4b 100%);
+  color: #fffef8;
+}
+
+.date-cell.has-tasks .date-number {
+  background: rgba(239, 221, 197, 0.88);
+  color: #90673c;
+  font-weight: 700;
+}
+
+.date-cell.has-tasks.selected .date-number {
+  background: linear-gradient(180deg, #5f966f 0%, #2d6b4b 100%);
+  color: #fffef8;
+}
+
+.task-marker {
+  min-width: 42rpx;
+  margin-top: 6rpx;
+  padding: 4rpx 10rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6rpx;
+  background: rgba(239, 221, 197, 0.78);
+  color: #90673c;
+  font-size: 18rpx;
+}
+
+.task-dot {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background: #c78d43;
+}
+
+.list-card {
+  margin-top: 24rpx;
+  padding-bottom: 34rpx;
+}
+
+.overdue-card {
+  margin-top: 24rpx;
+  padding-bottom: 34rpx;
+}
+
+.overdue-pill {
+  background: rgba(239, 221, 197, 0.72);
+  color: #90673c;
+}
+
+.plan-item {
+  gap: 18rpx;
+  padding: 26rpx 0;
+  border-bottom: 1rpx solid rgba(110, 87, 58, 0.12);
+}
+
+.plan-item:last-child {
+  border-bottom: none;
+}
+
+.plan-main {
+  flex: 1;
+  align-items: flex-start;
+  gap: 16rpx;
+  min-width: 0;
+}
+
+.overdue-main {
+  gap: 0;
+}
+
+.plan-symbol {
+  width: 68rpx;
+  height: 68rpx;
+  flex-shrink: 0;
+  border-radius: 22rpx;
+  background: linear-gradient(180deg, #f9eee1 0%, #f1dfca 100%);
+  position: relative;
+}
+
+.plan-symbol::before,
+.plan-symbol::after {
+  content: "";
+  position: absolute;
+}
+
+.plan-symbol::before {
+  left: 32rpx;
+  top: 20rpx;
+  width: 4rpx;
+  height: 24rpx;
+  background: #7ea05d;
+}
+
+.plan-symbol::after {
+  left: 18rpx;
+  top: 10rpx;
+  width: 30rpx;
+  height: 20rpx;
+  border-radius: 30rpx 30rpx 0 30rpx;
+  background: linear-gradient(180deg, #a8c089 0%, #73955a 100%);
+  transform: rotate(-16deg);
+}
+
+.plan-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.plan-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #302821;
+}
+
+.plan-item.overdue .plan-title {
+  color: #6d4f34;
+}
+
+.plan-meta,
+.plan-desc {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  line-height: 1.7;
+  color: #8e7a65;
+}
+
+.quick-trace {
+  flex-shrink: 0;
+  margin-top: 6rpx;
+  min-height: 64rpx;
+  padding: 0 20rpx;
+  font-size: 22rpx;
+}

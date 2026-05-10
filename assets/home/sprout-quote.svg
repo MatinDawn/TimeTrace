@@ -1,0 +1,28 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M19 61C19 56.5817 22.5817 53 27 53H48C52.4183 53 56 56.5817 56 61V68C56 72.4183 52.4183 76 48 76H27C22.5817 76 19 72.4183 19 68V61Z" fill="#FEFCF7"/>
+  <path d="M21 57L34 49.5L42 60L27 67L21 57Z" fill="#F8F3EA"/>
+  <path d="M33 77H58C63.5228 77 68 72.5228 68 67V62.5C68 57.2533 63.7467 53 58.5 53H32.5C27.2533 53 23 57.2533 23 62.5V67C23 72.5228 27.4772 77 33 77Z" fill="url(#pot)" />
+  <path d="M46.5 31V62" stroke="#89A66B" stroke-width="4" stroke-linecap="round"/>
+  <path d="M29.5 43.5C35.5 36.7 41.8 36.2 47 41.2V48C39.7 49 33.4 47.6 29.5 43.5Z" fill="url(#leaf1)"/>
+  <path d="M63 32.5C58.1 39.6 51.8 41.6 46 38.1V31.4C51.4 27.9 58 27.8 63 32.5Z" fill="url(#leaf2)"/>
+  <path d="M37 18.5C43.4 20.2 47.4 24.5 48.5 30.8C43.2 31.7 38.5 30 35.1 25.4C34.3 22.7 34.9 20.4 37 18.5Z" fill="url(#leaf3)"/>
+  <path d="M22 53C24.6 46.3 28.3 42.9 34.5 42.2C35.3 47.1 33.2 50.7 28.7 53H22Z" fill="#C9AD8B" opacity="0.9"/>
+  <defs>
+    <linearGradient id="pot" x1="45.5" y1="53" x2="45.5" y2="77" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5EBDD"/>
+      <stop offset="1" stop-color="#E4D3BE"/>
+    </linearGradient>
+    <linearGradient id="leaf1" x1="38.25" y1="37.9" x2="38.25" y2="48" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B4CA93"/>
+      <stop offset="1" stop-color="#7D9D61"/>
+    </linearGradient>
+    <linearGradient id="leaf2" x1="54.5" y1="28.8" x2="54.5" y2="40.2" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B9CF97"/>
+      <stop offset="1" stop-color="#7B9D61"/>
+    </linearGradient>
+    <linearGradient id="leaf3" x1="41.8" y1="18.5" x2="41.8" y2="31" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#BBD39A"/>
+      <stop offset="1" stop-color="#85A56A"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,3 @@
+.bar-row:first-child {
+  margin-top: 0;
+}

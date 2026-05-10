@@ -1,0 +1,38 @@
+.list-card {
+  margin-top: 24rpx;
+}
+
+.category-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18rpx;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid rgba(110, 87, 58, 0.12);
+}
+
+.category-row:last-child {
+  border-bottom: none;
+}
+
+.category-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2f271f;
+}
+
+.category-meta {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #8f7b66;
+}
+
+.action-group {
+  display: flex;
+  gap: 10rpx;
+}
+
+.delete {
+  background: linear-gradient(180deg, #f6dfd7 0%, #f0d0c6 100%);
+  color: #a85e49;
+}

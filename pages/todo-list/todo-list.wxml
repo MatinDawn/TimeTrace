@@ -1,0 +1,91 @@
+<view class="screen todo-screen">
+  <view class="card planner-card">
+    <view class="section-header">
+      <view>
+        <view class="section-title">{{ui.title}}</view>
+        <view class="section-subtitle">{{ui.subtitle}}</view>
+      </view>
+      <view class="mini-button" bindtap="jumpToToday">{{ui.today}}</view>
+    </view>
+
+    <view class="locator-row">
+      <picker mode="date" fields="month" value="{{monthValue}}" bindchange="onMonthPickerChange">
+        <view class="month-picker-pill">{{monthLabel}}</view>
+      </picker>
+      <view class="month-tip">按月定位待办安排</view>
+    </view>
+
+    <view class="soft-panel calendar-panel">
+      <view class="week-row">
+        <view wx:for="{{weekHeaders}}" wx:key="*this" class="week-cell">{{item}}</view>
+      </view>
+
+      <view class="calendar-grid">
+        <view
+          wx:for="{{calendarDays}}"
+          wx:key="key"
+          class="date-cell {{item.empty ? 'empty' : ''}} {{item.disabled ? 'disabled' : ''}} {{item.isSelected ? 'selected' : ''}} {{item.isToday ? 'today' : ''}} {{item.hasTasks ? 'has-tasks' : ''}}"
+          data-dateid="{{item.dateId}}"
+          data-disabled="{{item.disabled}}"
+          bindtap="selectDate"
+        >
+          <block wx:if="{{!item.empty}}">
+            <view class="date-number">{{item.label}}</view>
+            <view class="task-marker" wx:if="{{item.hasTasks}}">
+              <view class="task-dot"></view>
+              <text>{{item.count}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card list-card">
+    <view class="section-header">
+      <view>
+        <view class="section-title">{{ui.selectedDateTitle}}</view>
+        <view class="section-subtitle">{{ui.selectedDateSubtitle}}</view>
+      </view>
+      <view class="pill">{{plans.length}} 条</view>
+    </view>
+
+    <view wx:if="{{plans.length}}">
+      <view wx:for="{{plans}}" wx:key="id" class="plan-item">
+        <view class="plan-main" bindtap="openRecord" data-id="{{item.id}}">
+          <view class="plan-symbol"></view>
+          <view class="plan-copy">
+            <view class="plan-title">{{item.actionName}}</view>
+            <view class="plan-meta">{{item.categoryName}} · {{item.dueDate}}{{item.dueTime ? (' · ' + item.dueTime) : ''}}</view>
+            <view wx:if="{{item.description}}" class="plan-desc">{{item.description}}</view>
+          </view>
+        </view>
+        <view class="mini-button quick-trace" bindtap="quickTrace" data-id="{{item.id}}">{{ui.quickTrace}}</view>
+      </view>
+    </view>
+    <view wx:else class="empty-card">{{ui.noPlans}}</view>
+  </view>
+
+  <view wx:if="{{overduePlans.length}}" class="card overdue-card">
+    <view class="section-header">
+      <view>
+        <view class="section-title">{{ui.overdueTitle}}</view>
+        <view class="section-subtitle">{{ui.overdueSubtitle}}</view>
+      </view>
+      <view class="pill overdue-pill">{{overduePlans.length}} 条</view>
+    </view>
+
+    <view wx:for="{{overduePlans}}" wx:key="id" class="plan-item overdue">
+      <view class="plan-main overdue-main" bindtap="openRecord" data-id="{{item.id}}">
+        <view class="plan-copy">
+          <view class="plan-title">{{item.actionName}}</view>
+          <view class="plan-meta">{{item.categoryName}} · {{item.dueDate}}{{item.dueTime ? (' · ' + item.dueTime) : ''}}</view>
+          <view wx:if="{{item.description}}" class="plan-desc">{{item.description}}</view>
+        </view>
+      </view>
+      <view class="mini-button quick-trace" bindtap="quickTrace" data-id="{{item.id}}">{{ui.quickTrace}}</view>
+    </view>
+  </view>
+
+  <main-tabbar current="{{currentTab}}"></main-tabbar>
+</view>

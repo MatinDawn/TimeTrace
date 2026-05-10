@@ -1,0 +1,44 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-title">统计详情</view>
+    <view class="hero-subtitle">这里展示本月总览和分类支出，后续还可以继续扩展预算、同比和更细的趋势分析。</view>
+  </view>
+
+  <view class="section card">
+    <view class="section-title">本月总览</view>
+    <view class="grid">
+      <view class="metric">
+        <view class="metric-label">总支出</view>
+        <view class="metric-value expense">¥{{summary.expense}}</view>
+      </view>
+      <view class="metric">
+        <view class="metric-label">总收入</view>
+        <view class="metric-value income">¥{{summary.income}}</view>
+      </view>
+      <view class="metric">
+        <view class="metric-label">净结余</view>
+        <view class="metric-value">¥{{summary.balance}}</view>
+      </view>
+      <view class="metric">
+        <view class="metric-label">账目笔数</view>
+        <view class="metric-value">{{summary.count}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section card">
+    <view class="section-title">分类支出</view>
+    <view wx:if="{{summary.topCategories.length}}">
+      <view wx:for="{{summary.topCategories}}" wx:key="key" class="bar-row">
+        <view class="record-head">
+          <view class="record-title">{{item.label}}</view>
+          <view class="record-meta">¥{{item.amount}}</view>
+        </view>
+        <view class="bar-line">
+          <view class="bar-fill" style="width: {{item.barWidth}};"></view>
+        </view>
+      </view>
+    </view>
+    <view wx:else class="muted">还没有可展示的分类支出。</view>
+  </view>
+</view>

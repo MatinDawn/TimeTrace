@@ -1,0 +1,36 @@
+<view class="screen">
+  <view class="card">
+    <view class="section-title">{{ui.title}}</view>
+    <view class="section-subtitle">{{ui.subtitle}}</view>
+
+    <view class="composer-card">
+      <view wx:if="{{!showVoiceInput}}" class="composer-input-wrap">
+        <textarea
+          class="record-textarea"
+          placeholder="{{ui.placeholder}}"
+          value="{{inputText}}"
+          bindinput="onInput"
+          maxlength="300"
+        />
+      </view>
+
+      <view wx:else class="voice-input-wrap">
+        <view class="voice-hint">{{ui.voiceHint}}</view>
+        <view class="voice-button" bindtap="handleVoicePress">{{ui.voiceButton}}</view>
+        <view class="voice-tip">{{ui.voiceTip}}</view>
+      </view>
+
+      <view class="composer-toolbar">
+        <view class="tool-icon" bindtap="toggleInputMode">{{showVoiceInput ? ui.keyboard : ui.voice}}</view>
+        <view class="toolbar-text">{{showVoiceInput ? ui.switchToText : ui.switchToVoice}}</view>
+      </view>
+    </view>
+
+    <view class="example-title">{{ui.examplesTitle}}</view>
+    <view class="example-list">
+      <view wx:for="{{examples}}" wx:key="*this" class="example-chip" data-value="{{item}}" bindtap="fillExample">{{item}}</view>
+    </view>
+
+    <view class="primary-button save-button" bindtap="submitForAutofill">{{ui.submit}}</view>
+  </view>
+</view>

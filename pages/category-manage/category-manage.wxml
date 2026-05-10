@@ -1,0 +1,24 @@
+<view class="screen">
+  <view class="card">
+    <view class="section-header">
+      <view>
+        <view class="section-title">分类管理</view>
+        <view class="section-subtitle">统一维护留痕分类，为记账、计划和统计提供清晰的归档方式。</view>
+      </view>
+      <view class="mini-button" bindtap="createCategory">新增</view>
+    </view>
+  </view>
+
+  <view class="card list-card">
+    <view wx:for="{{categories}}" wx:key="id" class="category-row">
+      <view>
+        <view class="category-name">{{item.name}}</view>
+        <view class="category-meta">{{item.builtin ? '系统分类' : '自定义分类'}}</view>
+      </view>
+      <view class="action-group">
+        <view class="mini-button" bindtap="editCategory" data-id="{{item.id}}">编辑</view>
+        <view wx:if="{{!item.builtin}}" class="mini-button delete" bindtap="removeCategory" data-id="{{item.id}}">删除</view>
+      </view>
+    </view>
+  </view>
+</view>

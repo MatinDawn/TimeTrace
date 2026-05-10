@@ -1,0 +1,35 @@
+<view class="screen draft-screen">
+  <view class="card">
+    <view class="section-header">
+      <view>
+        <view class="section-title">{{ui.title}}</view>
+        <view class="section-subtitle">{{ui.subtitle}}</view>
+      </view>
+      <view class="mini-button" bindtap="toggleManageMode">{{manageMode ? ui.done : ui.manage}}</view>
+    </view>
+    <input class="search-input" placeholder="{{ui.searchPlaceholder}}" value="{{keyword}}" bindinput="onSearchInput" />
+  </view>
+
+  <view wx:if="{{manageMode}}" class="card action-card">
+    <view class="ghost-button batch-button" bindtap="batchChangeCategory">{{ui.batchCategory}}</view>
+    <view class="primary-button batch-button" bindtap="batchDelete">{{ui.batchDelete}}</view>
+  </view>
+
+  <view class="card list-card">
+    <view wx:if="{{drafts.length}}">
+      <view wx:for="{{drafts}}" wx:key="id" class="draft-item">
+        <view wx:if="{{manageMode}}" class="select-mark {{selectedIds.indexOf(item.id) >= 0 ? 'active' : ''}}" bindtap="toggleSelect" data-id="{{item.id}}">
+          <view class="select-inner"></view>
+        </view>
+        <view class="draft-main" bindtap="openDetail" data-id="{{item.id}}" data-mode="{{item.source === 'feishu' ? 'remoteDraft' : 'normal'}}">
+          <view class="draft-title">{{item.actionName || ui.improve}}</view>
+          <view class="draft-meta">{{ui.sourceText}} {{ui.separator}} {{item.draftSource}} {{ui.separator}} {{ui.timeText}} {{ui.separator}} {{item.recordTime || item.createdAtDisplay}}</view>
+          <view class="draft-meta">{{ui.categoryText}} {{ui.separator}} {{item.categoryName || ui.improve}}</view>
+          <view class="draft-content">{{item.originalContent}}</view>
+        </view>
+        <view wx:if="{{!manageMode}}" class="mini-button" bindtap="removeDraft" data-id="{{item.id}}">{{ui.delete}}</view>
+      </view>
+    </view>
+    <view wx:else class="empty-card">{{ui.empty}}</view>
+  </view>
+</view>

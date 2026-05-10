@@ -1,0 +1,101 @@
+<view class="screen my-screen">
+  <view class="card profile-card">
+    <view class="profile-header" bindtap="openProfileEditor">
+      <view class="profile-avatar-wrap">
+        <image wx:if="{{currentUser.avatarUrl}}" class="profile-avatar" src="{{currentUser.avatarUrl}}" mode="aspectFill"></image>
+        <view wx:else class="profile-avatar placeholder"></view>
+        <view class="profile-avatar-badge"></view>
+      </view>
+      <view class="profile-main">
+        <view class="profile-title-row">
+          <view class="profile-name">{{currentUser.displayName || ui.emptyProfile}}</view>
+          <view class="profile-edit">{{ui.editProfile}}</view>
+        </view>
+        <view class="profile-tags">
+          <view class="profile-tag">{{activeSpace ? activeSpace.name : ui.personalMode}}</view>
+          <view wx:if="{{activeSpace}}" class="profile-tag subtle">{{activeSpace.inviteCode}}</view>
+        </view>
+      </view>
+      <view class="profile-arrow"></view>
+    </view>
+  </view>
+
+  <view class="card profile-card">
+    <view class="section-title">{{ui.title}}</view>
+    <view class="section-subtitle">{{ui.subtitle}}</view>
+    <view class="overview-grid">
+      <view class="overview-box">
+        <view class="overview-value">{{overview.recordCount}}</view>
+        <view class="overview-label">{{ui.recordCount}}</view>
+      </view>
+      <view class="overview-box">
+        <view class="overview-value">{{overview.todoCount}}</view>
+        <view class="overview-label">{{ui.todoCount}}</view>
+      </view>
+      <view class="overview-box">
+        <view class="overview-value">{{overview.draftCount}}</view>
+        <view class="overview-label">{{ui.draftCount}}</view>
+      </view>
+      <view class="overview-box">
+        <view class="overview-value">{{overview.reminderCount}}</view>
+        <view class="overview-label">{{ui.reminderCount}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card menu-card">
+    <view class="menu-item" bindtap="goSpaceManage">
+      <view>
+        <view class="menu-title">{{ui.manageSpace}}</view>
+        <view class="menu-desc">{{ui.manageSpaceDesc}}</view>
+      </view>
+      <view class="menu-arrow"></view>
+    </view>
+    <view class="menu-item" data-url="/pages/draft-list/draft-list" bindtap="goPage">
+      <view>
+        <view class="menu-title">{{ui.draftBox}}</view>
+        <view class="menu-desc">{{ui.draftDesc}}</view>
+      </view>
+      <view class="menu-arrow"></view>
+    </view>
+    <view class="menu-item" data-url="/pages/category-manage/category-manage" bindtap="goPage">
+      <view>
+        <view class="menu-title">{{ui.categoryManage}}</view>
+        <view class="menu-desc">{{ui.categoryDesc}}</view>
+      </view>
+      <view class="menu-arrow"></view>
+    </view>
+    <view class="menu-item" data-url="/pages/reminder-manage/reminder-manage" bindtap="goPage">
+      <view>
+        <view class="menu-title">{{ui.reminderManage}}</view>
+        <view class="menu-desc">{{ui.reminderDesc}}</view>
+      </view>
+      <view class="menu-arrow"></view>
+    </view>
+    <view class="menu-item" data-url="/pages/search-result/search-result" bindtap="goPage">
+      <view>
+        <view class="menu-title">{{ui.search}}</view>
+        <view class="menu-desc">{{ui.searchDesc}}</view>
+      </view>
+      <view class="menu-arrow"></view>
+    </view>
+  </view>
+
+  <main-tabbar current="{{currentTab}}"></main-tabbar>
+
+  <view wx:if="{{profileEditorVisible}}" class="profile-modal-mask" bindtap="closeProfileEditor">
+    <view class="profile-modal" catchtap="noop">
+      <view class="modal-title">{{ui.editProfile}}</view>
+      <button class="avatar-editor" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar" loading="{{savingProfile}}">
+        <image wx:if="{{avatarDraft || currentUser.avatarUrl}}" class="editor-avatar" src="{{avatarDraft || currentUser.avatarUrl}}" mode="aspectFill"></image>
+        <view wx:else class="editor-avatar placeholder"></view>
+        <view class="camera-dot"></view>
+      </button>
+      <input class="nickname-editor" type="nickname" placeholder="{{ui.nicknamePlaceholder}}" value="{{nicknameDraft}}" bindinput="onNicknameInput" />
+      <view class="modal-actions">
+        <view class="ghost-button modal-button" bindtap="closeProfileEditor">{{ui.cancel}}</view>
+        <view class="primary-button modal-button {{savingProfile ? 'saving' : ''}}" bindtap="saveProfileEditor">{{savingProfile ? ui.saving : ui.save}}</view>
+      </view>
+    </view>
+  </view>
+</view>

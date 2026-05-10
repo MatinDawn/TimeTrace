@@ -1,0 +1,19 @@
+<view class="screen">
+  <view class="card">
+    <view class="section-title">提醒管理</view>
+    <view class="section-subtitle">把已经开启提醒的计划集中放在这里，方便统一检查和关闭。</view>
+  </view>
+
+  <view class="card list-card">
+    <view wx:if="{{reminders.length}}">
+      <view wx:for="{{reminders}}" wx:key="id" class="reminder-row">
+        <view class="reminder-main" bindtap="openRecord" data-id="{{item.id}}">
+          <view class="reminder-title">{{item.actionName}}</view>
+          <view class="reminder-meta">{{item.dueDate || '未设置截止日期'}} · {{item.categoryName}}</view>
+        </view>
+        <view class="mini-button" bindtap="disableReminder" data-id="{{item.id}}">关闭</view>
+      </view>
+    </view>
+    <view wx:else class="empty-card">还没有开启提醒的任务。</view>
+  </view>
+</view>

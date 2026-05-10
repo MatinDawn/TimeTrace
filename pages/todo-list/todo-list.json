@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "任务日历",
+  "usingComponents": {
+    "main-tabbar": "/components/main-tabbar/main-tabbar"
+  }
+}

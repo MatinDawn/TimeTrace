@@ -1,0 +1,141 @@
+<view class="screen statistics-screen">
+  <view class="card filter-card">
+    <view class="section-header">
+      <view>
+        <view class="section-title">{{ui.title}}</view>
+        <view class="section-subtitle">{{ui.subtitle}}</view>
+      </view>
+      <view class="scope-toolbar">
+        <view class="scope-icon" data-step="-1" bindtap="shiftScope">{{ui.stepPrev}}</view>
+        <picker class="scope-picker" wx:if="{{granularity === 'day' || granularity === 'week'}}" mode="date" value="{{selectedDate}}" bindchange="onPickDate">
+          <view class="scope-pill">{{scopeLabel}}</view>
+        </picker>
+        <picker class="scope-picker" wx:elif="{{granularity === 'month'}}" mode="date" fields="month" value="{{scope.pickerText}}" bindchange="onPickMonth">
+          <view class="scope-pill">{{scopeLabel}}</view>
+        </picker>
+        <picker class="scope-picker" wx:else mode="date" fields="year" value="{{selectedYear + ''}}" bindchange="onPickYear">
+          <view class="scope-pill">{{scopeLabel}}</view>
+        </picker>
+        <view class="scope-icon" data-step="1" bindtap="shiftScope">{{ui.stepNext}}</view>
+      </view>
+    </view>
+
+    <view class="granularity-row">
+      <view class="granularity-chip {{granularity === 'day' ? 'active' : ''}}" data-value="day" bindtap="changeGranularity">{{ui.day}}</view>
+      <view class="granularity-chip {{granularity === 'week' ? 'active' : ''}}" data-value="week" bindtap="changeGranularity">{{ui.week}}</view>
+      <view class="granularity-chip {{granularity === 'month' ? 'active' : ''}}" data-value="month" bindtap="changeGranularity">{{ui.month}}</view>
+      <view class="granularity-chip {{granularity === 'year' ? 'active' : ''}}" data-value="year" bindtap="changeGranularity">{{ui.year}}</view>
+    </view>
+
+    <view class="tab-row">
+      <view class="stats-tab {{activeTab === 'activity' ? 'active' : ''}}" data-value="activity" bindtap="changeTab">{{ui.activityTab}}</view>
+      <view class="stats-tab {{activeTab === 'task' ? 'active' : ''}}" data-value="task" bindtap="changeTab">{{ui.taskTab}}</view>
+      <view class="stats-tab {{activeTab === 'finance' ? 'active' : ''}}" data-value="finance" bindtap="changeTab">{{ui.financeTab}}</view>
+      <view class="stats-tab {{activeTab === 'habit' ? 'active' : ''}}" data-value="habit" bindtap="changeTab">{{ui.habitTab}}</view>
+    </view>
+  </view>
+
+  <view class="card stats-card" wx:if="{{activeTab === 'activity'}}">
+    <view class="stats-grid">
+      <view class="stats-box">
+        <view class="stats-label">{{ui.activityCompleted}}</view>
+        <view class="stats-value">{{stats.activity.completedCount || 0}}</view>
+      </view>
+      <view class="stats-box">
+        <view class="stats-label">{{ui.activityDuration}}</view>
+        <view class="stats-value">{{stats.activity.durationCount || 0}}</view>
+      </view>
+    </view>
+    <view class="mini-list-title">{{ui.categoryRanking}}</view>
+    <view wx:for="{{stats.activity.categoryRanking}}" wx:key="name" class="mini-list-row">
+      <view>{{item.name}}</view>
+      <view>{{ui.currency}}{{item.amount}}</view>
+    </view>
+    <view wx:if="{{!stats.activity.categoryRanking || !stats.activity.categoryRanking.length}}" class="empty-card">{{ui.noActivity}}</view>
+  </view>
+
+  <view class="card stats-card" wx:if="{{activeTab === 'task'}}">
+    <view class="stats-grid">
+      <view class="stats-box">
+        <view class="stats-label">{{ui.taskTotal}}</view>
+        <view class="stats-value">{{stats.task.total || 0}}</view>
+      </view>
+      <view class="stats-box">
+        <view class="stats-label">{{ui.taskCompletion}}</view>
+        <view class="stats-value">{{stats.task.completionRate || 0}}%</view>
+      </view>
+      <view class="stats-box">
+        <view class="stats-label">{{ui.taskDone}}</view>
+        <view class="stats-value">{{stats.task.completed || 0}}</view>
+      </view>
+      <view class="stats-box">
+        <view class="stats-label">{{ui.taskOverdue}}</view>
+        <view class="stats-value">{{stats.task.overdue || 0}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card stats-card" wx:if="{{activeTab === 'finance'}}">
+    <view class="stats-grid">
+      <view class="stats-box">
+        <view class="stats-label">{{ui.financeSpent}}</view>
+        <view class="stats-value expense">{{ui.currency}}{{stats.finance.expense || 0}}</view>
+      </view>
+      <view class="stats-box">
+        <view class="stats-label">{{ui.financeCount}}</view>
+        <view class="stats-value">{{stats.finance.count || 0}}</view>
+      </view>
+    </view>
+    <view class="mini-list-title">{{ui.financeTrend}}</view>
+    <view class="trend-chart small">
+      <view wx:for="{{stats.finance.trend}}" wx:key="label" class="trend-bar-wrap">
+        <view class="trend-bar" style="height: {{item.height}};"></view>
+        <view class="trend-label">{{item.label}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card stats-card" wx:if="{{activeTab === 'habit'}}">
+    <view class="stats-grid">
+      <view class="stats-box">
+        <view class="stats-label">{{ui.longestStreak}}</view>
+        <view class="stats-value">{{stats.habit.topStreakDays || 0}}</view>
+        <view class="stats-caption">{{stats.habit.topStreakName || ui.defaultStreak}}</view>
+      </view>
+      <view class="stats-box">
+        <view class="stats-label">{{ui.recentTop}}</view>
+        <view class="stats-value">{{stats.habit.topRecentCount || 0}}</view>
+        <view class="stats-caption">{{stats.habit.topRecentName || ui.defaultRecent}}</view>
+      </view>
+    </view>
+
+    <view class="mini-list-title">{{ui.streakRanking}}</view>
+    <view wx:if="{{stats.habit.streakRanking && stats.habit.streakRanking.length}}">
+      <view wx:for="{{stats.habit.streakRanking}}" wx:key="name" class="mini-list-row">
+        <view>{{item.name}}</view>
+        <view>{{item.latestStreak}} {{ui.days}}</view>
+      </view>
+    </view>
+    <view wx:else class="empty-card">{{ui.noStreak}}</view>
+
+    <view class="mini-list-title">{{ui.recentRanking}}</view>
+    <view wx:if="{{stats.habit.recentRanking && stats.habit.recentRanking.length}}">
+      <view wx:for="{{stats.habit.recentRanking}}" wx:key="name" class="mini-list-row">
+        <view>{{item.name}}</view>
+        <view>{{item.recentCount}} {{ui.times}}</view>
+      </view>
+    </view>
+    <view wx:else class="empty-card">{{ui.noRecent}}</view>
+
+    <view class="mini-list-title">{{ui.frequentRanking}}</view>
+    <view wx:if="{{stats.habit.frequentRanking && stats.habit.frequentRanking.length}}">
+      <view wx:for="{{stats.habit.frequentRanking}}" wx:key="name" class="mini-list-row">
+        <view>{{item.name}}</view>
+        <view>{{item.totalCount}} {{ui.times}}</view>
+      </view>
+    </view>
+    <view wx:else class="empty-card">{{ui.noFrequent}}</view>
+  </view>
+
+  <main-tabbar current="{{currentTab}}"></main-tabbar>
+</view>

@@ -1,0 +1,234 @@
+<view class="screen home-screen">
+  <view class="custom-nav" style="padding-top: {{statusBarHeight}}px; min-height: {{navBarHeight}}px;">
+    <view class="scope-button" bindtap="openWorkspaceSheet">
+      <view class="scope-sprout">
+        <view class="sprout-stem"></view>
+        <view class="sprout-leaf sprout-left"></view>
+        <view class="sprout-leaf sprout-right"></view>
+      </view>
+      <view class="scope-copy">
+        <view class="scope-button-label">{{ui.scopeLabel}}</view>
+        <view class="scope-button-text">{{currentScopeLabel}}</view>
+      </view>
+      <view class="scope-chevron"></view>
+    </view>
+    <view class="nav-brand-title">{{ui.brandTitle}}</view>
+  </view>
+
+  <view class="intro-row">
+    <view class="quote-card">
+      <image class="quote-plant-image" src="/assets/home/quote-board.svg" mode="widthFix"></image>
+    </view>
+    <view class="draft-entry" bindtap="goDraftList">
+      <image class="draft-icon" src="/assets/home/draftbox-approved.svg" mode="aspectFit"></image>
+      <view>{{ui.draftBox}}</view>
+      <view class="draft-count">{{draftCount}}</view>
+    </view>
+  </view>
+
+  <view class="card progress-card">
+    <view class="progress-header">
+      <view>
+        <view class="section-title with-info">
+          <text>{{ui.progressTitle}}</text>
+          <text class="info-dot">i</text>
+        </view>
+        <view class="progress-total">
+          <text class="progress-number">{{todayRecordCount}}</text>
+          <text class="progress-separator">/</text>
+          <text class="progress-target">{{dailyTarget}}</text>
+          <text class="progress-unit">条留痕</text>
+        </view>
+      </view>
+      <view class="progress-bubble">{{progressBubbleText}}</view>
+    </view>
+
+    <view class="progress-main">
+      <view class="progress-track-shell">
+        <view class="progress-track-line">
+          <view class="progress-segment left {{progressLevel >= 2 ? 'done' : ''}}"></view>
+          <view class="progress-segment right {{progressLevel >= 3 ? 'done' : ''}}"></view>
+          <view class="progress-node left {{progressLevel >= 1 ? 'done' : ''}}">
+          </view>
+          <view class="progress-node middle {{progressLevel >= 2 ? 'done' : ''}}">
+          </view>
+          <view class="progress-node right {{progressLevel >= 3 ? 'done' : ''}}">
+          </view>
+          <view class="progress-node-label left">1条</view>
+          <view class="progress-node-label middle">2条</view>
+          <view class="progress-node-label right">3条</view>
+          <view class="progress-indicator" style="left: {{progressIndicatorPercent}}%;">
+            <view class="progress-mascot">
+              <image class="progress-mascot-image" src="/assets/home/progress-mascot-head.svg" mode="aspectFit"></image>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="progress-tree-zone">
+        <image class="progress-tree-image" src="/assets/home/progress-seedling-trace.svg" mode="aspectFit"></image>
+      </view>
+    </view>
+  </view>
+
+  <view class="card hero-card">
+    <view class="hero-stage">
+      <view class="hero-side left">
+        <view class="hero-dashed left"></view>
+        <text>{{ui.traceSideLeftOne}}</text>
+        <text>{{ui.traceSideLeftTwo}}</text>
+      </view>
+
+      <view
+        class="hero-button {{heroVoiceActive ? 'recording' : ''}}"
+        bindtap="goQuickRecord"
+        bindtouchstart="onHeroTouchStart"
+        bindtouchend="onHeroTouchEnd"
+        bindtouchcancel="onHeroTouchCancel"
+      >
+        <view class="hero-button-ring">
+          <view class="hero-button-inner">
+            <view class="hero-leaf">
+              <view class="hero-leaf-core"></view>
+            </view>
+            <view class="hero-title">{{ui.traceTitle}}</view>
+            <view wx:if="{{heroVoiceStatusText}}" class="hero-voice-status">
+              <view class="hero-voice-dot"></view>
+              <text>{{heroVoiceStatusText}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="hero-side right">
+        <image class="hero-plane-image" src="/assets/home/paper-plane-trail.svg" mode="widthFix"></image>
+        <text>{{ui.traceSideRightOne}}</text>
+        <text>{{ui.traceSideRightTwo}}</text>
+      </view>
+    </view>
+
+    <view class="hero-hint-bar" bindtap="goQuickRecord">
+      <view class="hint-sprout">
+        <view class="hint-stem"></view>
+        <view class="hint-leaf left"></view>
+        <view class="hint-leaf right"></view>
+      </view>
+      <view>{{traceHintText}}</view>
+      <view class="hint-arrow"></view>
+    </view>
+  </view>
+
+  <view class="card overview-card">
+    <view class="section-header">
+      <view class="section-title">{{ui.overviewTitle}}</view>
+      <view class="overview-pill">
+        {{activeFeedTab === 'completed' ? todayCompletedCount : todayPlanCount}} 条
+      </view>
+    </view>
+
+    <view class="tab-row">
+      <view
+        class="feed-tab {{activeFeedTab === 'completed' ? 'active' : ''}}"
+        data-value="completed"
+        bindtap="setFeedTab"
+      >
+        {{ui.doneTitle}}
+      </view>
+      <view
+        class="feed-tab {{activeFeedTab === 'plans' ? 'active' : ''}}"
+        data-value="plans"
+        bindtap="setFeedTab"
+      >
+        {{ui.todoTitle}}
+      </view>
+    </view>
+
+    <block wx:if="{{activeFeedTab === 'completed'}}">
+      <block wx:if="{{todayCompleted.length}}">
+        <view
+          class="feed-item"
+          wx:for="{{todayCompleted}}"
+          wx:key="id"
+          data-id="{{item.id}}"
+          bindtap="openRecord"
+        >
+          <view class="feed-icon sprout"></view>
+          <view class="feed-main">
+            <view class="feed-title">{{item.actionName}}</view>
+            <view class="feed-meta">{{item.categoryName}} {{ui.metaSeparator}} {{item.recordTime}}</view>
+          </view>
+          <view class="feed-side {{item.amount ? 'done-amount' : 'done-text'}}">
+            {{item.amount ? (ui.currencyPrefix + item.amount) : ui.doneText}}
+          </view>
+        </view>
+      </block>
+      <view class="empty-text" wx:else>{{ui.doneEmpty}}</view>
+    </block>
+
+    <block wx:else>
+      <block wx:if="{{todayPlans.length}}">
+        <view
+          class="feed-item"
+          wx:for="{{todayPlans}}"
+          wx:key="id"
+          data-id="{{item.id}}"
+          bindtap="openRecord"
+        >
+          <view class="feed-icon hourglass"></view>
+          <view class="feed-main">
+            <view class="feed-title">{{item.actionName}}</view>
+            <view class="feed-meta">{{item.dueDate || ui.noDueDate}} {{ui.metaSeparator}} {{item.priorityLabel}}</view>
+          </view>
+          <view class="feed-side pending">{{item.statusText}}</view>
+        </view>
+      </block>
+      <view class="empty-text" wx:else>{{ui.todoEmpty}}</view>
+    </block>
+
+    <view class="overview-quote">“{{ui.overviewQuote}}”</view>
+    <image class="overview-line-image" src="/assets/home/underline-brush.svg" mode="widthFix"></image>
+    <image class="overview-illustration" src="/assets/home/task-overview-illustration.svg" mode="widthFix"></image>
+  </view>
+
+  <main-tabbar current="{{currentTab}}"></main-tabbar>
+
+  <view wx:if="{{composerVisible}}" class="trace-sheet-mask" bindtap="closeComposer">
+    <view class="trace-sheet" catchtap="noop">
+      <view class="sheet-handle"></view>
+      <view class="sheet-head">
+        <view class="sheet-title">{{ui.composerTitle}}</view>
+        <view class="sheet-close" bindtap="closeComposer"></view>
+      </view>
+
+      <view class="sheet-editor">
+        <textarea
+          class="sheet-textarea"
+          placeholder="{{ui.composerPlaceholder}}"
+          value="{{composerText}}"
+          maxlength="500"
+          bindinput="onComposerInput"
+          auto-height="{{false}}"
+          cursor-spacing="24"
+        />
+        <view class="sheet-divider"></view>
+        <view class="sheet-toolbar">
+          <view
+            class="sheet-tool voice {{voiceRecording ? 'active' : ''}} {{voiceRecognizing ? 'recognizing' : ''}}"
+            bindtap="toggleVoiceInput"
+          ></view>
+          <view class="sheet-count">{{composerCount}} / 500</view>
+        </view>
+        <view wx:if="{{voiceStatusText}}" class="sheet-voice-status {{voiceRecording ? 'recording' : ''}}">
+          <view class="voice-dot"></view>
+          <text>{{voiceStatusText}}</text>
+          <text wx:if="{{voiceRecording}}" class="voice-tip">{{ui.voiceTapToStop}}</text>
+          <text class="voice-time">{{voiceDurationText}}</text>
+        </view>
+      </view>
+
+      <view class="sheet-save {{composerSubmitting || voiceRecognizing ? 'loading' : ''}}" bindtap="submitComposer">
+        {{composerSubmitting ? ui.composerSaving : ui.composerSave}}
+      </view>
+      <view wx:if="{{composerHintVisible}}" class="sheet-submit-hint">{{ui.composerHint}}</view>
+    </view>
+  </view>
+</view>

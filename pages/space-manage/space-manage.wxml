@@ -1,0 +1,42 @@
+<view class="screen">
+  <view class="card">
+    <view class="section-title">{{ui.title}}</view>
+    <view class="section-subtitle">{{ui.subtitle}}</view>
+
+    <view class="soft-panel mode-card">
+      <view class="mode-title">{{ui.currentMode}}</view>
+      <view class="mode-name">{{activeSpace ? activeSpace.name : ui.personalMode}}</view>
+      <view class="mode-hint">{{activeSpace ? (ui.inviteCode + ': ' + activeSpace.inviteCode) : ui.personalHint}}</view>
+      <button wx:if="{{activeSpace}}" class="ghost-button secondary-button" bindtap="handleSwitchPersonal" loading="{{switching}}">{{ui.switchPersonal}}</button>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">{{ui.createTitle}}</view>
+    <input class="field-input" placeholder="{{ui.createPlaceholder}}" value="{{createName}}" bindinput="onCreateNameInput" />
+    <button class="primary-button action-button" bindtap="handleCreateSpace" loading="{{creating}}">{{ui.createButton}}</button>
+  </view>
+
+  <view class="card">
+    <view class="section-title">{{ui.joinTitle}}</view>
+    <input class="field-input" maxlength="6" placeholder="{{ui.joinPlaceholder}}" value="{{inviteCodeInput}}" bindinput="onInviteCodeInput" />
+    <button class="primary-button action-button" bindtap="handleJoinSpace" loading="{{joining}}">{{ui.joinButton}}</button>
+  </view>
+
+  <view class="card">
+    <view class="section-title">{{ui.joinedTitle}}</view>
+    <view wx:if="{{spaces.length}}">
+      <view wx:for="{{spaces}}" wx:key="spaceId" class="space-item">
+        <view class="space-main">
+          <view class="space-name-row">
+            <view class="space-name">{{item.name}}</view>
+            <view wx:if="{{item.isActive}}" class="active-tag">{{ui.currentTag}}</view>
+          </view>
+          <view class="space-meta">{{ui.inviteCode}}: {{item.inviteCode}} · {{ui.memberCount}}: {{item.memberCount}}/5</view>
+        </view>
+        <button wx:if="{{!item.isActive}}" class="mini-button small-button" data-space-id="{{item.spaceId}}" bindtap="handleSwitchSpace" loading="{{switching}}">{{ui.switchButton}}</button>
+      </view>
+    </view>
+    <view wx:else class="empty-card">{{ui.emptyText}}</view>
+  </view>
+</view>

@@ -1,0 +1,142 @@
+<view class="screen accounting-screen">
+  <view class="card pool-card">
+    <view class="section-header">
+      <view>
+        <view class="section-title">{{ui.poolTitle}}</view>
+        <view class="section-subtitle">{{ui.poolSubtitle}}</view>
+      </view>
+      <view class="mini-button" bindtap="editLimit">{{limitPool.hasLimit ? ui.editLimit : ui.setLimit}}</view>
+    </view>
+
+    <view class="year-row">
+      <view class="year-button" data-step="-1" bindtap="shiftYear">{{ui.prevArrow}}</view>
+      <view class="year-label">{{scopeLabel}}</view>
+      <view class="year-button" data-step="1" bindtap="shiftYear">{{ui.nextArrow}}</view>
+    </view>
+
+    <view class="pool-grid">
+      <view class="pool-item">
+        <view class="pool-label">{{ui.limit}}</view>
+        <view class="pool-value">{{ui.currency}}{{limitPool.limit}}</view>
+      </view>
+      <view class="pool-item">
+        <view class="pool-label">{{ui.spent}}</view>
+        <view class="pool-value expense">{{ui.currency}}{{limitPool.spent}}</view>
+      </view>
+      <view class="pool-item">
+        <view class="pool-label">{{limitPool.overspent > 0 ? ui.overspent : ui.remaining}}</view>
+        <view class="pool-value {{limitPool.overspent > 0 ? 'expense' : ''}}">{{ui.currency}}{{limitPool.overspent > 0 ? limitPool.overspent : limitPool.remaining}}</view>
+      </view>
+    </view>
+
+    <view class="progress-track">
+      <view class="progress-bar" style="width: {{limitPool.progress}}%;"></view>
+    </view>
+    <view class="progress-meta">
+      <view>{{ui.progress}} {{limitPool.progress}}%</view>
+      <view>{{limitPool.year}}</view>
+    </view>
+
+    <view wx:if="{{!limitPool.hasLimit}}" class="empty-tip">{{ui.noLimit}}</view>
+  </view>
+
+  <view class="card analysis-card">
+    <view class="section-header">
+      <view>
+        <view class="section-title">{{ui.title}}</view>
+        <view class="section-subtitle">{{ui.subtitle}}</view>
+      </view>
+      <view class="scope-toolbar">
+        <view class="scope-icon" data-step="-1" bindtap="shiftScope">{{ui.stepPrev}}</view>
+        <picker wx:if="{{granularity !== 'month'}}" mode="date" value="{{selectedDate}}" bindchange="onPickDate">
+          <view class="scope-pill">{{scope.label}}</view>
+        </picker>
+        <picker wx:else mode="date" fields="month" value="{{scope.pickerValue}}" bindchange="onPickMonth">
+          <view class="scope-pill">{{scope.label}}</view>
+        </picker>
+        <view class="scope-icon" data-step="1" bindtap="shiftScope">{{ui.stepNext}}</view>
+      </view>
+    </view>
+
+    <view class="granularity-row">
+      <view class="granularity-chip {{granularity === 'day' ? 'active' : ''}}" data-value="day" bindtap="changeGranularity">{{ui.day}}</view>
+      <view class="granularity-chip {{granularity === 'week' ? 'active' : ''}}" data-value="week" bindtap="changeGranularity">{{ui.week}}</view>
+      <view class="granularity-chip {{granularity === 'month' ? 'active' : ''}}" data-value="month" bindtap="changeGranularity">{{ui.month}}</view>
+    </view>
+
+    <view class="metrics-grid">
+      <view class="metric-card">
+        <view class="metric-label">{{ui.spent}}</view>
+        <view class="metric-value expense">{{ui.currency}}{{summary.spent}}</view>
+      </view>
+      <view class="metric-card">
+        <view class="metric-label">{{ui.recordCount}}</view>
+        <view class="metric-value">{{summary.count}}</view>
+      </view>
+    </view>
+
+    <view class="trend-header">
+      <view class="trend-title">{{trendTitle}}</view>
+      <view class="pill">{{ui.trendTag}}</view>
+    </view>
+    <view class="trend-chart">
+      <view wx:for="{{trend}}" wx:key="label" class="trend-bar-wrap">
+        <view class="trend-amount">{{ui.currency}}{{item.amount}}</view>
+        <view class="trend-bar" style="height: {{item.height}};"></view>
+        <view class="trend-label">{{item.label}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card finance-card">
+    <view class="section-header">
+      <view>
+        <view class="section-title">{{ui.categoryTitle}}</view>
+        <view class="section-subtitle">{{ui.categorySubtitle}}</view>
+      </view>
+      <view class="pill">{{categoryStats.length}}{{ui.categorySuffix}}</view>
+    </view>
+
+    <view wx:if="{{pieLegend.length}}" class="pie-layout">
+      <view class="pie-shell">
+        <view class="pie-chart" style="{{pieStyle}}"></view>
+        <view class="pie-center">
+          <view class="pie-center-label">{{ui.totalSpent}}</view>
+          <view class="pie-center-value">{{ui.currency}}{{summary.spent}}</view>
+        </view>
+      </view>
+      <view class="pie-legend">
+        <view wx:for="{{pieLegend}}" wx:key="name" class="legend-row">
+          <view class="legend-left">
+            <view class="legend-dot" style="background: {{item.color}};"></view>
+            <view class="legend-name">{{item.name}}</view>
+          </view>
+          <view class="legend-right">
+            <view class="legend-percent">{{item.percentText}}</view>
+            <view class="legend-amount">{{ui.currency}}{{item.amount}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view wx:else class="empty-card">{{ui.noFinance}}</view>
+  </view>
+
+  <view class="card finance-card">
+    <view class="section-header">
+      <view class="section-title">{{ui.detailTitle}}</view>
+      <view class="pill">{{recentFinance.length}}{{ui.countSuffix}}</view>
+    </view>
+    <view wx:if="{{recentFinance.length}}">
+      <view wx:for="{{recentFinance}}" wx:key="id" class="finance-row" bindtap="openRecord" data-id="{{item.id}}">
+        <view>
+          <view class="finance-title">{{item.actionName}}</view>
+          <view class="finance-meta">{{item.categoryName}} {{ui.separator}} {{item.recordTime}}</view>
+        </view>
+        <view class="expense">{{ui.currency}}{{item.amount}}</view>
+      </view>
+    </view>
+    <view wx:else class="empty-card">{{ui.noDetail}}</view>
+  </view>
+
+  <main-tabbar current="{{currentTab}}"></main-tabbar>
+</view>

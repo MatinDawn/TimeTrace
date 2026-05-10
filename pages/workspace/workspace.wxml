@@ -1,0 +1,79 @@
+<view class="screen">
+  <view class="card">
+    <view class="section-title">{{ui.title}}</view>
+    <view class="section-subtitle">{{ui.subtitle}}</view>
+
+    <view class="soft-panel mode-card">
+      <view class="mode-title">{{ui.currentMode}}</view>
+      <view class="mode-name">{{activeSpace ? activeSpace.name : ui.personalMode}}</view>
+      <view wx:if="{{activeSpace}}" class="invite-line">
+        <text class="invite-label">{{ui.inviteCode}}</text>
+        <text class="invite-code">{{activeSpace.inviteCode}}</text>
+        <view class="copy-icon-button" data-code="{{activeSpace.inviteCode}}" bindtap="handleCopyInviteCode">
+          <view class="copy-icon"></view>
+        </view>
+      </view>
+      <view wx:else class="mode-hint">{{ui.personalHint}}</view>
+      <button wx:if="{{activeSpace}}" class="ghost-button secondary-button" bindtap="handleSwitchPersonal" loading="{{switching}}">{{ui.switchPersonal}}</button>
+    </view>
+  </view>
+
+  <view class="card spaces-card">
+    <view class="spaces-header">
+      <view class="section-title">{{ui.joinedTitle}}</view>
+      <view class="add-space-button" bindtap="openSpaceActions">+</view>
+    </view>
+    <view wx:if="{{spaces.length}}">
+      <view
+        wx:for="{{spaces}}"
+        wx:key="spaceId"
+        class="space-panel {{item.isActive ? 'active' : ''}}"
+        data-space-id="{{item.spaceId}}"
+        data-spaceid="{{item.spaceId}}"
+        data-active="{{item.isActive}}"
+        data-is-active="{{item.isActive}}"
+        bindtap="handleSpaceCardTap"
+      >
+        <view class="space-top-row">
+          <view class="space-name-row">
+            <view class="space-name">{{item.name}}</view>
+            <view wx:if="{{item.isActive}}" class="active-tag">{{ui.currentTag}}</view>
+          </view>
+          <view class="member-ring">
+            <view class="member-count">{{item.memberCount}}/5</view>
+            <view class="member-label">{{ui.memberCount}}</view>
+          </view>
+        </view>
+        <view class="space-bottom-row">
+          <view class="invite-chip">
+            <text class="invite-text">{{ui.inviteCode}}: {{item.inviteCode}}</text>
+            <view class="copy-icon-button subtle" data-code="{{item.inviteCode}}" catchtap="handleCopyInviteCode">
+              <view class="copy-icon"></view>
+            </view>
+          </view>
+          <view wx:if="{{!item.isActive}}" class="space-chevron"></view>
+        </view>
+      </view>
+    </view>
+    <view wx:else class="empty-card">{{ui.emptyText}}</view>
+  </view>
+
+  <view wx:if="{{spaceSheetVisible}}" class="sheet-mask" catchtap="closeSpaceSheet">
+    <view class="space-sheet" catchtap="noop">
+      <view class="sheet-grabber"></view>
+      <view class="sheet-title">{{spaceSheetMode === 'create' ? ui.createTitle : ui.joinTitle}}</view>
+      <view class="sheet-subtitle">{{spaceSheetMode === 'create' ? ui.createSheetHint : ui.joinSheetHint}}</view>
+      <input
+        class="field-input sheet-input"
+        maxlength="{{spaceSheetMode === 'create' ? 20 : 6}}"
+        placeholder="{{spaceSheetMode === 'create' ? ui.createPlaceholder : ui.joinPlaceholder}}"
+        value="{{spaceSheetMode === 'create' ? createName : inviteCodeInput}}"
+        bindinput="onSpaceSheetInput"
+        focus="{{spaceSheetVisible}}"
+      />
+      <button class="primary-button action-button" bindtap="handleSpaceSheetSubmit" loading="{{creating || joining}}">
+        {{spaceSheetMode === 'create' ? ui.createButton : ui.joinButton}}
+      </button>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,6 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "main-tabbar": "/components/main-tabbar/main-tabbar"
+  }
+}

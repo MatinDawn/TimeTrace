@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 160">
+  <defs>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b9d78d"/>
+      <stop offset="1" stop-color="#6c9b55"/>
+    </linearGradient>
+    <linearGradient id="soil" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e7d1b3" stop-opacity=".35"/>
+      <stop offset=".55" stop-color="#b79d7a" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#e7d1b3" stop-opacity=".25"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="62" cy="142" rx="42" ry="10" fill="url(#soil)"/>
+  <path d="M59 135c-2-27 2-52 13-77" fill="none" stroke="#7f9568" stroke-width="7" stroke-linecap="round"/>
+  <path d="M69 63C47 56 35 39 33 18c22 0 38 13 42 38 1 4-2 8-6 7z" fill="url(#leaf)" stroke="#5c6f3b" stroke-width="4"/>
+  <path d="M71 67c23-16 35-35 36-58-26 3-45 21-43 51 0 6 3 9 7 7z" fill="url(#leaf)" stroke="#5c6f3b" stroke-width="4"/>
+  <path d="M58 94C38 87 24 75 17 59c21-3 38 6 46 27 2 5 0 9-5 8z" fill="url(#leaf)" stroke="#6f8351" stroke-width="4"/>
+  <path d="M61 102c21-9 36-22 45-39 11 19 2 38-23 48-12 5-22 2-22-9z" fill="url(#leaf)" stroke="#6f8351" stroke-width="4"/>
+  <path d="M45 137c11-12 21-22 35-30" fill="none" stroke="#a78d68" stroke-width="3" stroke-linecap="round" opacity=".55"/>
+</svg>

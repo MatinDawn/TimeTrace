@@ -1,0 +1,21 @@
+<view class="screen">
+  <view class="card">
+    <view class="section-title">搜索结果</view>
+    <view class="section-subtitle">支持按关键词搜索留痕、规划和备注内容。</view>
+    <view class="search-row">
+      <input class="search-input" value="{{keyword}}" placeholder="输入关键词" bindinput="onInput" confirm-type="search" bindconfirm="submitSearch" />
+      <view class="ghost-button search-button" bindtap="submitSearch">搜索</view>
+    </view>
+  </view>
+
+  <view class="card list-card">
+    <view wx:if="{{results.length}}">
+      <view wx:for="{{results}}" wx:key="id" class="result-row" bindtap="openRecord" data-id="{{item.id}}">
+        <view class="result-title">{{item.actionName}}</view>
+        <view class="result-meta">{{item.recordType === 'plan' ? '未完成' : '已完成'}} · {{item.categoryName}} · {{item.recordTime || item.dueDate}}</view>
+        <view class="result-content">{{item.originalContent || item.description}}</view>
+      </view>
+    </view>
+    <view wx:else class="empty-card">没有找到相关内容，换个关键词试试。</view>
+  </view>
+</view>

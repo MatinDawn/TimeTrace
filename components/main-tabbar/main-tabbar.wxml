@@ -1,0 +1,12 @@
+<view class="tabbar">
+  <view
+    wx:for="{{tabs}}"
+    wx:key="url"
+    class="tabbar-item {{current === item.url ? 'active' : ''}}"
+    data-url="{{item.url}}"
+    bindtap="navigate"
+  >
+    <text class="tabbar-label">{{item.zh}}</text>
+    <text class="tabbar-sub">{{item.en}}</text>
+  </view>
+</view>

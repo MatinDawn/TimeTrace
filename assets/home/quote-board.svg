@@ -1,0 +1,68 @@
+<svg width="760" height="260" viewBox="0 0 760 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="shadow" x="96" y="22" width="568" height="196" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#B58E5F" flood-opacity="0.12"/>
+    </filter>
+    <linearGradient id="paper" x1="130" y1="58" x2="630" y2="190" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFDF8"/>
+      <stop offset="0.62" stop-color="#FFF8EF"/>
+      <stop offset="1" stop-color="#FFF5E9"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="130" y1="58" x2="630" y2="190" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F3DFC1"/>
+      <stop offset="1" stop-color="#E8D2B0"/>
+    </linearGradient>
+    <linearGradient id="tape" x1="338" y1="36" x2="424" y2="84" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8E4C4"/>
+      <stop offset="1" stop-color="#EED2A7"/>
+    </linearGradient>
+    <linearGradient id="pot" x1="177" y1="154" x2="177" y2="204" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF6E8"/>
+      <stop offset="1" stop-color="#E9D0AA"/>
+    </linearGradient>
+    <linearGradient id="leafMain" x1="167" y1="95" x2="209" y2="144" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D2E06A"/>
+      <stop offset="1" stop-color="#8FAD39"/>
+    </linearGradient>
+    <linearGradient id="leafSide" x1="136" y1="116" x2="166" y2="145" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C6DB68"/>
+      <stop offset="1" stop-color="#87A63E"/>
+    </linearGradient>
+    <linearGradient id="leafBud" x1="122" y1="162" x2="146" y2="181" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A7C54F"/>
+      <stop offset="1" stop-color="#6F9337"/>
+    </linearGradient>
+    <linearGradient id="brush" x1="264" y1="170" x2="428" y2="166" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7CC2A6" stop-opacity="0.38"/>
+      <stop offset="0.48" stop-color="#71B79C"/>
+      <stop offset="1" stop-color="#5A9C89" stop-opacity="0.78"/>
+    </linearGradient>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <path d="M132 74C132 63.5066 140.507 55 151 55H611C621.493 55 630 63.5066 630 74V185C630 195.493 621.493 204 611 204H151C140.507 204 132 195.493 132 185V74Z" fill="url(#paper)" stroke="url(#edge)" stroke-width="2"/>
+    <path d="M134 90C134 81.1634 141.163 74 150 74H611C619.837 74 627 81.1634 627 90V183C627 191.837 619.837 199 611 199H150C141.163 199 134 191.837 134 183V90Z" fill="url(#paper)" opacity="0.84"/>
+  </g>
+
+  <path d="M350 39C350 34.5817 353.582 31 358 31H411C415.418 31 419 34.5817 419 39V62C419 66.4183 415.418 70 411 70H358C353.582 70 350 66.4183 350 62V39Z" fill="url(#tape)" opacity="0.94"/>
+  <path d="M354 42C354 38.6863 356.686 36 360 36H409C412.314 36 415 38.6863 415 42V60C415 63.3137 412.314 66 409 66H360C356.686 66 354 63.3137 354 60V42Z" fill="#F7E0BC" opacity="0.78"/>
+
+  <ellipse cx="169" cy="212" rx="46" ry="11" fill="#D9B98A" fill-opacity="0.28"/>
+  <path d="M176 114V175" stroke="#6A6032" stroke-width="4" stroke-linecap="round"/>
+  <path d="M176 130C174 116 163 108 145 103C138 102 135 104 133 110C132 119 136 126 145 133C154 138 164 140 173 139L176 130Z" fill="url(#leafSide)" stroke="#5D6A1F" stroke-width="1.4"/>
+  <path d="M178 111C179 94 190 83 207 80C216 79 220 83 223 91C224 106 217 117 203 126C195 131 187 134 179 134L178 111Z" fill="url(#leafMain)" stroke="#5D6A1F" stroke-width="1.4"/>
+  <path d="M164 166C164 157 156 151 143 149C136 149 133 152 131 157C131 164 135 170 143 174C149 177 156 178 162 177L164 166Z" fill="url(#leafBud)" stroke="#5D6A1F" stroke-width="1.2"/>
+  <path d="M188 170C188 163 194 157 204 155C210 155 213 158 214 162C214 168 211 173 204 176C199 178 194 179 189 179L188 170Z" fill="url(#leafBud)" opacity="0.82" stroke="#5D6A1F" stroke-width="1.1"/>
+  <path d="M144 104C152 109 159 117 163 128" stroke="#6A6032" stroke-width="1.2" stroke-linecap="round" opacity="0.58"/>
+  <path d="M206 82C198 91 192 102 188 117" stroke="#6A6032" stroke-width="1.2" stroke-linecap="round" opacity="0.58"/>
+  <path d="M142 150C148 155 153 161 156 169" stroke="#6A6032" stroke-width="1.1" stroke-linecap="round" opacity="0.48"/>
+  <path d="M145 175C145 162.297 155.297 152 168 152H181C193.703 152 204 162.297 204 175V179C204 191.703 193.703 202 181 202H168C155.297 202 145 191.703 145 179V175Z" fill="url(#pot)" stroke="#D7B78C" stroke-width="2"/>
+  <path d="M151 171H198" stroke="#CFA777" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M214 111L207 123" stroke="#6A6032" stroke-width="1" opacity="0.3"/>
+
+  <text x="245" y="114" fill="#1F1A17" font-size="31" font-family="'STKaiti','Kaiti SC','Songti SC',serif" font-weight="700">记录此刻，</text>
+  <text x="245" y="157" fill="#1F1A17" font-size="31" font-family="'STKaiti','Kaiti SC','Songti SC',serif" font-weight="700">未来的你会感谢现在的自己。</text>
+
+  <path d="M276 182C311 175 352 174 403 176" stroke="url(#brush)" stroke-width="6" stroke-linecap="round"/>
+  <path d="M276 182C334 178 377 176 431 177" stroke="#5DA58D" stroke-width="2" stroke-linecap="round" opacity="0.82"/>
+</svg>

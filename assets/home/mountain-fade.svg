@@ -1,0 +1,21 @@
+<svg width="220" height="120" viewBox="0 0 220 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0 116H92L55 60L0 116Z" fill="url(#mount1)"/>
+  <path d="M48 116H164L118 40L48 116Z" fill="url(#mount2)"/>
+  <path d="M104 116H220L176 54L104 116Z" fill="url(#mount3)"/>
+  <path d="M154 72C161 60 171 58 182 66C178 73 171 77 160 77L154 72Z" fill="#B0C28B" fill-opacity="0.86"/>
+  <path d="M169 76H173V92H169V76Z" fill="#9E8A72"/>
+  <defs>
+    <linearGradient id="mount1" x1="46" y1="60" x2="46" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ECE7DE"/>
+      <stop offset="1" stop-color="#DAD2C5"/>
+    </linearGradient>
+    <linearGradient id="mount2" x1="106" y1="40" x2="106" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E5E0D8"/>
+      <stop offset="1" stop-color="#CAC1B4"/>
+    </linearGradient>
+    <linearGradient id="mount3" x1="162" y1="54" x2="162" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EEEAE1"/>
+      <stop offset="1" stop-color="#D9D1C6"/>
+    </linearGradient>
+  </defs>
+</svg>

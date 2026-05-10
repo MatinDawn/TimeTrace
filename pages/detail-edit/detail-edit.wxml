@@ -1,0 +1,118 @@
+<view class="screen detail-screen">
+  <view class="card">
+    <view class="head-row">
+      <view class="section-title">{{ui.title}}</view>
+      <view class="created-chip">{{form.createdAtDisplay}}</view>
+    </view>
+    <view class="section-subtitle">{{pageSubtitle}}</view>
+
+    <view wx:if="{{isRemoteDraft && form.aiParseStatus !== 'parsed'}}" class="parse-card">
+      <view class="parse-head">
+        <view class="parse-copy">
+          <view class="parse-title-row">
+            <view class="parse-dot {{form.aiParseStatus === 'failed' ? 'parse-dot-failed' : ''}}"></view>
+            <view class="parse-title">{{parseStatusText}}</view>
+          </view>
+          <view class="parse-tip">{{parseStatusTip}}</view>
+        </view>
+        <view wx:if="{{form.aiParseStatus === 'failed'}}" class="ghost-button {{isRefreshingParse ? 'ghost-button-disabled' : ''}}" bindtap="onRefreshTap">
+          {{isRefreshingParse ? ui.parsing : ui.refresh}}
+        </view>
+      </view>
+    </view>
+
+    <view class="form-block">
+      <view class="field-label">{{ui.typeLabel}}</view>
+      <radio-group bindchange="onRecordTypeChange">
+        <label class="radio-row"><radio value="done" checked="{{form.recordType === 'done'}}" color="#2d6b4b" />{{ui.typeDone}}</label>
+        <label class="radio-row"><radio value="plan" checked="{{form.recordType === 'plan'}}" color="#2d6b4b" />{{ui.typePlan}}</label>
+      </radio-group>
+    </view>
+
+    <view class="form-block">
+      <view class="field-label">{{ui.actionName}}</view>
+      <input class="field-input field-single" data-key="actionName" value="{{form.actionName}}" bindinput="onFieldInput" placeholder="{{ui.actionPlaceholder}}" />
+    </view>
+
+    <view wx:if="{{form.recordType === 'done'}}" class="form-block">
+      <view class="field-label">{{ui.recordTime}}</view>
+      <picker mode="date" value="{{form.recordTime}}" bindchange="onDateChange">
+        <view class="field-picker {{!form.recordTime ? 'field-placeholder' : ''}}">{{form.recordTime || ui.recordTimePlaceholder}}</view>
+      </picker>
+    </view>
+
+    <view wx:if="{{form.recordType === 'plan'}}">
+      <view class="two-col">
+        <view class="form-block half">
+          <view class="field-label">{{ui.dueDate}}</view>
+          <picker mode="date" value="{{form.dueDate}}" bindchange="onDueDateChange">
+            <view class="field-picker {{!form.dueDate ? 'field-placeholder' : ''}}">{{form.dueDate || ui.dueDatePlaceholder}}</view>
+          </picker>
+        </view>
+        <view class="form-block half">
+          <view class="field-label">{{ui.dueTime}}</view>
+          <picker mode="selector" range="{{dueTimeLabels}}" value="{{dueTimeIndex}}" bindchange="onDueTimeChange">
+            <view class="field-picker">{{dueTimeLabels[dueTimeIndex]}}</view>
+          </picker>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-block">
+      <view class="field-label">{{ui.category}}</view>
+      <picker mode="selector" range="{{categoryOptions}}" range-key="name" value="{{categoryIndex}}" bindchange="onCategoryChange">
+        <view class="field-picker {{!form.categoryName ? 'field-placeholder' : ''}}">{{categoryDisplayName}}</view>
+      </picker>
+    </view>
+
+    <view wx:if="{{form.recordType === 'plan'}}">
+      <view class="two-col">
+        <view class="form-block half">
+          <view class="field-label">{{ui.priority}}</view>
+          <picker mode="selector" range="{{priorityLabels}}" value="{{priorityIndex}}" bindchange="onPriorityChange">
+            <view class="field-picker">{{priorityLabels[priorityIndex]}}</view>
+          </picker>
+        </view>
+        <view class="form-block half">
+          <view class="field-label">{{ui.status}}</view>
+          <picker mode="selector" range="{{statusLabels}}" value="{{statusIndex}}" bindchange="onStatusChange">
+            <view class="field-picker">{{statusLabels[statusIndex]}}</view>
+          </picker>
+        </view>
+      </view>
+
+      <view class="form-block">
+        <view class="field-label">{{ui.budget}}</view>
+        <input class="field-input field-single" type="digit" data-key="budgetAmount" value="{{form.budgetAmount}}" bindinput="onFieldInput" placeholder="{{ui.budgetPlaceholder}}" />
+      </view>
+
+      <view class="switch-row">
+        <view>
+          <view class="field-label">{{ui.reminder}}</view>
+          <view class="field-tip">{{ui.reminderTip}}</view>
+        </view>
+        <switch checked="{{form.reminderEnabled}}" bindchange="onReminderChange" color="#2d6b4b" />
+      </view>
+    </view>
+
+    <view wx:if="{{form.recordType === 'done'}}" class="two-col">
+      <view class="form-block half">
+        <view class="field-label">{{ui.amount}}</view>
+        <input class="field-input field-single" type="digit" data-key="amount" value="{{form.amount}}" bindinput="onFieldInput" placeholder="{{ui.amountPlaceholder}}" />
+      </view>
+      <view class="form-block half">
+        <view class="field-label">{{ui.duration}}</view>
+        <input class="field-input field-single" data-key="durationQuantity" value="{{form.durationQuantity}}" bindinput="onFieldInput" placeholder="{{ui.durationPlaceholder}}" />
+      </view>
+    </view>
+
+    <view class="form-block">
+      <view class="field-label">{{ui.description}}</view>
+      <textarea class="field-area" data-key="description" value="{{form.description}}" bindinput="onFieldInput" placeholder="{{ui.descriptionPlaceholder}}" />
+    </view>
+
+    <view class="primary-button save-button {{isSubmitting ? 'save-button-loading' : ''}}" bindtap="save">
+      {{isSubmitting ? ui.submitting : saveButtonText}}
+    </view>
+  </view>
+</view>
