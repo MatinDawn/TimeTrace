@@ -16,16 +16,9 @@
   min-width: 0;
 }
 
+/* .draft-item 共性 (display/justify/gap/padding/border-bottom + :last-child) 来自 .list-row */
 .draft-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 18rpx;
-  padding: 24rpx 0;
-  border-bottom: 1rpx solid var(--hairline);
-}
-
-.draft-item:last-child {
-  border-bottom: none;
+  align-items: flex-start; /* 差异化：左侧对齐顶部以容纳多行内容 */
 }
 
 .draft-main {

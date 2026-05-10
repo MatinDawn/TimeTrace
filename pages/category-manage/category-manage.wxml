@@ -10,7 +10,7 @@
   </view>
 
   <view class="card list-card">
-    <view wx:for="{{categories}}" wx:key="id" class="category-row">
+    <view wx:for="{{categories}}" wx:key="id" class="list-row category-row">
       <view>
         <view class="category-name">{{item.name}}</view>
         <view class="category-meta">{{item.builtin ? '系统分类' : '自定义分类'}}</view>

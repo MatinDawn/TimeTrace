@@ -2,18 +2,7 @@
   margin-top: 24rpx;
 }
 
-.category-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18rpx;
-  padding: 24rpx 0;
-  border-bottom: 1rpx solid var(--hairline);
-}
-
-.category-row:last-child {
-  border-bottom: none;
-}
+/* .category-row 共性 (display/align/justify/gap/padding/border-bottom + :last-child) 来自 .list-row */
 
 .category-name {
   font-size: 28rpx;

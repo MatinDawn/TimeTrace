@@ -10,8 +10,7 @@
 .pie-layout,
 .legend-row,
 .legend-left,
-.legend-right,
-.finance-row {
+.legend-right {
   display: flex;
 }
 
@@ -43,7 +42,6 @@
 
 .year-row,
 .progress-meta,
-.finance-row,
 .trend-header {
   align-items: center;
   justify-content: space-between;
@@ -296,17 +294,8 @@
   border-radius: 50%;
 }
 
-.finance-row {
-  gap: 18rpx;
-  padding: 24rpx 0;
-  border-bottom: 1rpx solid var(--hairline);
-}
-
+/* .finance-row 共性 (display/align/justify/gap/padding/border-bottom + :last-child) 来自 .list-row */
 .finance-row > view:first-child {
   flex: 1;
   min-width: 0;
-}
-
-.finance-row:last-child {
-  border-bottom: none;
 }

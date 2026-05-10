@@ -47,7 +47,7 @@
       </view>
     </view>
     <view class="mini-list-title">{{ui.categoryRanking}}</view>
-    <view wx:for="{{stats.activity.categoryRanking}}" wx:key="name" class="mini-list-row">
+    <view wx:for="{{stats.activity.categoryRanking}}" wx:key="name" class="list-row mini-list-row">
       <view>{{item.name}}</view>
       <view>{{ui.currency}}{{item.amount}}</view>
     </view>
@@ -111,7 +111,7 @@
 
     <view class="mini-list-title">{{ui.streakRanking}}</view>
     <view wx:if="{{stats.habit.streakRanking && stats.habit.streakRanking.length}}">
-      <view wx:for="{{stats.habit.streakRanking}}" wx:key="name" class="mini-list-row">
+      <view wx:for="{{stats.habit.streakRanking}}" wx:key="name" class="list-row mini-list-row">
         <view>{{item.name}}</view>
         <view>{{item.latestStreak}} {{ui.days}}</view>
       </view>
@@ -120,7 +120,7 @@
 
     <view class="mini-list-title">{{ui.recentRanking}}</view>
     <view wx:if="{{stats.habit.recentRanking && stats.habit.recentRanking.length}}">
-      <view wx:for="{{stats.habit.recentRanking}}" wx:key="name" class="mini-list-row">
+      <view wx:for="{{stats.habit.recentRanking}}" wx:key="name" class="list-row mini-list-row">
         <view>{{item.name}}</view>
         <view>{{item.recentCount}} {{ui.times}}</view>
       </view>
@@ -129,7 +129,7 @@
 
     <view class="mini-list-title">{{ui.frequentRanking}}</view>
     <view wx:if="{{stats.habit.frequentRanking && stats.habit.frequentRanking.length}}">
-      <view wx:for="{{stats.habit.frequentRanking}}" wx:key="name" class="mini-list-row">
+      <view wx:for="{{stats.habit.frequentRanking}}" wx:key="name" class="list-row mini-list-row">
         <view>{{item.name}}</view>
         <view>{{item.totalCount}} {{ui.times}}</view>
       </view>

@@ -35,19 +35,7 @@
   margin-top: 20rpx;
 }
 
-.space-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18rpx;
-  padding: 24rpx 0;
-  border-bottom: 1rpx solid var(--hairline);
-}
-
-.space-item:last-child {
-  border-bottom: none;
-}
-
+/* .space-item 共性 (display/align/justify/gap/padding/border-bottom + :last-child) 来自 .list-row */
 .space-main {
   flex: 1;
 }

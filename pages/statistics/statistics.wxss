@@ -3,8 +3,7 @@
 .granularity-row,
 .tab-row,
 .stats-grid,
-.trend-chart,
-.mini-list-row {
+.trend-chart {
   display: flex;
 }
 
@@ -171,11 +170,9 @@
   color: #4c4034;
 }
 
+/* .mini-list-row 共性 (display/align/justify/gap/border-bottom + :last-child) 来自 .list-row；padding/字号差异化 */
 .mini-list-row {
-  justify-content: space-between;
-  gap: 18rpx;
   padding: 18rpx 0;
-  border-bottom: 1rpx solid var(--hairline);
   font-size: 24rpx;
 }
 
@@ -188,10 +185,6 @@
 
 .mini-list-row > view:last-child {
   flex-shrink: 0;
-}
-
-.mini-list-row:last-child {
-  border-bottom: none;
 }
 
 .trend-chart {

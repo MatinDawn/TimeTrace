@@ -145,7 +145,7 @@
     <block wx:if="{{activeFeedTab === 'completed'}}">
       <block wx:if="{{todayCompleted.length}}">
         <view
-          class="feed-item"
+          class="list-row feed-item"
           wx:for="{{todayCompleted}}"
           wx:key="id"
           data-id="{{item.id}}"
@@ -167,7 +167,7 @@
     <block wx:else>
       <block wx:if="{{todayPlans.length}}">
         <view
-          class="feed-item"
+          class="list-row feed-item"
           wx:for="{{todayPlans}}"
           wx:key="id"
           data-id="{{item.id}}"

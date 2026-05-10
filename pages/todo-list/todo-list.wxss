@@ -2,8 +2,7 @@
 .locator-row,
 .week-row,
 .calendar-grid,
-.plan-main,
-.plan-item {
+.plan-main {
   display: flex;
 }
 
@@ -15,13 +14,9 @@
   flex-direction: column;
 }
 
-.locator-row,
-.plan-item {
+.locator-row {
   align-items: center;
   justify-content: space-between;
-}
-
-.locator-row {
   margin-top: 22rpx;
   gap: 18rpx;
 }
@@ -153,14 +148,9 @@
   color: #90673c;
 }
 
+/* .plan-item 共性 (display/align/justify/border-bottom + :last-child) 来自 .list-row；padding 差异化为 26rpx */
 .plan-item {
-  gap: 18rpx;
   padding: 26rpx 0;
-  border-bottom: 1rpx solid var(--hairline);
-}
-
-.plan-item:last-child {
-  border-bottom: none;
 }
 
 .plan-main {

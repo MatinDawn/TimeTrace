@@ -26,7 +26,7 @@
   <view class="card">
     <view class="section-title">{{ui.joinedTitle}}</view>
     <view wx:if="{{spaces.length}}">
-      <view wx:for="{{spaces}}" wx:key="spaceId" class="space-item">
+      <view wx:for="{{spaces}}" wx:key="spaceId" class="list-row space-item">
         <view class="space-main">
           <view class="space-name-row">
             <view class="space-name">{{item.name}}</view>

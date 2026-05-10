@@ -51,7 +51,7 @@
     </view>
 
     <view wx:if="{{plans.length}}">
-      <view wx:for="{{plans}}" wx:key="id" class="plan-item">
+      <view wx:for="{{plans}}" wx:key="id" class="list-row plan-item">
         <view class="plan-main" bindtap="openRecord" data-id="{{item.id}}">
           <view class="plan-symbol"></view>
           <view class="plan-copy">
@@ -75,7 +75,7 @@
       <view class="pill overdue-pill">{{overduePlans.length}} 条</view>
     </view>
 
-    <view wx:for="{{overduePlans}}" wx:key="id" class="plan-item overdue">
+    <view wx:for="{{overduePlans}}" wx:key="id" class="list-row plan-item overdue">
       <view class="plan-main overdue-main" bindtap="openRecord" data-id="{{item.id}}">
         <view class="plan-copy">
           <view class="plan-title">{{item.actionName}}</view>

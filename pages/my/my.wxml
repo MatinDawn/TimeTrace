@@ -44,35 +44,35 @@
   </view>
 
   <view class="card menu-card">
-    <view class="menu-item" bindtap="goSpaceManage">
+    <view class="list-row menu-item" bindtap="goSpaceManage">
       <view>
         <view class="menu-title">{{ui.manageSpace}}</view>
         <view class="menu-desc">{{ui.manageSpaceDesc}}</view>
       </view>
       <view class="menu-arrow"></view>
     </view>
-    <view class="menu-item" data-url="/pages/draft-list/draft-list" bindtap="goPage">
+    <view class="list-row menu-item" data-url="/pages/draft-list/draft-list" bindtap="goPage">
       <view>
         <view class="menu-title">{{ui.draftBox}}</view>
         <view class="menu-desc">{{ui.draftDesc}}</view>
       </view>
       <view class="menu-arrow"></view>
     </view>
-    <view class="menu-item" data-url="/pages/category-manage/category-manage" bindtap="goPage">
+    <view class="list-row menu-item" data-url="/pages/category-manage/category-manage" bindtap="goPage">
       <view>
         <view class="menu-title">{{ui.categoryManage}}</view>
         <view class="menu-desc">{{ui.categoryDesc}}</view>
       </view>
       <view class="menu-arrow"></view>
     </view>
-    <view class="menu-item" data-url="/pages/reminder-manage/reminder-manage" bindtap="goPage">
+    <view class="list-row menu-item" data-url="/pages/reminder-manage/reminder-manage" bindtap="goPage">
       <view>
         <view class="menu-title">{{ui.reminderManage}}</view>
         <view class="menu-desc">{{ui.reminderDesc}}</view>
       </view>
       <view class="menu-arrow"></view>
     </view>
-    <view class="menu-item" data-url="/pages/search-result/search-result" bindtap="goPage">
+    <view class="list-row menu-item" data-url="/pages/search-result/search-result" bindtap="goPage">
       <view>
         <view class="menu-title">{{ui.search}}</view>
         <view class="menu-desc">{{ui.searchDesc}}</view>

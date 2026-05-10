@@ -17,7 +17,7 @@
 
   <view class="card list-card">
     <view wx:if="{{drafts.length}}">
-      <view wx:for="{{drafts}}" wx:key="id" class="draft-item">
+      <view wx:for="{{drafts}}" wx:key="id" class="list-row draft-item">
         <view wx:if="{{manageMode}}" class="select-mark {{selectedIds.indexOf(item.id) >= 0 ? 'active' : ''}}" bindtap="toggleSelect" data-id="{{item.id}}">
           <view class="select-inner"></view>
         </view>

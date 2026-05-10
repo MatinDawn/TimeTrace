@@ -127,7 +127,7 @@
       <view class="pill">{{recentFinance.length}}{{ui.countSuffix}}</view>
     </view>
     <view wx:if="{{recentFinance.length}}">
-      <view wx:for="{{recentFinance}}" wx:key="id" class="finance-row" bindtap="openRecord" data-id="{{item.id}}">
+      <view wx:for="{{recentFinance}}" wx:key="id" class="list-row finance-row" bindtap="openRecord" data-id="{{item.id}}">
         <view>
           <view class="finance-title">{{item.actionName}}</view>
           <view class="finance-meta">{{item.categoryName}} {{ui.separator}} {{item.recordTime}}</view>
