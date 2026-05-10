@@ -115,7 +115,7 @@
   margin-top: 14rpx;
   font-size: 42rpx;
   font-weight: 700;
-  color: #2f271f;
+  color: var(--ink-800);
 }
 
 .progress-track {
@@ -191,7 +191,7 @@
 .finance-title {
   font-size: 28rpx;
   font-weight: 600;
-  color: #2f271f;
+  color: var(--ink-800);
 }
 
 .trend-chart {

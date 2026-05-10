@@ -92,7 +92,7 @@
 
 .scope-button-label {
   font-size: 16rpx;
-  color: #b09a80;
+  color: var(--ink-300);
 }
 
 .scope-button-text {
