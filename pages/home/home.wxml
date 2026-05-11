@@ -16,6 +16,13 @@
   </view>
 
   <view class="intro-row">
+    <view class="quote-card">
+      <image class="quote-plant-image" src="/assets/home/quote-board.svg" mode="widthFix"></image>
+      <view class="quote-text-layer {{dailySummary.source === 'ai' ? 'is-ai' : ''}}">
+        <text class="quote-line line1">{{dailySummary.line1}}</text>
+        <text class="quote-line line2">{{dailySummary.line2}}</text>
+      </view>
+    </view>
     <view class="draft-entry" bindtap="goDraftList">
       <image class="draft-icon" src="/assets/home/draftbox-approved.svg" mode="aspectFit"></image>
       <view>{{ui.draftBox}}</view>
@@ -181,16 +188,6 @@
     <image class="overview-illustration" src="/assets/home/task-overview-illustration.svg" mode="widthFix"></image>
   </view>
 
-  <view class="daily-summary-block">
-    <view class="quote-card">
-      <image class="quote-plant-image" src="/assets/home/quote-board.svg" mode="widthFix"></image>
-      <view class="quote-text-layer {{dailySummary.source === 'ai' ? 'is-ai' : ''}}">
-        <text class="quote-line line1">{{dailySummary.line1}}</text>
-        <text class="quote-line line2">{{dailySummary.line2}}</text>
-      </view>
-    </view>
-  </view>
-
   <main-tabbar current="{{currentTab}}"></main-tabbar>
 
   <view wx:if="{{composerVisible}}" class="trace-sheet-mask" bindtap="closeComposer">
@@ -214,6 +211,7 @@
         <view class="sheet-divider"></view>
         <view class="sheet-toolbar">
           <view
+            wx:if="{{false}}"
             class="sheet-tool voice {{voiceRecording ? 'active' : ''}} {{voiceRecognizing ? 'recognizing' : ''}}"
             bindtap="toggleVoiceInput"
           ></view>

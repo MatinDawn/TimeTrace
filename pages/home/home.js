@@ -18,6 +18,8 @@ const feedback = require("../../utils/feedback");
 const PAGE_PATH = "/pages/home/home";
 
 const DAILY_TARGET = 3;
+// 语音转文字尚未调通，先整体禁用入口；后续打通腾讯云 ASR 后改回 true
+const VOICE_ENABLED = false;
 const VOICE_MIN_DURATION = 700;
 const VOICE_MAX_DURATION = 60000;
 const RIPPLE_INTERVAL = 520;
@@ -349,6 +351,10 @@ Page({
   },
 
   initRecorder() {
+    if (!VOICE_ENABLED) {
+      this.recorderManager = null;
+      return;
+    }
     if (!wx.getRecorderManager) {
       this.recorderManager = null;
       return;
@@ -450,6 +456,13 @@ Page({
   },
 
   async toggleVoiceInput() {
+    if (!VOICE_ENABLED) {
+      wx.showToast({
+        title: "语音功能升级中",
+        icon: "none"
+      });
+      return;
+    }
     if (this.data.composerSubmitting || this.data.voiceRecognizing) {
       wx.showToast({
         title: this.data.ui.toastVoiceBusy,
@@ -490,6 +503,9 @@ Page({
     feedback.tap();
     this.spawnRipple(0.7); // 状态 2：按下瞬间荡开第一圈波纹
     clearTimeout(this.heroHoldTimer);
+    if (!VOICE_ENABLED) {
+      return;
+    }
     this.heroHoldTimer = setTimeout(() => {
       this.heroHoldTriggered = true;
       this.suppressNextHeroTap = true;
@@ -601,6 +617,9 @@ Page({
   },
 
   async startQuickVoiceInput() {
+    if (!VOICE_ENABLED) {
+      return;
+    }
     if (!this.recorderManager || this.data.voiceRecording || this.data.voiceRecognizing) {
       return;
     }
