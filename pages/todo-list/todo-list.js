@@ -1,4 +1,4 @@
-const { getTodoCalendarData, completePlanWithTrace } = require("../../services/appService");
+const { getTodoCalendarData, completePlanWithTrace, getCacheVersion } = require("../../services/appService");
 const { getToday, toDateId } = require("../../utils/date");
 const perf = require("../../utils/perf");
 
@@ -154,31 +154,47 @@ Page({
     return true;
   },
 
+  isCacheEntryStale(entry) {
+    if (!entry) {
+      return true;
+    }
+    if (Date.now() - entry.fetchedAt >= MONTH_CACHE_TTL) {
+      return true;
+    }
+    if (typeof getCacheVersion === "function" && entry.cacheVersion !== getCacheVersion()) {
+      return true;
+    }
+    return false;
+  },
+
   async refreshTodoCalendar(options) {
     const force = !!(options && options.force);
     const monthValue = this.data.monthValue;
     const monthEntry = this.monthCache && this.monthCache[monthValue];
-    const monthFresh = monthEntry && Date.now() - monthEntry.fetchedAt < MONTH_CACHE_TTL;
-    const overdueFresh = this.overdueCache && Date.now() - this.overdueCache.fetchedAt < MONTH_CACHE_TTL;
+    const monthStale = this.isCacheEntryStale(monthEntry);
+    const overdueStale = this.isCacheEntryStale(this.overdueCache);
 
     if (!force && monthEntry) {
       this.applyMonthCache(monthValue);
-      if (monthFresh && overdueFresh) {
+      if (!monthStale && !overdueStale) {
         return;
       }
     }
 
+    const versionAtFetch = typeof getCacheVersion === "function" ? getCacheVersion() : 0;
     const summary = await getTodoCalendarData(monthValue, this.data.selectedDateId);
     const monthPlans = summary.monthPlans || summary.plans || [];
     this.monthCache = this.monthCache || {};
     this.monthCache[monthValue] = {
       monthPlans,
       dayCounts: summary.dayCounts || {},
-      fetchedAt: Date.now()
+      fetchedAt: Date.now(),
+      cacheVersion: versionAtFetch
     };
     this.overdueCache = {
       plans: summary.overduePlans || [],
-      fetchedAt: Date.now()
+      fetchedAt: Date.now(),
+      cacheVersion: versionAtFetch
     };
     this.applyMonthCache(monthValue);
   },
@@ -193,8 +209,7 @@ Page({
     });
     const hit = this.applyMonthCache(monthValue);
     const entry = this.monthCache && this.monthCache[monthValue];
-    const stale = !entry || Date.now() - entry.fetchedAt >= MONTH_CACHE_TTL;
-    if (!hit || stale) {
+    if (!hit || this.isCacheEntryStale(entry)) {
       this.refreshTodoCalendar();
     }
   },
@@ -210,8 +225,7 @@ Page({
     });
     const hit = this.applyMonthCache(monthValue);
     const entry = this.monthCache && this.monthCache[monthValue];
-    const stale = !entry || Date.now() - entry.fetchedAt >= MONTH_CACHE_TTL;
-    if (!hit || stale) {
+    if (!hit || this.isCacheEntryStale(entry)) {
       this.refreshTodoCalendar();
     }
   },

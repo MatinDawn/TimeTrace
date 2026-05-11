@@ -15,7 +15,8 @@ const {
 } = require("./record-normalizer");
 const {
   fetchRecords,
-  mergeRemoteCacheRecord
+  mergeRemoteCacheRecord,
+  getCacheVersion
 } = require("./record-cache");
 
 async function getRecords(forceRefresh) {
@@ -99,5 +100,6 @@ module.exports = {
   getRecordById,
   waitForRemoteDraftParsed,
   getReminderItems,
-  searchRecords
+  searchRecords,
+  getCacheVersion
 };

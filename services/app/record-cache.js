@@ -8,9 +8,16 @@ const remoteCache = {
   expiresAt: 0
 };
 
+let cacheVersion = 1;
+
+function getCacheVersion() {
+  return cacheVersion;
+}
+
 function invalidateRemoteCache() {
   remoteCache.records = null;
   remoteCache.expiresAt = 0;
+  cacheVersion += 1;
 }
 
 function mergeRemoteCacheRecord(record) {
@@ -48,5 +55,6 @@ async function fetchRecords(forceRefresh) {
 module.exports = {
   invalidateRemoteCache,
   mergeRemoteCacheRecord,
-  fetchRecords
+  fetchRecords,
+  getCacheVersion
 };
