@@ -122,20 +122,22 @@
 }
 
 /* 山水图上叠加的动态文案层（AI 总结 / 文艺短句）
-   按 quote-board.svg viewBox 760x260 内原 "记录此刻..." 文字坐标等比换算：
-   x=245 → left ≈ 32.2%；y 114~157 跨度 → top 约 36%~58% */
+   task-overview-illustration.svg viewBox 1000x500，山在右下，
+   文字放在中央偏左上方留白处 */
 .quote-text-layer {
   position: absolute;
-  left: 32.2%;
-  right: 30%;
-  top: 34%;
-  bottom: 22%;
+  left: 18%;
+  right: 18%;
+  top: 22%;
+  bottom: 38%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: 10rpx;
   pointer-events: none;
   z-index: 1;
+  text-align: center;
 }
 
 .quote-line {
