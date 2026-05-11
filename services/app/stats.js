@@ -39,11 +39,11 @@ const {
 } = require("./records");
 
 async function getHomeData() {
+  const todayId = toDateId(getToday());
   return withRemoteFallback(
-    () => callBridge("getHomeSummary", buildScopePayload()),
+    () => callBridge("getHomeSummary", buildScopePayload({ todayId })),
     async () => {
       const records = await getRecords();
-      const todayId = toDateId(getToday());
       const todayCompleted = records.filter((item) => !item.isDraft && item.recordType === RECORD_TYPE.DONE && item.recordTime === todayId);
       const todayPlans = records.filter((item) => !item.isDraft && item.recordType === RECORD_TYPE.PLAN && item.status !== RECORD_STATUS.DONE);
 
@@ -73,7 +73,8 @@ async function getTodoCalendarData(monthValue, selectedDateId) {
   return withRemoteFallback(
     () => callBridge("getTodoCalendarSummary", buildScopePayload({
       monthValue,
-      selectedDateId
+      selectedDateId,
+      todayId
     })),
     async () => {
       const allPlans = await getPlans("all");

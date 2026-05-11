@@ -795,9 +795,9 @@ async function fetchAllByQuery(query) {
   return all;
 }
 
-async function getHomeSummary(session, scope) {
+async function getHomeSummary(session, scope, payload) {
   const records = await listRecords(session, scope);
-  const todayId = toDateId(new Date());
+  const todayId = (payload && payload.todayId) || toDateId(new Date());
   const todayCompleted = records.filter((item) => !item.isDraft && item.recordType === "done" && item.recordTime === todayId).slice(0, 10);
   const todayPlans = records.filter((item) => !item.isDraft && item.recordType === "plan" && item.status !== "done").slice(0, 10);
   return {
@@ -836,7 +836,7 @@ async function getTodoCalendarSummary(session, scope, payload) {
   const anchorMonth = parseDateId(`${monthValue}-01`);
   const monthStartId = `${monthValue}-01`;
   const monthEndId = toDateId(endOfMonth(anchorMonth));
-  const todayId = toDateId(new Date());
+  const todayId = String(payload.todayId || toDateId(new Date()));
   const selectedDateId = String(payload.selectedDateId || todayId).trim();
 
   const baseQuery = scope.activeSpaceId
@@ -1329,7 +1329,7 @@ function buildHandlers(session, scope, payload) {
     listRecords: async () => ({
       records: await listRecords(session, scope)
     }),
-    getHomeSummary: async () => getHomeSummary(session, scope),
+    getHomeSummary: async () => getHomeSummary(session, scope, payload),
     getTodoCalendarSummary: async () => getTodoCalendarSummary(session, scope, payload),
     getAccountingSummary: async () => getAccountingSummary(session, scope, payload),
     getStatisticsSummary: async () => getStatisticsSummary(session, scope, payload),
