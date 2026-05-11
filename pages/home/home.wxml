@@ -26,50 +26,6 @@
     </view>
   </view>
 
-  <view class="card progress-card">
-    <view class="progress-header">
-      <view>
-        <view class="section-title with-info">
-          <text>{{ui.progressTitle}}</text>
-          <text class="info-dot">i</text>
-        </view>
-        <view class="progress-total">
-          <text class="progress-number">{{todayRecordCount}}</text>
-          <text class="progress-separator">/</text>
-          <text class="progress-target">{{dailyTarget}}</text>
-          <text class="progress-unit">条留痕</text>
-        </view>
-      </view>
-      <view class="progress-bubble">{{progressBubbleText}}</view>
-    </view>
-
-    <view class="progress-main">
-      <view class="progress-track-shell">
-        <view class="progress-track-line">
-          <view class="progress-segment left {{progressLevel >= 2 ? 'done' : ''}}"></view>
-          <view class="progress-segment right {{progressLevel >= 3 ? 'done' : ''}}"></view>
-          <view class="progress-node left {{progressLevel >= 1 ? 'done' : ''}}">
-          </view>
-          <view class="progress-node middle {{progressLevel >= 2 ? 'done' : ''}}">
-          </view>
-          <view class="progress-node right {{progressLevel >= 3 ? 'done' : ''}}">
-          </view>
-          <view class="progress-node-label left">1条</view>
-          <view class="progress-node-label middle">2条</view>
-          <view class="progress-node-label right">3条</view>
-          <view class="progress-indicator" style="left: {{progressIndicatorPercent}}%;">
-            <view class="progress-mascot">
-              <image class="progress-mascot-image" src="/assets/home/progress-mascot-head.svg" mode="aspectFit"></image>
-            </view>
-          </view>
-        </view>
-      </view>
-      <view class="progress-tree-zone">
-        <image class="progress-tree-image" src="/assets/home/progress-seedling-trace.svg" mode="aspectFit"></image>
-      </view>
-    </view>
-  </view>
-
   <view class="card hero-card">
     <view class="hero-stage">
       <view class="hero-side left">
@@ -106,14 +62,27 @@
       </view>
     </view>
 
-    <view class="hero-hint-bar" bindtap="goQuickRecord">
-      <view class="hint-sprout">
-        <view class="hint-stem"></view>
-        <view class="hint-leaf left"></view>
-        <view class="hint-leaf right"></view>
+    <view class="hero-progress">
+      <view class="progress-track-shell">
+        <view class="progress-track-line">
+          <view class="progress-segment left {{progressLevel >= 2 ? 'done' : ''}}"></view>
+          <view class="progress-segment right {{progressLevel >= 3 ? 'done' : ''}}"></view>
+          <view class="progress-node left {{progressLevel >= 1 ? 'done' : ''}}"></view>
+          <view class="progress-node middle {{progressLevel >= 2 ? 'done' : ''}}"></view>
+          <view class="progress-node right {{progressLevel >= 3 ? 'done' : ''}}"></view>
+          <view class="progress-node-label left">1条</view>
+          <view class="progress-node-label middle">2条</view>
+          <view class="progress-node-label right">3条</view>
+          <view class="progress-indicator" style="left: {{progressIndicatorPercent}}%;">
+            <view class="progress-mascot">
+              <image class="progress-mascot-image" src="/assets/home/progress-mascot-head.png" mode="aspectFit"></image>
+            </view>
+          </view>
+        </view>
       </view>
-      <view>{{traceHintText}}</view>
-      <view class="hint-arrow"></view>
+      <view class="progress-tree-zone">
+        <image class="progress-tree-image" src="/assets/home/progress-seedling-trace.svg" mode="aspectFit"></image>
+      </view>
     </view>
   </view>
 

@@ -564,6 +564,12 @@
   box-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.75);
 }
 
+.hero-progress {
+  position: relative;
+  margin-top: 24rpx;
+  padding: 8rpx 70rpx 36rpx 0;
+}
+
 .hint-sprout {
   position: relative;
   width: 32rpx;
