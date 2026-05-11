@@ -10,6 +10,8 @@ const { logError, showErrorToast } = require("../../utils/error-handler");
 const { clearCurrentSpace } = require("../../utils/session");
 const { navigateMainPage } = require("../../utils/navigation");
 const { invalidateRemoteCache } = require("../../services/app/record-cache");
+const { generateDailySummary, pickLiteraryQuote, buildRecordsFingerprint } = require("../../services/dailySummary");
+const { toDateId } = require("../../utils/date");
 const perf = require("../../utils/perf");
 const feedback = require("../../utils/feedback");
 
@@ -113,6 +115,7 @@ Page({
     progressBeyond: false,
     progressBubbleText: "",
     traceHintText: "",
+    dailySummary: { line1: "", line2: "", source: "preset" },
     composerVisible: false,
     composerText: "",
     composerCount: 0,
@@ -246,6 +249,54 @@ Page({
       progressBeyond,
       progressBubbleText,
       traceHintText: todayRecordCount ? this.data.ui.traceHintDone : this.data.ui.traceHintEmpty
+    });
+
+    // 异步刷新今日文艺总结（不阻塞主流程）
+    this.refreshDailySummary(homeData);
+  },
+
+  /**
+   * 触发"今日痕迹"文艺总结：
+   * - 无记录   → 立即用素材库随机抽取
+   * - 有记录   → 使用 globalData 缓存（按 dateId + 记录指纹）
+   *               未命中则后台调用 AI；失败兜底回素材库
+   */
+  refreshDailySummary(homeData) {
+    const app = getApp();
+    app.globalData = app.globalData || {};
+    const cacheStore = app.globalData.dailySummaryCache || {};
+    const dateId = toDateId(new Date());
+    const records = []
+      .concat(homeData.todayCompleted || [])
+      .concat(homeData.todayPlans || []);
+    const fingerprint = buildRecordsFingerprint(records);
+    const cacheKey = `${dateId}#${fingerprint}`;
+
+    // 1) 命中缓存：直接使用
+    if (cacheStore[cacheKey]) {
+      this.setData({ dailySummary: cacheStore[cacheKey] });
+      return;
+    }
+
+    // 2) 无记录：直接抽 preset，并写缓存
+    if (records.length === 0) {
+      const quote = pickLiteraryQuote();
+      cacheStore[cacheKey] = quote;
+      app.globalData.dailySummaryCache = cacheStore;
+      this.setData({ dailySummary: quote });
+      return;
+    }
+
+    // 3) 有记录但未命中缓存：先临时显示一条 preset 占位，再后台 AI 替换
+    if (!this.data.dailySummary || !this.data.dailySummary.line1) {
+      this.setData({ dailySummary: pickLiteraryQuote() });
+    }
+    generateDailySummary(records).then((summary) => {
+      cacheStore[cacheKey] = summary;
+      app.globalData.dailySummaryCache = cacheStore;
+      this.setData({ dailySummary: summary });
+    }).catch((error) => {
+      logError("home.refreshDailySummary", error);
     });
   },
 

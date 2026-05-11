@@ -130,6 +130,50 @@
   background: transparent;
   border: none;
   box-shadow: none;
+  position: relative;
+}
+
+/* 山水图上叠加的动态文案层（AI 总结 / 文艺短句） */
+.quote-text-layer {
+  position: absolute;
+  /* SVG 中央留白区域：x≈245~640 / y≈68~170（viewBox 760x260）
+     图实际宽 520rpx 偏移 -102rpx，文字相对 .quote-card 大致定位如下 */
+  left: 110rpx;
+  right: 22rpx;
+  top: 18rpx;
+  bottom: 18rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6rpx;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.quote-line {
+  font-family: "STKaiti", "Kaiti SC", "Songti SC", serif;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1f1a17;
+  letter-spacing: 1rpx;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quote-line.line2 {
+  /* 第二句轻微缩进，模拟竖排古卷错落 */
+  padding-left: 26rpx;
+  color: #3a322a;
+}
+
+/* AI 来源时给一个极淡的"墨痕"渐变区分（可选视觉提示） */
+.quote-text-layer.is-ai .quote-line {
+  background: linear-gradient(90deg, #1f1a17 0%, #3a6b53 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .quote-plant {

@@ -18,6 +18,10 @@
   <view class="intro-row">
     <view class="quote-card">
       <image class="quote-plant-image" src="/assets/home/quote-board.svg" mode="widthFix"></image>
+      <view class="quote-text-layer {{dailySummary.source === 'ai' ? 'is-ai' : ''}}">
+        <text class="quote-line line1">{{dailySummary.line1}}</text>
+        <text class="quote-line line2">{{dailySummary.line2}}</text>
+      </view>
     </view>
     <view class="draft-entry" bindtap="goDraftList">
       <image class="draft-icon" src="/assets/home/draftbox-approved.svg" mode="aspectFit"></image>

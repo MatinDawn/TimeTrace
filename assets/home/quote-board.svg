@@ -60,8 +60,7 @@
   <path d="M151 171H198" stroke="#CFA777" stroke-width="2.2" stroke-linecap="round"/>
   <path d="M214 111L207 123" stroke="#6A6032" stroke-width="1" opacity="0.3"/>
 
-  <text x="245" y="114" fill="#1F1A17" font-size="31" font-family="'STKaiti','Kaiti SC','Songti SC',serif" font-weight="700">记录此刻，</text>
-  <text x="245" y="157" fill="#1F1A17" font-size="31" font-family="'STKaiti','Kaiti SC','Songti SC',serif" font-weight="700">未来的你会感谢现在的自己。</text>
+  <!-- 中央文案区域留白，由前端动态文案层覆盖 -->
 
   <path d="M276 182C311 175 352 174 403 176" stroke="url(#brush)" stroke-width="6" stroke-linecap="round"/>
   <path d="M276 182C334 178 377 176 431 177" stroke="#5DA58D" stroke-width="2" stroke-linecap="round" opacity="0.82"/>
