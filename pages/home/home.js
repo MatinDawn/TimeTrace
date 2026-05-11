@@ -50,11 +50,14 @@ Page({
       backToPersonal: "\u5207\u56de\u4e2a\u4eba\u7a7a\u95f4",
       quoteLineOne: "\u8bb0\u5f55\u6b64\u523b\uff0c",
       quoteLineTwo: "\u672a\u6765\u7684\u4f60\u4f1a\u611f\u8c22\u73b0\u5728\u7684\u81ea\u5df1\u3002",
-      progressTitle: "\u4eca\u65e5\u8fdb\u5ea6",
+      progressTitle: "\u4eca\u65e5\u8db3\u8ff9",
       progressInfo: "\u8ba9\u6bcf\u4e00\u6b21\u8bb0\u5f55\uff0c\u90fd\u53d8\u6210\u6e05\u6670\u53ef\u89c1\u7684\u6210\u957f\u8f68\u8ff9\u3002",
+      progressGoalHint: "\u4eca\u65e5\u5c0f\u76ee\u6807\u00b7\u8bb0\u4e0b 3 \u6761\u8db3\u8ff9",
       progressBubblePrefix: "\u518d\u8bb0\u5f55",
       progressBubbleSuffix: "\u6761\uff0c\u5c31\u80fd\u70b9\u4eae\u5c0f\u6811",
       progressDone: "\u4eca\u5929\u7684\u5c0f\u6811\u5df2\u7ecf\u88ab\u4f60\u70b9\u4eae\u4e86",
+      progressBeyondPrefix: "\u4eca\u5929\u5df2\u7559\u4e0b ",
+      progressBeyondSuffix: " \u6761\u8db3\u8ff9\uff0c\u5c0f\u6811\u679d\u7e41\u53f6\u8302\u4e86\u2728",
       traceTitle: "\u7559\u4e0b\u4e00\u6761\u75d5\u8ff9",
       traceSubtitle: "\u8bed\u97f3 / \u6587\u5b57\u5feb\u901f\u8bb0\u5f55",
       traceSideLeftOne: "\u8bf4\u4e00\u53e5",
@@ -63,11 +66,11 @@ Page({
       traceSideRightTwo: "\u90fd\u6709\u8ff9\u53ef\u5faa",
       traceHintEmpty: "\u4eca\u5929\u8fd8\u6ca1\u6709\u7559\u4e0b\u75d5\u8ff9\uff0c\u5feb\u6765\u8bb0\u5f55\u5427\uff5e",
       traceHintDone: "\u4eca\u5929\u5df2\u7ecf\u7559\u4e0b\u65b0\u7684\u75d5\u8ff9\uff0c\u7ee7\u7eed\u4fdd\u6301\u5427",
-      overviewTitle: "\u4efb\u52a1\u6982\u89c8",
-      doneTitle: "\u5df2\u5b8c\u6210",
-      todoTitle: "\u672a\u5b8c\u6210",
-      todoEmpty: "\u4eca\u5929\u6ca1\u6709\u672a\u5b8c\u6210\u4e8b\u9879\uff0c\u53ef\u4ee5\u53bb\u7559\u4e0b\u65b0\u7684\u8ba1\u5212\u3002",
-      doneEmpty: "\u4eca\u5929\u8fd8\u6ca1\u6709\u5df2\u5b8c\u6210\u8bb0\u5f55\uff0c\u70b9\u4e0a\u9762\u7684\u201c\u7559\u75d5\u201d\u5f00\u59cb\u7b2c\u4e00\u6761\u3002",
+      overviewTitle: "\u4eca\u65e5\u8db3\u8ff9",
+      doneTitle: "\u5df2\u8bb0\u5f55",
+      todoTitle: "\u5f85\u529e\u4e8b\u9879",
+      todoEmpty: "\u4eca\u5929\u8fd8\u6ca1\u6709\u5f85\u529e\u4e8b\u9879\uff0c\u53ef\u4ee5\u53bb\u7559\u4e0b\u65b0\u7684\u8ba1\u5212\u3002",
+      doneEmpty: "\u4eca\u5929\u8fd8\u6ca1\u6709\u8bb0\u5f55\uff0c\u70b9\u4e0a\u9762\u7684\u201c\u7559\u75d5\u201d\u5f00\u59cb\u7b2c\u4e00\u6761\u3002",
       noDueDate: "\u672a\u8bbe\u7f6e\u622a\u6b62\u65e5\u671f",
       metaSeparator: "\u00b7",
       high: "\u9ad8\u4f18\u5148\u7ea7",
@@ -107,6 +110,7 @@ Page({
     menuRightWidth: 96,
     progressIndicatorPercent: 0,
     progressLevel: 0,
+    progressBeyond: false,
     progressBubbleText: "",
     traceHintText: "",
     composerVisible: false,
@@ -219,6 +223,16 @@ Page({
     const remaining = Math.max(0, DAILY_TARGET - todayRecordCount);
     const progressLevel = Math.min(DAILY_TARGET, Math.max(0, todayRecordCount));
     const indicatorStep = Math.max(1, progressLevel);
+    const progressBeyond = todayRecordCount > DAILY_TARGET;
+    const ui = this.data.ui;
+    let progressBubbleText;
+    if (progressBeyond) {
+      progressBubbleText = `${ui.progressBeyondPrefix}${todayRecordCount}${ui.progressBeyondSuffix}`;
+    } else if (remaining) {
+      progressBubbleText = `${ui.progressBubblePrefix} ${remaining} ${ui.progressBubbleSuffix}`;
+    } else {
+      progressBubbleText = ui.progressDone;
+    }
 
     this.setData({
       draftCount: homeData.draftCount,
@@ -229,9 +243,8 @@ Page({
       todayPlanCount,
       progressIndicatorPercent: ((indicatorStep - 1) / (DAILY_TARGET - 1)) * 100,
       progressLevel,
-      progressBubbleText: remaining
-        ? `${this.data.ui.progressBubblePrefix} ${remaining} ${this.data.ui.progressBubbleSuffix}`
-        : this.data.ui.progressDone,
+      progressBeyond,
+      progressBubbleText,
       traceHintText: todayRecordCount ? this.data.ui.traceHintDone : this.data.ui.traceHintEmpty
     });
   },

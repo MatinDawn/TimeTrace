@@ -254,6 +254,44 @@
   padding: 0 36rpx;
 }
 
+/* ===== 进度条上方目标提示 ===== */
+.progress-goal-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  margin-top: 18rpx;
+  font-size: 22rpx;
+  color: var(--ink-500, #8a7a64);
+  letter-spacing: 0.4rpx;
+  transition: color 0.3s ease;
+}
+
+.progress-goal-hint .progress-goal-icon {
+  font-size: 22rpx;
+}
+
+.progress-goal-hint.beyond {
+  color: #2d6b4b;
+  font-weight: 600;
+  animation: progressGoalCelebrate 0.6s ease-out;
+}
+
+@keyframes progressGoalCelebrate {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.4;
+  }
+  60% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 .progress-track-line {
   position: relative;
   height: 124rpx;
@@ -294,6 +332,32 @@
 
 .progress-segment.done {
   background: linear-gradient(90deg, #7fa86d 0%, #2d6b4b 100%);
+}
+
+/* ===== 超额状态：整条进度条转绿 + 终点脉冲 ===== */
+.progress-track-line.beyond .progress-segment {
+  background: linear-gradient(90deg, #7fa86d 0%, #2d6b4b 100%);
+}
+
+.progress-track-line.beyond::before {
+  background: linear-gradient(90deg, #7fa86d 0%, #2d6b4b 100%);
+}
+
+.progress-node.beyond {
+  border-color: #2d6b4b;
+  background: #fffdf2;
+  box-shadow: 0 0 0 0 rgba(45, 107, 75, 0.6);
+  animation: progressNodePulse 1.6s ease-in-out infinite;
+}
+
+@keyframes progressNodePulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(45, 107, 75, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 14rpx rgba(45, 107, 75, 0);
+  }
 }
 
 .progress-node,

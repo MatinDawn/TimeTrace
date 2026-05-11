@@ -80,16 +80,20 @@
     </view>
 
     <view class="hero-progress">
+      <view class="progress-goal-hint {{progressBeyond ? 'beyond' : ''}}">
+        <text class="progress-goal-icon">{{progressBeyond ? '✨' : '🎯'}}</text>
+        <text>{{progressBeyond ? progressBubbleText : ui.progressGoalHint}}</text>
+      </view>
       <view class="progress-track-shell">
-        <view class="progress-track-line">
+        <view class="progress-track-line {{progressBeyond ? 'beyond' : ''}}">
           <view class="progress-segment left {{progressLevel >= 2 ? 'done' : ''}}"></view>
           <view class="progress-segment right {{progressLevel >= 3 ? 'done' : ''}}"></view>
           <view class="progress-node left {{progressLevel >= 1 ? 'done' : ''}}"></view>
           <view class="progress-node middle {{progressLevel >= 2 ? 'done' : ''}}"></view>
-          <view class="progress-node right {{progressLevel >= 3 ? 'done' : ''}}"></view>
+          <view class="progress-node right {{progressLevel >= 3 ? 'done' : ''}} {{progressBeyond ? 'beyond' : ''}}"></view>
           <view class="progress-node-label left">1条</view>
           <view class="progress-node-label middle">2条</view>
-          <view class="progress-node-label right">3条</view>
+          <view class="progress-node-label right">{{progressBeyond ? '✨' : '3条'}}</view>
           <view class="progress-indicator" style="left: {{progressIndicatorPercent}}%;">
             <view class="progress-mascot">
               <image class="progress-mascot-image" src="/assets/home/progress-mascot-head.png" mode="aspectFit"></image>
