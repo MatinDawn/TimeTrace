@@ -697,10 +697,18 @@
   width: 292rpx;
   padding: 0;
   font-family: "STKaiti", "Kaiti SC", "Songti SC", serif;
-  font-size: 46rpx;
+  font-size: 88rpx;
   font-weight: 700;
-  line-height: 1.24;
+  line-height: 1.1;
+  letter-spacing: 12rpx;
   white-space: nowrap;
+}
+
+/* 录音中状态文案较长，需要恢复较小字号避免溢出 */
+.hero-title.is-listening {
+  font-size: 36rpx;
+  letter-spacing: 0;
+  line-height: 1.3;
 }
 
 .hero-voice-status {

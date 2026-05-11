@@ -58,7 +58,7 @@ Page({
       progressDone: "\u4eca\u5929\u7684\u5c0f\u6811\u5df2\u7ecf\u88ab\u4f60\u70b9\u4eae\u4e86",
       progressBeyondPrefix: "\u4eca\u5929\u5df2\u7559\u4e0b ",
       progressBeyondSuffix: " \u6761\u8db3\u8ff9\uff0c\u5c0f\u6811\u679d\u7e41\u53f6\u8302\u4e86\u2728",
-      traceTitle: "\u7559\u4e0b\u4e00\u6761\u75d5\u8ff9",
+      traceTitle: "\u7559\u75d5",
       traceSubtitle: "\u8bed\u97f3 / \u6587\u5b57\u5feb\u901f\u8bb0\u5f55",
       traceSideLeftOne: "\u8bf4\u4e00\u53e5",
       traceSideLeftTwo: "\u5c31\u80fd\u8bb0\u5f55",

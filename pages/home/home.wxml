@@ -58,7 +58,7 @@
                 <view class="hero-mic-base"></view>
               </view>
             </view>
-            <view class="hero-title">{{heroVoiceActive ? ui.voiceListening : ui.traceTitle}}</view>
+            <view class="hero-title {{heroVoiceActive ? 'is-listening' : ''}}">{{heroVoiceActive ? ui.voiceListening : ui.traceTitle}}</view>
             <view wx:if="{{heroVoiceStatusText}}" class="hero-voice-status">
               <view class="hero-voice-dot"></view>
               <text>{{heroVoiceStatusText}}</text>
