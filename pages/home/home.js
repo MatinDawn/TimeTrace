@@ -11,18 +11,22 @@ const { clearCurrentSpace } = require("../../utils/session");
 const { navigateMainPage } = require("../../utils/navigation");
 const { invalidateRemoteCache } = require("../../services/app/record-cache");
 const perf = require("../../utils/perf");
+const feedback = require("../../utils/feedback");
 
 const PAGE_PATH = "/pages/home/home";
 
 const DAILY_TARGET = 3;
 const VOICE_MIN_DURATION = 700;
 const VOICE_MAX_DURATION = 60000;
+const RIPPLE_INTERVAL = 520;
+const RIPPLE_MAX = 3;
 const RECORDER_OPTIONS = {
   duration: VOICE_MAX_DURATION,
   sampleRate: 16000,
   numberOfChannels: 1,
   encodeBitRate: 48000,
-  format: "mp3"
+  format: "mp3",
+  frameSize: 3
 };
 
 function formatVoiceDuration(seconds) {
@@ -81,6 +85,7 @@ Page({
       voiceRecording: "\u6b63\u5728\u542c\u4f60\u8bf4",
       voiceRecognizing: "\u6b63\u5728\u8f6c\u6210\u6587\u5b57",
       voiceRecognized: "\u5df2\u8f6c\u6210\u6587\u5b57",
+      voiceListening: "\u6b63\u5728\u804b\u542c\u60a8\u7684\u5fc3\u58f0...",
       voiceTapToStop: "\u518d\u70b9\u4e00\u6b21\u7ed3\u675f\u5f55\u97f3",
       quickVoiceStart: "\u677e\u624b\u5b8c\u6210\u7559\u75d5",
       quickVoiceSubmitting: "\u5df2\u542c\u5230\uff0c\u6b63\u5728\u6574\u7406",
@@ -114,7 +119,15 @@ Page({
     voiceStatusText: "",
     voiceDurationText: "00:00",
     heroVoiceActive: false,
-    heroVoiceStatusText: ""
+    heroVoiceStatusText: "",
+    heroPressed: false,
+    heroLoading: false,
+    heroSuccess: false,
+    heroRipples: [],
+    progressSparkVisible: false,
+    progressSparkFrom: 0,
+    progressSparkTo: 33,
+    lastInsertedId: ""
   },
 
   onLoad() {
@@ -281,6 +294,7 @@ Page({
     recorderManager.onStart(() => {
       this.voiceStartTime = Date.now();
       this.startVoiceTimer();
+      this.startRippleLoop(); // 状态 3：录音中持续吐波纹
       const isQuickVoice = this.voiceInputMode === "quick";
       this.setData({
         voiceRecording: true,
@@ -299,19 +313,33 @@ Page({
         }, VOICE_MIN_DURATION);
       }
     });
+    if (recorderManager.onFrameRecorded) {
+      recorderManager.onFrameRecorded((res) => {
+        // 用 frameBuffer 的体量近似估计音量强度（无需 AudioContext）
+        if (!res || !res.frameBuffer) return;
+        const len = res.frameBuffer.byteLength || 0;
+        // 经验值：3KB 帧大小，越大代表越响（不精确但足以驱动视觉）
+        const intensity = Math.max(0.35, Math.min(1, len / 3072));
+        this.lastVoiceIntensity = intensity;
+      });
+    }
     recorderManager.onStop((res) => {
+      this.stopRippleLoop();
       this.handleRecorderStop(res);
     });
     recorderManager.onError((error) => {
       logError("home.recorder", error);
       this.clearVoiceTimer();
+      this.stopRippleLoop();
+      feedback.error();
       this.setData({
         voiceRecording: false,
         voiceRecognizing: false,
         voiceStatusText: "",
         voiceDurationText: "00:00",
         heroVoiceActive: false,
-        heroVoiceStatusText: ""
+        heroVoiceStatusText: "",
+        heroLoading: false
       });
       showErrorToast(error, "录音失败，请稍后重试");
     });
@@ -394,6 +422,9 @@ Page({
     }
     this.heroHoldTriggered = false;
     this.pendingQuickVoiceStop = false;
+    this.setData({ heroPressed: true });
+    feedback.tap();
+    this.spawnRipple(0.7); // 状态 2：按下瞬间荡开第一圈波纹
     clearTimeout(this.heroHoldTimer);
     this.heroHoldTimer = setTimeout(() => {
       this.heroHoldTriggered = true;
@@ -404,6 +435,7 @@ Page({
 
   onHeroTouchEnd() {
     clearTimeout(this.heroHoldTimer);
+    this.setData({ heroPressed: false });
     if (this.heroHoldTriggered || this.voiceInputMode === "quick") {
       this.stopQuickVoiceInput();
     }
@@ -411,8 +443,96 @@ Page({
 
   onHeroTouchCancel() {
     clearTimeout(this.heroHoldTimer);
+    this.setData({ heroPressed: false });
     if (this.heroHoldTriggered || this.voiceInputMode === "quick") {
       this.stopQuickVoiceInput();
+    }
+  },
+
+  // 状态 2/3：根据音量产生波纹
+  spawnRipple(intensity) {
+    const safeIntensity = Math.max(0.3, Math.min(1, Number(intensity) || 0.5));
+    const id = ++this.rippleSeq || (this.rippleSeq = 1);
+    const ripple = {
+      id,
+      scale: 1,
+      opacity: 0
+    };
+    const list = (this.data.heroRipples || []).concat(ripple).slice(-RIPPLE_MAX);
+    this.setData({ heroRipples: list });
+    // 下一帧改 scale/opacity 触发 transition
+    setTimeout(() => {
+      const updated = (this.data.heroRipples || []).map((item) =>
+        item.id === id
+          ? { ...item, scale: 1 + safeIntensity * 0.55, opacity: 0.45 * safeIntensity }
+          : item
+      );
+      this.setData({ heroRipples: updated });
+      // 0.5s 后淡出
+      setTimeout(() => {
+        const fading = (this.data.heroRipples || []).map((item) =>
+          item.id === id ? { ...item, opacity: 0, scale: item.scale + 0.15 } : item
+        );
+        this.setData({ heroRipples: fading });
+        // 0.45s 后回收
+        setTimeout(() => {
+          const cleaned = (this.data.heroRipples || []).filter((item) => item.id !== id);
+          this.setData({ heroRipples: cleaned });
+        }, 460);
+      }, 320);
+    }, 16);
+  },
+
+  startRippleLoop() {
+    this.stopRippleLoop();
+    this.rippleTimer = setInterval(() => {
+      // 当未拿到音量时，使用呼吸式默认强度
+      const intensity = this.lastVoiceIntensity || 0.55;
+      this.spawnRipple(intensity);
+      this.lastVoiceIntensity = Math.max(0.4, this.lastVoiceIntensity * 0.85);
+    }, RIPPLE_INTERVAL);
+  },
+
+  stopRippleLoop() {
+    if (this.rippleTimer) {
+      clearInterval(this.rippleTimer);
+      this.rippleTimer = null;
+    }
+    this.lastVoiceIntensity = 0.55;
+  },
+
+  // 状态 4：进入加载态
+  enterLoadingState() {
+    this.setData({ heroLoading: true });
+  },
+
+  exitLoadingState() {
+    this.setData({ heroLoading: false });
+  },
+
+  // 状态 5：成功反馈 + 进度槽光点联动
+  playSuccessBurst(insertedId) {
+    feedback.success();
+    this.setData({ heroSuccess: true });
+    setTimeout(() => this.setData({ heroSuccess: false }), 820);
+
+    // 进度光点：从中央按钮中心出发，飞向当前进度位置
+    const fromPercent = 50;
+    const toPercent = Math.max(8, Math.min(95, Number(this.data.progressIndicatorPercent) || 33));
+    this.setData({
+      progressSparkVisible: true,
+      progressSparkFrom: fromPercent,
+      progressSparkTo: toPercent
+    });
+    setTimeout(() => this.setData({ progressSparkVisible: false }), 920);
+
+    if (insertedId) {
+      this.setData({ lastInsertedId: insertedId });
+      setTimeout(() => {
+        if (this.data.lastInsertedId === insertedId) {
+          this.setData({ lastInsertedId: "" });
+        }
+      }, 720);
     }
   },
 
@@ -486,7 +606,8 @@ Page({
       voiceStatusText: this.data.ui.voiceRecognizing,
       voiceDurationText: formatVoiceDuration(Math.round(duration / 1000)),
       heroVoiceActive: voiceMode === "quick",
-      heroVoiceStatusText: voiceMode === "quick" ? this.data.ui.quickVoiceSubmitting : ""
+      heroVoiceStatusText: voiceMode === "quick" ? this.data.ui.quickVoiceSubmitting : "",
+      heroLoading: voiceMode === "quick" // 状态 4：松手进入加载环
     });
 
     try {
@@ -508,15 +629,18 @@ Page({
       });
     } catch (error) {
       logError("home.recognizeVoice", error);
+      feedback.error();
       showErrorToast(error, "语音识别失败");
       this.setData({
         voiceStatusText: "",
-        heroVoiceStatusText: ""
+        heroVoiceStatusText: "",
+        heroLoading: false
       });
     } finally {
       this.setData({
         voiceRecognizing: false,
-        heroVoiceActive: false
+        heroVoiceActive: false,
+        heroLoading: false
       });
     }
   },
@@ -575,15 +699,28 @@ Page({
           composerHintVisible: false,
           heroVoiceStatusText: ""
         });
-        wx.navigateTo({
-          url: `/pages/detail-edit/detail-edit?id=${draft.id}&mode=remoteDraft`
-        });
+        // 状态 5：成功联动反馈（quick voice 模式）
+        if (source === "voice" && draft && draft.id) {
+          this.playSuccessBurst(draft.id);
+          // 等待爆开动画播放一会儿再跳转，让用户感知成就
+          setTimeout(() => {
+            wx.navigateTo({
+              url: `/pages/detail-edit/detail-edit?id=${draft.id}&mode=remoteDraft`
+            });
+          }, 480);
+        } else {
+          wx.navigateTo({
+            url: `/pages/detail-edit/detail-edit?id=${draft.id}&mode=remoteDraft`
+          });
+        }
       } catch (error) {
         logError("home.submitComposer", error);
         this.clearComposerHintTimer();
+        feedback.error();
         this.setData({
           composerSubmitting: false,
-          composerHintVisible: false
+          composerHintVisible: false,
+          heroLoading: false
         });
         showErrorToast(error, "创建记录失败");
       }
@@ -706,6 +843,7 @@ Page({
     perf.markPageUnload(PAGE_PATH);
     this.clearComposerHintTimer();
     this.clearVoiceTimer();
+    this.stopRippleLoop();
     clearTimeout(this.heroHoldTimer);
     if (this.data.voiceRecording && this.recorderManager) {
       this.skipNextVoiceRecognition = true;

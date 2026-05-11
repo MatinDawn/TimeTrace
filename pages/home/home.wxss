@@ -403,6 +403,7 @@
 }
 
 .hero-button {
+  position: relative;
   width: 356rpx;
   height: 356rpx;
   margin: 0 auto;
@@ -410,14 +411,167 @@
   padding: 14rpx;
   background: linear-gradient(180deg, #f2d7b5 0%, #ddbf98 100%);
   box-shadow: 0 26rpx 52rpx rgba(103, 81, 53, 0.16);
-  transition: transform 0.16s ease, box-shadow 0.16s ease;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.28s ease;
+  animation: heroBreath 4.2s ease-in-out infinite;
+  z-index: 1;
 }
 
 .hero-button.recording {
+  animation: none;
   transform: scale(1.04);
   box-shadow:
     0 30rpx 60rpx rgba(45, 107, 75, 0.24),
     0 0 0 16rpx rgba(45, 107, 75, 0.08);
+}
+
+.hero-button.pressed {
+  animation: none;
+  transform: scale(0.94);
+  box-shadow:
+    0 12rpx 26rpx rgba(45, 107, 75, 0.2),
+    inset 0 6rpx 18rpx rgba(0, 0, 0, 0.18);
+}
+
+.hero-button.loading,
+.hero-button.success {
+  animation: none;
+}
+
+@keyframes heroBreath {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 26rpx 52rpx rgba(103, 81, 53, 0.16);
+  }
+  50% {
+    transform: scale(1.018);
+    box-shadow: 0 30rpx 58rpx rgba(103, 81, 53, 0.2);
+  }
+}
+
+/* ===== 波纹层 ===== */
+.hero-ripple-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-ripple {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  border-radius: 50%;
+  border: 3rpx solid rgba(45, 107, 75, 0.5);
+  opacity: var(--ripple-opacity, 0.5);
+  transform: scale(var(--ripple-scale, 1));
+  transition: transform 0.45s ease-out, opacity 0.45s ease-out;
+}
+
+/* ===== 麦克风图标（按下/录音中可见） ===== */
+.hero-mic-core {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.hero-leaf.mic .hero-leaf-core {
+  opacity: 0;
+  transform: rotate(-28deg) scale(0.6);
+}
+
+.hero-leaf.mic .hero-mic-core {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.hero-mic-body {
+  width: 22rpx;
+  height: 32rpx;
+  border-radius: 12rpx;
+  background: #fffdf5;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.18);
+}
+
+.hero-mic-base {
+  width: 28rpx;
+  height: 6rpx;
+  margin-top: 4rpx;
+  border-radius: 4rpx;
+  background: rgba(255, 253, 245, 0.85);
+  position: relative;
+}
+
+.hero-mic-base::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -8rpx;
+  width: 2rpx;
+  height: 8rpx;
+  background: rgba(255, 253, 245, 0.85);
+  transform: translateX(-50%);
+}
+
+/* ===== 加载环 ===== */
+.hero-loading-ring {
+  position: absolute;
+  inset: 6rpx;
+  border-radius: 50%;
+  border: 6rpx solid rgba(45, 107, 75, 0.16);
+  border-top-color: #2d6b4b;
+  border-right-color: #2d6b4b;
+  pointer-events: none;
+  animation: heroLoadingSpin 0.9s linear infinite;
+  z-index: 4;
+}
+
+@keyframes heroLoadingSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== 成功爆开 ===== */
+.hero-success-burst {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  animation: heroSuccessBurst 0.8s ease-out forwards;
+}
+
+.hero-success-icon {
+  font-size: 96rpx;
+  filter: drop-shadow(0 4rpx 12rpx rgba(255, 220, 120, 0.6));
+}
+
+@keyframes heroSuccessBurst {
+  0% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  35% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.95;
+  }
 }
 
 .hero-button-ring {
@@ -443,6 +597,7 @@
 }
 
 .hero-leaf {
+  position: relative;
   width: 62rpx;
   height: 62rpx;
   border-radius: 50%;
@@ -459,6 +614,7 @@
   border-radius: 20rpx 20rpx 0 20rpx;
   background: #fffdf5;
   transform: rotate(-28deg);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .hero-leaf-core::after {
@@ -881,6 +1037,61 @@
 
 .sheet-textarea::placeholder {
   color: #9aa3b2;
+}
+
+/* ===== 进度条光点飞行 ===== */
+.progress-spark {
+  position: absolute;
+  top: 50%;
+  width: 18rpx;
+  height: 18rpx;
+  margin-top: -9rpx;
+  border-radius: 50%;
+  background: #ffe8a3;
+  box-shadow:
+    0 0 12rpx 6rpx rgba(255, 232, 163, 0.75),
+    0 0 24rpx 10rpx rgba(255, 210, 120, 0.45);
+  pointer-events: none;
+  animation: progressSparkFly 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  z-index: 3;
+}
+
+@keyframes progressSparkFly {
+  0% {
+    left: var(--spark-from, 0%);
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  15% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    left: var(--spark-to, 33%);
+    transform: scale(0.6);
+    opacity: 0;
+  }
+}
+
+/* ===== 新记录滑入 ===== */
+.feed-item.just-added {
+  animation: feedItemSlideIn 0.52s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes feedItemSlideIn {
+  0% {
+    transform: translateY(-14rpx);
+    opacity: 0;
+    background: rgba(255, 232, 163, 0.35);
+  }
+  60% {
+    background: rgba(255, 232, 163, 0.22);
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+    background: transparent;
+  }
 }
 
 .sheet-divider {

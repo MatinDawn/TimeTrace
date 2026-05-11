@@ -35,25 +35,42 @@
       </view>
 
       <view
-        class="hero-button {{heroVoiceActive ? 'recording' : ''}}"
+        class="hero-button {{heroVoiceActive ? 'recording' : ''}} {{heroPressed ? 'pressed' : ''}} {{heroLoading ? 'loading' : ''}} {{heroSuccess ? 'success' : ''}}"
         bindtap="goQuickRecord"
         bindtouchstart="onHeroTouchStart"
         bindtouchend="onHeroTouchEnd"
         bindtouchcancel="onHeroTouchCancel"
       >
+        <view class="hero-ripple-layer">
+          <view
+            wx:for="{{heroRipples}}"
+            wx:key="id"
+            class="hero-ripple"
+            style="--ripple-scale: {{item.scale}}; --ripple-opacity: {{item.opacity}};"
+          ></view>
+        </view>
         <view class="hero-button-ring">
           <view class="hero-button-inner">
-            <view class="hero-leaf">
+            <view class="hero-leaf {{heroVoiceActive || heroPressed ? 'mic' : ''}}">
               <view class="hero-leaf-core"></view>
+              <view class="hero-mic-core">
+                <view class="hero-mic-body"></view>
+                <view class="hero-mic-base"></view>
+              </view>
             </view>
-            <view class="hero-title">{{ui.traceTitle}}</view>
+            <view class="hero-title">{{heroVoiceActive ? ui.voiceListening : ui.traceTitle}}</view>
             <view wx:if="{{heroVoiceStatusText}}" class="hero-voice-status">
               <view class="hero-voice-dot"></view>
               <text>{{heroVoiceStatusText}}</text>
             </view>
+            <view wx:if="{{heroSuccess}}" class="hero-success-burst">
+              <text class="hero-success-icon">✨</text>
+            </view>
           </view>
         </view>
+        <view wx:if="{{heroLoading}}" class="hero-loading-ring"></view>
       </view>
+
 
       <view class="hero-side right">
         <image class="hero-plane-image" src="/assets/home/paper-plane-trail.svg" mode="widthFix"></image>
@@ -78,6 +95,11 @@
               <image class="progress-mascot-image" src="/assets/home/progress-mascot-head.png" mode="aspectFit"></image>
             </view>
           </view>
+          <view
+            wx:if="{{progressSparkVisible}}"
+            class="progress-spark"
+            style="--spark-from: {{progressSparkFrom}}%; --spark-to: {{progressSparkTo}}%;"
+          ></view>
         </view>
       </view>
       <view class="progress-tree-zone">
@@ -114,7 +136,7 @@
     <block wx:if="{{activeFeedTab === 'completed'}}">
       <block wx:if="{{todayCompleted.length}}">
         <view
-          class="list-row feed-item"
+          class="list-row feed-item {{item.id === lastInsertedId ? 'just-added' : ''}}"
           wx:for="{{todayCompleted}}"
           wx:key="id"
           data-id="{{item.id}}"
