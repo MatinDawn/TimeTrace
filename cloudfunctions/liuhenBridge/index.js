@@ -8,6 +8,7 @@ cloud.init({
 });
 
 const db = cloud.database();
+const _ = db.command;
 
 const COLLECTIONS = {
   users: "liuhen_users",
@@ -773,6 +774,13 @@ async function listRecords(session, scope) {
     };
   }
 
+  const all = await fetchAllByQuery(query);
+  return all
+    .map(normalizeRecord)
+    .sort((a, b) => new Date(b.updatedAt || b.createdAt).getTime() - new Date(a.updatedAt || a.createdAt).getTime());
+}
+
+async function fetchAllByQuery(query) {
   const all = [];
   let offset = 0;
   while (true) {
@@ -784,9 +792,7 @@ async function listRecords(session, scope) {
     }
     offset += batch.length;
   }
-  return all
-    .map(normalizeRecord)
-    .sort((a, b) => new Date(b.updatedAt || b.createdAt).getTime() - new Date(a.updatedAt || a.createdAt).getTime());
+  return all;
 }
 
 async function getHomeSummary(session, scope) {
@@ -803,30 +809,120 @@ async function getHomeSummary(session, scope) {
 }
 
 async function getTodoCalendarSummary(session, scope, payload) {
-  const records = await listRecords(session, scope);
-  const anchorMonth = parseDateId(`${String(payload.monthValue || toDateId(new Date())).slice(0, 7)}-01`);
-  const selectedDateId = String(payload.selectedDateId || toDateId(new Date())).trim();
-  const start = startOfMonth(anchorMonth);
-  const end = endOfMonth(anchorMonth);
+  const perfStart = Date.now();
+  const traceId = `cal_${perfStart}_${Math.random().toString(36).slice(2, 6)}`;
+  const stageMarks = [];
+  const markStage = (label) => {
+    const now = Date.now();
+    const last = stageMarks.length ? stageMarks[stageMarks.length - 1].at : perfStart;
+    stageMarks.push({ label, at: now, deltaMs: now - last });
+  };
+
+  console.log(`[perf][${traceId}] getTodoCalendarSummary.start`, {
+    monthValue: payload && payload.monthValue,
+    selectedDateId: payload && payload.selectedDateId,
+    activeSpaceId: scope && scope.activeSpaceId,
+    userId: session && session.userId
+  });
+
+  await ensureCollections();
+  markStage("ensureCollections");
+  if (scope.activeSpaceId) {
+    await assertSpaceAccess(scope.activeSpaceId, session.userId);
+    markStage("assertSpaceAccess");
+  }
+
+  const monthValue = String(payload.monthValue || toDateId(new Date())).slice(0, 7);
+  const anchorMonth = parseDateId(`${monthValue}-01`);
+  const monthStartId = `${monthValue}-01`;
+  const monthEndId = toDateId(endOfMonth(anchorMonth));
   const todayId = toDateId(new Date());
-  const allPlans = records.filter((item) => !item.isDraft && item.recordType === "plan" && (item.status === "todo" || item.status === "overdue"));
-  const monthPlans = filterRecordsByDate(allPlans, start, end, "dueDate");
+  const selectedDateId = String(payload.selectedDateId || todayId).trim();
+
+  const baseQuery = scope.activeSpaceId
+    ? { scopeType: "space", spaceId: scope.activeSpaceId }
+    : { scopeType: "personal", ownerUserId: session.userId };
+
+  // 注意：建议在云开发后台为 liuhen_records 集合建立复合索引：
+  //   {scopeType, spaceId, recordType, dueDate}
+  //   {scopeType, ownerUserId, recordType, dueDate}
+  // 否则下面的范围查询仍会触发集合扫描。
+  const monthQuery = {
+    ...baseQuery,
+    recordType: "plan",
+    isDraft: _.neq(true),
+    status: _.in(["todo", "overdue"]),
+    dueDate: _.gte(monthStartId).and(_.lte(monthEndId))
+  };
+
+  const overdueQuery = {
+    ...baseQuery,
+    recordType: "plan",
+    isDraft: _.neq(true),
+    status: _.in(["todo", "overdue"]),
+    dueDate: _.gt("").and(_.lt(todayId))
+  };
+
+  const monthQueryStart = Date.now();
+  const overdueQueryStart = Date.now();
+  const [monthDocs, overdueDocs] = await Promise.all([
+    fetchAllByQuery(monthQuery).then((docs) => {
+      console.log(`[perf][${traceId}] monthQuery.done`, {
+        count: docs.length,
+        costMs: Date.now() - monthQueryStart,
+        range: `${monthStartId} ~ ${monthEndId}`
+      });
+      return docs;
+    }),
+    fetchAllByQuery(overdueQuery).then((docs) => {
+      console.log(`[perf][${traceId}] overdueQuery.done`, {
+        count: docs.length,
+        costMs: Date.now() - overdueQueryStart,
+        cutoff: todayId
+      });
+      return docs;
+    })
+  ]);
+  markStage("queries.parallelDone");
+
+  const monthPlans = monthDocs.map(normalizeRecord);
+  const overduePlans = overdueDocs.map(normalizeRecord);
   const dayPlans = monthPlans.filter((item) => item.dueDate === selectedDateId);
-  const overduePlans = allPlans.filter((item) => item.status === "overdue" || (item.status === "todo" && item.dueDate && item.dueDate < todayId));
+  const dayCounts = monthPlans.reduce((acc, item) => {
+    const key = item.dueDate || "";
+    if (!key) {
+      return acc;
+    }
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+  markStage("normalizeAndAggregate");
+
+  const totalMs = Date.now() - perfStart;
+  console.log(`[perf][${traceId}] getTodoCalendarSummary.done`, {
+    totalMs,
+    monthDocCount: monthDocs.length,
+    overdueDocCount: overdueDocs.length,
+    dayPlanCount: dayPlans.length,
+    dayCountKeys: Object.keys(dayCounts).length,
+    stages: stageMarks
+  });
+
   return {
     monthLabel: `${anchorMonth.getFullYear()}\u5e74${anchorMonth.getMonth() + 1}\u6708`,
     monthValue: `${anchorMonth.getFullYear()}-${pad(anchorMonth.getMonth() + 1)}`,
     selectedDateId,
     plans: dayPlans,
+    monthPlans,
     overduePlans,
-    dayCounts: monthPlans.reduce((acc, item) => {
-      const key = item.dueDate || "";
-      if (!key) {
-        return acc;
-      }
-      acc[key] = (acc[key] || 0) + 1;
-      return acc;
-    }, {})
+    dayCounts,
+    perfTrace: {
+      traceId,
+      totalMs,
+      stages: stageMarks,
+      monthDocCount: monthDocs.length,
+      overdueDocCount: overdueDocs.length
+    }
   };
 }
 

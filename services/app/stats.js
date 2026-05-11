@@ -89,6 +89,7 @@ async function getTodoCalendarData(monthValue, selectedDateId) {
         monthValue,
         selectedDateId,
         plans,
+        monthPlans,
         overduePlans,
         dayCounts: monthPlans.reduce((acc, item) => {
           acc[item.dueDate] = (acc[item.dueDate] || 0) + 1;
