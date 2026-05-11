@@ -262,7 +262,14 @@ function buildHabitStats(records) {
 
 function getTodayRecords(records) {
   const todayId = toDateId(new Date());
-  return (records || []).filter((item) => item.recordTime === todayId && !item.isDraft);
+  return (records || []).filter((item) => {
+    if (item.isDraft) {
+      return false;
+    }
+    // 优先用"留痕动作发生的本地日期"，老数据兜底用 recordTime
+    const actionDate = item.createdLocalDate || item.recordTime;
+    return actionDate === todayId;
+  });
 }
 
 module.exports = {

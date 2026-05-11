@@ -79,6 +79,8 @@ function normalizeRemoteRecord(record) {
     updatedAt: record.updatedAt || createdAt,
     isDraft: Boolean(record.isDraft),
     draftSource: record.draftSource || "text",
+    createdLocalDate: record.createdLocalDate || "",
+    lastTouchedLocalDate: record.lastTouchedLocalDate || "",
     dueDate: record.dueDate || "",
     dueTime: record.dueTime || "",
     priority: record.priority || PRIORITY.LOW,

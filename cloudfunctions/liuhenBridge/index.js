@@ -513,6 +513,8 @@ function sanitizeRecordInput(record, existing) {
     updatedAt,
     isDraft: nextIsDraft,
     draftSource: String(record.draftSource || base.draftSource || "text").trim() || "text",
+    createdLocalDate: String(record.createdLocalDate || base.createdLocalDate || "").trim(),
+    lastTouchedLocalDate: String(record.lastTouchedLocalDate || base.lastTouchedLocalDate || "").trim(),
     dueDate: String(record.dueDate || base.dueDate || "").trim(),
     dueTime: String(record.dueTime || base.dueTime || "").trim(),
     priority: String(record.priority || base.priority || "low").trim() || "low",
@@ -552,6 +554,8 @@ function normalizeRecord(doc) {
     updatedAt: doc.updatedAt || doc.createdAt || nowIso(),
     isDraft: Boolean(doc.isDraft),
     draftSource: doc.draftSource || "text",
+    createdLocalDate: doc.createdLocalDate || "",
+    lastTouchedLocalDate: doc.lastTouchedLocalDate || "",
     dueDate: doc.dueDate || "",
     dueTime: doc.dueTime || "",
     priority: doc.priority || "low",
@@ -800,9 +804,17 @@ async function getHomeSummary(session, scope, payload) {
   const todayId = (payload && payload.todayId) || toDateId(new Date());
   const todayCompleted = records.filter((item) => !item.isDraft && item.recordType === "done" && item.recordTime === todayId).slice(0, 10);
   const todayPlans = records.filter((item) => !item.isDraft && item.recordType === "plan" && item.status !== "done").slice(0, 10);
+  // "今日留痕动作"按 createdLocalDate 计数，未携带该字段的老数据兜底用 recordTime
+  const todayRecordCount = records.filter((item) => {
+    if (item.isDraft) {
+      return false;
+    }
+    const actionDate = item.createdLocalDate || item.recordTime;
+    return actionDate === todayId;
+  }).length;
   return {
     draftCount: records.filter((item) => item.isDraft).length,
-    todayRecordCount: records.filter((item) => !item.isDraft && item.recordTime === todayId).length,
+    todayRecordCount,
     todayCompleted,
     todayPlans
   };

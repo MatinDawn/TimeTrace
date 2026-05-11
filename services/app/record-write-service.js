@@ -81,6 +81,7 @@ async function saveRecordDetail(payload) {
     (nextCategoryId ? getCategoryName(nextCategoryId) : "") ||
     (previous ? previous.categoryName : "");
   const nextRecordTime = payload.recordTime || (previous ? previous.recordTime : "");
+  const todayLocalId = toDateId(getToday());
   const nextRecord = {
     ...(previous || {}),
     ...payload,
@@ -92,6 +93,10 @@ async function saveRecordDetail(payload) {
     recordTime: nextRecordTime,
     updatedAt,
     createdAt: payload.createdAt || (previous ? previous.createdAt : updatedAt),
+    // 留痕动作发生的本地日期：写入时记录手机当天的 dateId，
+    // 用于"今日留痕动作"计数（不会因 recordTime 指向过去而漏算）
+    createdLocalDate: (previous && previous.createdLocalDate) || payload.createdLocalDate || todayLocalId,
+    lastTouchedLocalDate: todayLocalId,
     isDraft: false,
     status: recordType === RECORD_TYPE.PLAN ? (payload.status || (previous ? previous.status : RECORD_STATUS.TODO)) : RECORD_STATUS.DONE,
     direction: normalizeDirection(payload.direction || (previous ? previous.direction : DIRECTION.EXPENSE))
