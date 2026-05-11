@@ -732,11 +732,20 @@ Page({
       });
       return;
     }
+    // 入口立即上锁：覆盖远端 / 本地两条分支，避免连点造成重复创建。
     if (this.data.composerSubmitting) {
       return;
     }
+    this.setData({ composerSubmitting: true });
 
-    await this.submitTextForAutofill(text, "text");
+    try {
+      await this.submitTextForAutofill(text, "text");
+    } finally {
+      // 远端分支已在内部按场景重置；这里兜底，确保异常路径也能恢复可点状态。
+      if (this.data.composerSubmitting) {
+        this.setData({ composerSubmitting: false });
+      }
+    }
   },
 
   async submitTextForAutofill(text, source) {
