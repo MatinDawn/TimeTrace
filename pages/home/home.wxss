@@ -121,18 +121,18 @@
 
 /* 山水图上叠加的动态文案层（AI 总结 / 文艺短句）
    task-overview-illustration.svg viewBox 1000x500，山在右下，
-   左上到中央上方是大片留白，文字紧贴该留白区域居左错排 */
+   左上是引号装饰，文字紧贴引号下方留白错排 */
 .quote-text-layer {
   position: absolute;
-  left: 12%;
-  right: 32%;
-  top: 20%;
-  bottom: 46%;
+  left: 14%;
+  right: 30%;
+  top: 32%;
+  bottom: 30%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  gap: 6rpx;
+  gap: 14rpx;
   pointer-events: none;
   z-index: 1;
 }
@@ -149,9 +149,15 @@
   text-overflow: ellipsis;
 }
 
+.quote-line.line1 {
+  /* 第一行靠左起笔 */
+  margin-left: 0;
+}
+
 .quote-line.line2 {
-  /* 第二句保持与 line1 同左对齐，匹配原 SVG 文字布局 */
+  /* 第二句向右错开一字宽，形成书法错落感 */
   color: #3a322a;
+  margin-left: 56rpx;
 }
 
 /* AI 来源时给一个极淡的"墨痕"渐变区分（可选视觉提示） */
