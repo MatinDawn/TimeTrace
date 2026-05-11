@@ -803,7 +803,7 @@ async function getHomeSummary(session, scope, payload) {
   const records = await listRecords(session, scope);
   const todayId = (payload && payload.todayId) || toDateId(new Date());
   const todayCompleted = records.filter((item) => !item.isDraft && item.recordType === "done" && item.recordTime === todayId).slice(0, 10);
-  const todayPlans = records.filter((item) => !item.isDraft && item.recordType === "plan" && item.status !== "done").slice(0, 10);
+  const todayPlans = records.filter((item) => !item.isDraft && item.recordType === "plan" && item.status !== "done" && item.dueDate && item.dueDate > todayId).slice(0, 10);
   // "今日留痕动作"按 createdLocalDate 计数，未携带该字段的老数据兜底用 recordTime
   const todayRecordCount = records.filter((item) => {
     if (item.isDraft) {

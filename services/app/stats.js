@@ -45,7 +45,7 @@ async function getHomeData() {
     async () => {
       const records = await getRecords();
       const todayCompleted = records.filter((item) => !item.isDraft && item.recordType === RECORD_TYPE.DONE && item.recordTime === todayId);
-      const todayPlans = records.filter((item) => !item.isDraft && item.recordType === RECORD_TYPE.PLAN && item.status !== RECORD_STATUS.DONE);
+      const todayPlans = records.filter((item) => !item.isDraft && item.recordType === RECORD_TYPE.PLAN && item.status !== RECORD_STATUS.DONE && item.dueDate && item.dueDate > todayId);
 
       return {
         todayCompleted,

@@ -40,6 +40,16 @@ function formatVoiceDuration(seconds) {
   return `${String(minute).padStart(2, "0")}:${String(second).padStart(2, "0")}`;
 }
 
+function filterFutureHomePlans(plans, todayId) {
+  return (plans || []).filter((item) =>
+    !item.isDraft &&
+    item.recordType === "plan" &&
+    item.status !== "done" &&
+    item.dueDate &&
+    item.dueDate > todayId
+  );
+}
+
 Page({
   data: {
     ui: {
@@ -112,6 +122,7 @@ Page({
     statusBarHeight: 20,
     navBarHeight: 88,
     menuRightWidth: 96,
+    menuButtonHeight: 32,
     progressIndicatorPercent: 0,
     progressLevel: 0,
     progressBeyond: false,
@@ -195,13 +206,15 @@ Page({
       this.setData({
         statusBarHeight,
         navBarHeight,
-        menuRightWidth
+        menuRightWidth,
+        menuButtonHeight: menuButton.height
       });
     } catch (error) {
       this.setData({
         statusBarHeight: 20,
         navBarHeight: 88,
-        menuRightWidth: 96
+        menuRightWidth: 96,
+        menuButtonHeight: 32
       });
     }
   },
@@ -223,7 +236,9 @@ Page({
 
   applyHomeData(homeData, fromCache) {
     const todayCompletedCount = (homeData.todayCompleted || []).length;
-    const todayPlanCount = (homeData.todayPlans || []).length;
+    const todayId = toDateId(new Date());
+    const todayPlans = filterFutureHomePlans(homeData.todayPlans, todayId);
+    const todayPlanCount = todayPlans.length;
     const todayRecordCount = Number(homeData.todayRecordCount || 0);
     const remaining = Math.max(0, DAILY_TARGET - todayRecordCount);
     const progressLevel = Math.min(DAILY_TARGET, Math.max(0, todayRecordCount));
@@ -243,7 +258,7 @@ Page({
       draftCount: homeData.draftCount,
       todayRecordCount,
       todayCompleted: homeData.todayCompleted || [],
-      todayPlans: homeData.todayPlans || [],
+      todayPlans,
       todayCompletedCount,
       todayPlanCount,
       progressIndicatorPercent: ((indicatorStep - 1) / (DAILY_TARGET - 1)) * 100,
@@ -254,7 +269,10 @@ Page({
     });
 
     // 异步刷新今日文艺总结（不阻塞主流程）
-    this.refreshDailySummary(homeData);
+    this.refreshDailySummary({
+      ...homeData,
+      todayPlans
+    });
   },
 
   /**

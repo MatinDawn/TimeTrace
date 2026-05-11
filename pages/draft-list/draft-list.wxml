@@ -21,7 +21,7 @@
         <view wx:if="{{manageMode}}" class="select-mark {{selectedIds.indexOf(item.id) >= 0 ? 'active' : ''}}" bindtap="toggleSelect" data-id="{{item.id}}">
           <view class="select-inner"></view>
         </view>
-        <view class="draft-main" bindtap="openDetail" data-id="{{item.id}}" data-mode="{{item.source === 'feishu' ? 'remoteDraft' : 'normal'}}">
+        <view class="draft-main" bindtap="openDetail" data-id="{{item.id}}" data-mode="{{item.aiParseStatus === 'pending' || item.aiParseStatus === 'failed' ? 'remoteDraft' : 'normal'}}">
           <view class="draft-title">{{item.actionName || ui.improve}}</view>
           <view class="draft-meta">{{ui.sourceText}} {{ui.separator}} {{item.draftSource}} {{ui.separator}} {{ui.timeText}} {{ui.separator}} {{item.recordTime || item.createdAtDisplay}}</view>
           <view class="draft-meta">{{ui.categoryText}} {{ui.separator}} {{item.categoryName || ui.improve}}</view>

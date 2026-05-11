@@ -1,22 +1,26 @@
 <view class="screen home-screen">
-  <view class="custom-nav" style="padding-top: {{statusBarHeight}}px; min-height: {{navBarHeight}}px;">
-    <view class="scope-button" bindtap="openWorkspaceSheet">
-      <view class="scope-sprout">
-        <view class="sprout-stem"></view>
-        <view class="sprout-leaf sprout-left"></view>
-        <view class="sprout-leaf sprout-right"></view>
-      </view>
-      <view class="scope-copy">
-        <view class="scope-button-label">{{ui.scopeLabel}}</view>
-        <view class="scope-button-text">{{currentScopeLabel}}</view>
-      </view>
-      <view class="scope-chevron"></view>
+  <view class="custom-nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-row nav-row-title" style="height: {{menuButtonHeight}}px; padding-right: {{menuRightWidth}}px;">
+      <view class="nav-brand-title">{{ui.brandTitle}}</view>
     </view>
-    <view class="nav-brand-title">{{ui.brandTitle}}</view>
-    <view class="draft-entry nav-draft" bindtap="goDraftList">
-      <image class="draft-icon" src="/assets/home/mail-box.png" mode="aspectFit"></image>
-      <view>{{ui.draftBox}}</view>
-      <view class="draft-count">{{draftCount}}</view>
+    <view class="nav-row nav-row-actions">
+      <view class="scope-button" bindtap="openWorkspaceSheet">
+        <view class="scope-sprout">
+          <view class="sprout-stem"></view>
+          <view class="sprout-leaf sprout-left"></view>
+          <view class="sprout-leaf sprout-right"></view>
+        </view>
+        <view class="scope-copy">
+          <view class="scope-button-label">{{ui.scopeLabel}}</view>
+          <view class="scope-button-text">{{currentScopeLabel}}</view>
+        </view>
+        <view class="scope-chevron"></view>
+      </view>
+      <view class="draft-entry nav-draft" bindtap="goDraftList">
+        <image class="draft-icon" src="/assets/home/mail-box.png" mode="aspectFit"></image>
+        <view class="draft-label">{{ui.draftBox}}</view>
+        <view wx:if="{{draftCount}}" class="draft-count">{{draftCount}}</view>
+      </view>
     </view>
   </view>
 
@@ -76,7 +80,7 @@
     <view class="hero-progress">
       <view class="progress-goal-hint {{progressBeyond ? 'beyond' : ''}}">
         <text class="progress-goal-icon">{{progressBeyond ? '✨' : '🎯'}}</text>
-        <text>{{progressBeyond ? progressBubbleText : ui.progressGoalHint}}</text>
+        <text class="progress-goal-copy">{{progressBeyond ? progressBubbleText : ui.progressGoalHint}}</text>
       </view>
       <view class="progress-track-shell">
         <view class="progress-track-line {{progressBeyond ? 'beyond' : ''}}">
