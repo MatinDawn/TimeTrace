@@ -80,3 +80,5 @@
 **遗留问题**
 -
 ```
+
+历史阶段记录归档于 [docs/product-history.md](docs/product-history.md)。
