@@ -14,7 +14,7 @@
     </view>
     <view class="nav-brand-title">{{ui.brandTitle}}</view>
     <view class="draft-entry nav-draft" bindtap="goDraftList">
-      <image class="draft-icon" src="/assets/home/draftbox-approved.svg" mode="aspectFit"></image>
+      <image class="draft-icon" src="/assets/home/mail-box.png" mode="aspectFit"></image>
       <view>{{ui.draftBox}}</view>
       <view class="draft-count">{{draftCount}}</view>
     </view>
