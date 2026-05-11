@@ -224,7 +224,7 @@
         </view>
       </view>
 
-      <view class="sheet-save {{composerSubmitting || voiceRecognizing ? 'loading' : ''}}" bindtap="submitComposer">
+      <view class="sheet-save {{composerCount > 0 ? 'active' : ''}} {{composerSubmitting || voiceRecognizing ? 'loading' : ''}}" bindtap="submitComposer">
         {{composerSubmitting ? ui.composerSaving : ui.composerSave}}
       </view>
       <view wx:if="{{composerHintVisible}}" class="sheet-submit-hint">{{ui.composerHint}}</view>
