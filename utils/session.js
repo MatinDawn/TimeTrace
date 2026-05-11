@@ -1,6 +1,10 @@
-const CURRENT_USER_KEY = "liuhen-current-user-profile-v2";
-const CURRENT_SPACE_KEY = "liuhen-current-space-v1";
-const LOCAL_FALLBACK_KEY = "liuhen-local-user-id-v1";
+const { migrateLiuhenStorageKeys } = require("./migrate-storage-keys");
+
+migrateLiuhenStorageKeys();
+
+const CURRENT_USER_KEY = "timetrace-current-user-profile-v2";
+const CURRENT_SPACE_KEY = "timetrace-current-space-v1";
+const LOCAL_FALLBACK_KEY = "timetrace-local-user-id-v1";
 
 function safeRead(key, fallback) {
   try {

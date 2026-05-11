@@ -1,11 +1,14 @@
 const { getDefaultCategories, getCategoryMetaMap } = require("./categories");
 const { parseDateTime, parseDateId, formatDateTime } = require("./date");
 const { buildScopedStorageKey, getCurrentUserId, getCurrentScope } = require("./session");
+const { migrateLiuhenStorageKeys } = require("./migrate-storage-keys");
 
-const RECORD_KEY = "liuhen-records-v2";
-const CATEGORY_KEY = "liuhen-categories-v1";
-const GOAL_KEY = "liuhen-annual-goals-v1";
-const TEMP_RECORD_KEY = "liuhen-temp-record-v1";
+migrateLiuhenStorageKeys();
+
+const RECORD_KEY = "timetrace-records-v2";
+const CATEGORY_KEY = "timetrace-categories-v1";
+const GOAL_KEY = "timetrace-annual-goals-v1";
+const TEMP_RECORD_KEY = "timetrace-temp-record-v1";
 const LEGACY_RECORD_KEY = "ledger-records-v1";
 
 function safeRead(key, fallback) {
