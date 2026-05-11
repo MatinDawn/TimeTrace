@@ -16,13 +16,6 @@
   </view>
 
   <view class="intro-row">
-    <view class="quote-card">
-      <image class="quote-plant-image" src="/assets/home/quote-board.svg" mode="widthFix"></image>
-      <view class="quote-text-layer {{dailySummary.source === 'ai' ? 'is-ai' : ''}}">
-        <text class="quote-line line1">{{dailySummary.line1}}</text>
-        <text class="quote-line line2">{{dailySummary.line2}}</text>
-      </view>
-    </view>
     <view class="draft-entry" bindtap="goDraftList">
       <image class="draft-icon" src="/assets/home/draftbox-approved.svg" mode="aspectFit"></image>
       <view>{{ui.draftBox}}</view>
@@ -185,7 +178,13 @@
 
     <view class="overview-quote">“{{ui.overviewQuote}}”</view>
     <image class="overview-line-image" src="/assets/home/underline-brush.svg" mode="widthFix"></image>
-    <image class="overview-illustration" src="/assets/home/task-overview-illustration.svg" mode="widthFix"></image>
+    <view class="overview-illustration-wrap">
+      <image class="overview-illustration" src="/assets/home/quote-board.svg" mode="widthFix"></image>
+      <view class="quote-text-layer {{dailySummary.source === 'ai' ? 'is-ai' : ''}}">
+        <text class="quote-line line1">{{dailySummary.line1}}</text>
+        <text class="quote-line line2">{{dailySummary.line2}}</text>
+      </view>
+    </view>
   </view>
 
   <main-tabbar current="{{currentTab}}"></main-tabbar>

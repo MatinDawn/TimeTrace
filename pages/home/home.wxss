@@ -121,27 +121,9 @@
   gap: 18rpx;
 }
 
-/* 底部「今日痕迹」AI 文艺总结：山水图整页宽呈现，文字按 SVG 锚点等比定位 */
-.daily-summary-block {
-  margin-top: 32rpx;
-  position: relative;
-  width: 100%;
-}
-
-.quote-card {
-  position: relative;
-  width: 100%;
-  padding: 0;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  overflow: hidden;
-}
-
 /* 山水图上叠加的动态文案层（AI 总结 / 文艺短句）
    按 quote-board.svg viewBox 760x260 内原 "记录此刻..." 文字坐标等比换算：
-   x=245 → left ≈ 32.2%；y 114~157 跨度 → top 约 36%~58%；
-   宽度按右边距 ~37%（即 47% 减去 left） */
+   x=245 → left ≈ 32.2%；y 114~157 跨度 → top 约 36%~58% */
 .quote-text-layer {
   position: absolute;
   left: 32.2%;
@@ -158,7 +140,7 @@
 
 .quote-line {
   font-family: "STKaiti", "Kaiti SC", "Songti SC", serif;
-  font-size: 32rpx;
+  font-size: 30rpx;
   font-weight: 700;
   color: #1f1a17;
   letter-spacing: 0;
@@ -179,17 +161,6 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-}
-
-.quote-plant {
-  width: 100%;
-}
-
-.quote-plant-image {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  display: block;
 }
 
 .draft-entry {
@@ -1061,11 +1032,17 @@
   margin: 10rpx auto 0;
 }
 
-.overview-illustration {
+.overview-illustration-wrap {
   position: relative;
   z-index: 1;
   width: 100%;
   margin-top: 12rpx;
+}
+
+.overview-illustration {
+  position: relative;
+  z-index: 1;
+  width: 100%;
   display: block;
   border-radius: 28rpx;
 }
