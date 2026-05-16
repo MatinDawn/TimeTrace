@@ -1,69 +1,85 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 150" width="120" height="150">
   <defs>
     <radialGradient id="leafCloud" cx="50%" cy="40%" r="60%">
-      <stop offset="0%" stop-color="#a8b78a" stop-opacity="0.88"/>
-      <stop offset="60%" stop-color="#7d9167" stop-opacity="0.72"/>
-      <stop offset="100%" stop-color="#5a6e3f" stop-opacity="0.48"/>
+      <stop offset="0%" stop-color="#a8b78a" stop-opacity="0.9"/>
+      <stop offset="60%" stop-color="#7d9167" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#5a6e3f" stop-opacity="0.5"/>
     </radialGradient>
     <radialGradient id="leafCloudSoft" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#bcc99d" stop-opacity="0.78"/>
-      <stop offset="70%" stop-color="#8aa074" stop-opacity="0.58"/>
-      <stop offset="100%" stop-color="#5a6e3f" stop-opacity="0.22"/>
+      <stop offset="0%" stop-color="#bcc99d" stop-opacity="0.8"/>
+      <stop offset="70%" stop-color="#8aa074" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#5a6e3f" stop-opacity="0.25"/>
     </radialGradient>
-    <radialGradient id="sproutGlow" cx="50%" cy="30%" r="70%">
-      <stop offset="0%" stop-color="#c2e0a4" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#7d9167" stop-opacity="0"/>
+    <radialGradient id="soilBase" cx="50%" cy="60%" r="70%">
+      <stop offset="0%" stop-color="#7a6348" stop-opacity="0.4"/>
+      <stop offset="60%" stop-color="#8b7355" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#a68c6c" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="soilTop" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#5a4a38" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#8b7355" stop-opacity="0"/>
     </radialGradient>
   </defs>
 
-  <!-- 土坡 -->
-  <ellipse cx="60" cy="144" rx="38" ry="3.5" fill="#8b7355" opacity="0.3"/>
-  <ellipse cx="60" cy="143" rx="22" ry="2" fill="#3a3a3a" opacity="0.24"/>
+  <!-- 土壤基底 -->
+  <ellipse cx="60" cy="144" rx="44" ry="5" fill="url(#soilBase)"/>
+  <ellipse cx="60" cy="142" rx="34" ry="3.5" fill="url(#soilTop)"/>
+  <ellipse cx="60" cy="143" rx="20" ry="2" fill="#3a3a3a" opacity="0.28"/>
 
-  <!-- 第一阶段：嫩芽主干（下部分） -->
-  <path d="M 60 142 C 58.5 130 61.5 120 60 110"
-        stroke="#3a3a3a" stroke-width="2.2" fill="none"
-        stroke-linecap="round" opacity="0.95"/>
+  <!-- 主干 -->
+  <path d="M 60 140 C 56 126 64 116 60 102 C 57 94 63 86 60 76 C 57 68 63 60 60 50"
+        stroke="#3a3a3a" stroke-width="2.8" fill="none"
+        stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
 
-  <!-- 第二阶段：中间主干 + 一对小叶子 -->
-  <path d="M 60 110 C 57 100 63 90 60 80"
-        stroke="#3a3a3a" stroke-width="2" fill="none"
-        stroke-linecap="round" opacity="0.92"/>
-  <ellipse cx="52" cy="94" rx="6" ry="4.5" fill="url(#leafCloudSoft)"/>
-  <ellipse cx="68" cy="92" rx="5.5" ry="4" fill="url(#leafCloudSoft)"/>
-  <ellipse cx="52.5" cy="93.5" rx="4" ry="3" fill="#5a6e3f" opacity="0.5"/>
-  <ellipse cx="67.5" cy="91.5" rx="3.8" ry="2.8" fill="#5a6e3f" opacity="0.45"/>
+  <!-- 阶段1：底部小叶子 -->
+  <ellipse cx="50" cy="102" rx="5.5" ry="4" fill="url(#leafCloudSoft)"/>
+  <ellipse cx="70" cy="100" rx="5" ry="3.8" fill="url(#leafCloudSoft)"/>
+  <ellipse cx="50.5" cy="101.5" rx="3.5" ry="2.5" fill="#5a6e3f" opacity="0.52"/>
+  <ellipse cx="69.5" cy="99.5" rx="3.2" ry="2.3" fill="#5a6e3f" opacity="0.48"/>
 
-  <!-- 第三阶段：完整树 -->
-  <path d="M 60 80 C 57.5 72 62.5 64 60 56"
-        stroke="#3a3a3a" stroke-width="1.8" fill="none"
-        stroke-linecap="round" opacity="0.88"/>
-  <path d="M 60 92 Q 51 88 44 80 Q 40 76 38 70"
-        stroke="#3a3a3a" stroke-width="1.6" fill="none"
+  <!-- 阶段2：第一层枝条 + 叶子 -->
+  <path d="M 60 98 Q 52 94 46 88 Q 43 85 42 80"
+        stroke="#3a3a3a" stroke-width="1.7" fill="none"
+        stroke-linecap="round" opacity="0.85"/>
+  <path d="M 60 92 Q 68 88 74 82 Q 77 79 78 74"
+        stroke="#3a3a3a" stroke-width="1.7" fill="none"
+        stroke-linecap="round" opacity="0.85"/>
+
+  <!-- 阶段2-3：第二层叶子 -->
+  <ellipse cx="46" cy="86" rx="8" ry="5.5" fill="url(#leafCloudSoft)"/>
+  <ellipse cx="76" cy="78" rx="7.5" ry="5" fill="url(#leafCloudSoft)"/>
+  <ellipse cx="46.5" cy="85.5" rx="5" ry="3.5" fill="#5a6e3f" opacity="0.55"/>
+  <ellipse cx="75.5" cy="77.5" rx="4.8" ry="3.3" fill="#5a6e3f" opacity="0.52"/>
+
+  <!-- 阶段3：顶部主干 + 叶子 -->
+  <path d="M 60 66 Q 55 60 57 52"
+        stroke="#3a3a3a" stroke-width="1.5" fill="none"
         stroke-linecap="round" opacity="0.82"/>
-  <path d="M 60 78 Q 69 74 76 66 Q 80 62 82 56"
-        stroke="#3a3a3a" stroke-width="1.6" fill="none"
-        stroke-linecap="round" opacity="0.82"/>
-  <path d="M 60 60 Q 55 54 57 46"
+  <path d="M 60 60 Q 65 55 68 48"
         stroke="#3a3a3a" stroke-width="1.4" fill="none"
-        stroke-linecap="round" opacity="0.78"/>
-  <path d="M 60 50 Q 65 44 69 38"
-        stroke="#3a3a3a" stroke-width="1.3" fill="none"
-        stroke-linecap="round" opacity="0.78"/>
+        stroke-linecap="round" opacity="0.82"/>
+  <path d="M 60 76 Q 53 72 48 66 Q 45 62 44 56"
+        stroke="#3a3a3a" stroke-width="1.6" fill="none"
+        stroke-linecap="round" opacity="0.83"/>
+  <path d="M 60 70 Q 67 66 73 60 Q 76 56 78 50"
+        stroke="#3a3a3a" stroke-width="1.6" fill="none"
+        stroke-linecap="round" opacity="0.83"/>
 
-  <!-- 叶子团 -->
-  <ellipse cx="40" cy="68" rx="13" ry="8.5" fill="url(#leafCloudSoft)"/>
-  <ellipse cx="41" cy="66" rx="8.5" ry="5.5" fill="#5a6e3f" opacity="0.55"/>
-  <ellipse cx="82" cy="54" rx="15" ry="10.5" fill="url(#leafCloud)"/>
-  <ellipse cx="80" cy="52" rx="9.5" ry="6.5" fill="#5a6e3f" opacity="0.6"/>
-  <ellipse cx="58" cy="36" rx="23" ry="14" fill="url(#leafCloud)"/>
-  <ellipse cx="56" cy="34" rx="15" ry="9.5" fill="#5a6e3f" opacity="0.62"/>
-  <ellipse cx="64" cy="38" rx="9.5" ry="6.5" fill="#7d9167" opacity="0.7"/>
-  <ellipse cx="60" cy="22" rx="8.5" ry="5.5" fill="url(#leafCloudSoft)"/>
-  <ellipse cx="60" cy="22" rx="5" ry="3.5" fill="#5a6e3f" opacity="0.55"/>
+  <!-- 阶段3-4：大叶子团 -->
+  <ellipse cx="42" cy="62" rx="11" ry="7.5" fill="url(#leafCloudSoft)"/>
+  <ellipse cx="78" cy="54" rx="10.5" ry="7" fill="url(#leafCloudSoft)"/>
+  <ellipse cx="42.5" cy="61.5" rx="7" ry="5" fill="#5a6e3f" opacity="0.58"/>
+  <ellipse cx="77.5" cy="53.5" rx="6.8" ry="4.8" fill="#5a6e3f" opacity="0.56"/>
 
-  <!-- 梅花 -->
-  <circle cx="50" cy="32" r="1.55" fill="#c04848" opacity="0.85"/>
-  <circle cx="67.5" cy="39.5" r="1.45" fill="#c04848" opacity="0.8"/>
-  <circle cx="58" cy="25.5" r="1.35" fill="#c04848" opacity="0.78"/>
+  <!-- 阶段4：完整树冠 -->
+  <ellipse cx="58" cy="38" rx="21" ry="13" fill="url(#leafCloud)"/>
+  <ellipse cx="56" cy="36" rx="14" ry="9" fill="#5a6e3f" opacity="0.62"/>
+  <ellipse cx="64" cy="40" rx="9" ry="6" fill="#7d9167" opacity="0.72"/>
+  <ellipse cx="60" cy="24" rx="7.5" ry="5" fill="url(#leafCloudSoft)"/>
+  <ellipse cx="60" cy="24" rx="4.5" ry="3.2" fill="#5a6e3f" opacity="0.58"/>
+
+  <!-- 梅花点缀 -->
+  <circle cx="49" cy="34" r="1.45" fill="#c04848" opacity="0.88"/>
+  <circle cx="66" cy="38" r="1.38" fill="#c04848" opacity="0.82"/>
+  <circle cx="58" cy="27" r="1.32" fill="#c04848" opacity="0.76"/>
 </svg>
