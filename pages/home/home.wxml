@@ -107,7 +107,9 @@
       <view class="progress-tree-zone">
         <view class="progress-tree stage-{{progressLevel}} {{treeGrowAnimating ? 'growing' : ''}} {{progressBeyond ? 'complete' : ''}}">
           <view class="ink-tree-soil"></view>
-          <image class="ink-tree-image" src="/resources/trees.svg" mode="aspectFit"></image>
+          <image class="ink-tree-image ink-tree-stage stage-image-1" src="/resources/tree-stage-1.svg" mode="aspectFit"></image>
+          <image class="ink-tree-image ink-tree-stage stage-image-2" src="/resources/tree-stage-2.svg" mode="aspectFit"></image>
+          <image class="ink-tree-image ink-tree-stage stage-image-3" src="/resources/tree-stage-3.svg" mode="aspectFit"></image>
         </view>
       </view>
     </view>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 148" width="108" height="148" role="img" aria-label="Stage 1 ink sprout tree">
+<g class="ink-layer layer-soil">
+      <path d="M20 130 C31 126 43 127 53 127 C66 127 78 126 91 130" fill="none" stroke="rgba(45, 39, 33, 0.46)" stroke-width="1.45" stroke-linecap="round"/>
+      <path d="M28 133 C43 135 65 135 86 132" fill="none" stroke="rgba(125, 97, 63, 0.16)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M35 128 C43 126 50 129 58 128 C68 126 76 128 84 131" fill="none" stroke="rgba(103, 78, 52, 0.2)" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="38" cy="132" r="0.9" fill="rgba(61, 51, 40, 0.3)"/>
+      <circle cx="59" cy="131" r="0.72" fill="rgba(61, 51, 40, 0.2)"/>
+      <circle cx="77" cy="132" r="0.82" fill="rgba(61, 51, 40, 0.2)"/>
+    </g>
+<g class="ink-layer layer-bud">
+      <g transform="rotate(-12 53 99)">
+        <path d="M55 108 C48 104 46 96 51 89 C57 93 59 101 55 108 Z" fill="#88a66d" opacity="0.92"/>
+        <path d="M55 106 C53 100 52 95 51 90" fill="none" stroke="rgba(48, 78, 39, 0.46)" stroke-width="0.78" stroke-linecap="round"/>
+      </g>
+      <g transform="rotate(14 58 99)">
+        <path d="M56 108 C63 103 64 96 59 89 C53 94 52 102 56 108 Z" fill="#78985f" opacity="0.9"/>
+        <path d="M56 106 C58 100 58 95 59 90" fill="none" stroke="rgba(48, 78, 39, 0.46)" stroke-width="0.78" stroke-linecap="round"/>
+      </g>
+    </g>
+</svg>
