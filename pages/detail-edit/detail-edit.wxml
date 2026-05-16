@@ -1,13 +1,20 @@
 <view class="screen detail-screen">
-  <view class="card">
+  <view class="card {{isRemoteDraft && form.aiParseStatus === 'pending' ? 'is-parsing' : ''}}">
     <view class="head-row">
       <view class="section-title">{{ui.title}}</view>
       <view class="created-chip">{{form.createdAtDisplay}}</view>
     </view>
     <view class="section-subtitle">{{pageSubtitle}}</view>
+    <view wx:if="{{showCreatorInfo}}" class="creator-line">{{ui.creatorLabel}}{{form.creatorDisplayName || ui.unknownMember}}</view>
 
     <view wx:if="{{isRemoteDraft && form.aiParseStatus !== 'parsed'}}" class="parse-card">
       <view class="parse-head">
+        <view wx:if="{{form.aiParseStatus === 'pending'}}" class="parse-orbit">
+          <view class="parse-orbit-ring"></view>
+          <view class="parse-spark spark-1"></view>
+          <view class="parse-spark spark-2"></view>
+          <view class="parse-spark spark-3"></view>
+        </view>
         <view class="parse-copy">
           <view class="parse-title-row">
             <view class="parse-dot {{form.aiParseStatus === 'failed' ? 'parse-dot-failed' : ''}}"></view>

@@ -42,6 +42,8 @@ function buildUi() {
     recordTime: "\u53d1\u751f\u65f6\u95f4",
     recordTimePlaceholder: "\u7b49\u5f85\u89e3\u6790\u6216\u624b\u52a8\u9009\u62e9",
     createdAt: "\u521b\u5efa\u65f6\u95f4",
+    creatorLabel: "\u586b\u5199\u4eba\uff1a",
+    unknownMember: "\u672a\u77e5\u6210\u5458",
     save: "\u4fdd\u5b58",
     confirm: "\u786e\u8ba4\u63d0\u4ea4",
     refresh: "\u5237\u65b0\u89e3\u6790\u7ed3\u679c",
@@ -82,7 +84,10 @@ function buildDefaultForm() {
     reminderEnabled: false,
     status: "todo",
     originalContent: "",
-    aiParseStatus: "parsed"
+    aiParseStatus: "parsed",
+    creatorUserId: "",
+    creatorDisplayName: "\u672a\u77e5\u6210\u5458",
+    creatorAvatarUrl: ""
   };
 }
 
@@ -116,6 +121,7 @@ Page({
     dueTimeLabels: ["\u672a\u8bbe\u7f6e", "\u4e0a\u5348", "\u4e2d\u5348", "\u4e0b\u5348", "\u665a\u4e0a"],
     dueTimeIndex: 0,
     saveButtonText: "\u4fdd\u5b58",
+    showCreatorInfo: false,
     form: buildDefaultForm()
   },
 
@@ -131,6 +137,7 @@ Page({
         recordId: options.id || (record ? record.id : ""),
         mode,
         isRemoteDraft: mode === "remoteDraft",
+        showCreatorInfo: Boolean(getApp().globalData.activeSpace),
         categoryOptions: categories,
         pageSubtitle: this.getPageSubtitle(mode, record)
       });
@@ -218,7 +225,10 @@ Page({
           reminderEnabled: Boolean(record.reminderEnabled),
           status: normalizedStatus,
           originalContent: record.originalContent || "",
-          aiParseStatus: record.aiParseStatus || "parsed"
+          aiParseStatus: record.aiParseStatus || "parsed",
+          creatorUserId: record.creatorUserId || "",
+          creatorDisplayName: record.creatorDisplayName || "\u672a\u77e5\u6210\u5458",
+          creatorAvatarUrl: record.creatorAvatarUrl || ""
         }
       : buildDefaultForm();
 
@@ -516,6 +526,7 @@ Page({
         categoryName: fallbackCategoryName,
         recordTime: this.data.form.recordTime || ""
       });
+      getApp().globalData.pendingTreeGrow = true;
 
       wx.showToast({
         title: this.data.ui.toastSaved,
@@ -523,9 +534,15 @@ Page({
       });
 
       setTimeout(() => {
-        wx.reLaunch({
-          url: "/pages/home/home"
-        });
+        const pages = getCurrentPages();
+        const prev = pages[pages.length - 2];
+        if (prev && prev.route === "pages/home/home") {
+          wx.navigateBack({ delta: 1 });
+        } else {
+          wx.reLaunch({
+            url: "/pages/home/home"
+          });
+        }
       }, 120);
     } catch (error) {
       logError("detail-edit.save", error, {

@@ -105,7 +105,10 @@
         </view>
       </view>
       <view class="progress-tree-zone">
-        <image class="progress-tree-image" src="/assets/home/progress-seedling-trace.svg" mode="aspectFit"></image>
+        <view class="progress-tree stage-{{progressLevel}} {{treeGrowAnimating ? 'growing' : ''}} {{progressBeyond ? 'complete' : ''}}">
+          <view class="ink-tree-soil"></view>
+          <image class="ink-tree-image" src="/assets/home/ink-tree.svg" mode="aspectFit"></image>
+        </view>
       </view>
     </view>
   </view>
@@ -148,6 +151,7 @@
           <view class="feed-main">
             <view class="feed-title">{{item.actionName}}</view>
             <view class="feed-meta">{{item.categoryName}} {{ui.metaSeparator}} {{item.recordTime}}</view>
+            <view wx:if="{{showCreatorInfo}}" class="feed-creator">{{ui.creatorPrefix}}{{item.creatorDisplayName}}</view>
           </view>
           <view class="feed-side {{item.amount ? 'done-amount' : 'done-text'}}">
             {{item.amount ? (ui.currencyPrefix + item.amount) : ui.doneText}}
@@ -170,8 +174,12 @@
           <view class="feed-main">
             <view class="feed-title">{{item.actionName}}</view>
             <view class="feed-meta">{{item.dueDate || ui.noDueDate}} {{ui.metaSeparator}} {{item.priorityLabel}}</view>
+            <view wx:if="{{showCreatorInfo}}" class="feed-creator">{{ui.creatorPrefix}}{{item.creatorDisplayName}}</view>
           </view>
-          <view class="feed-side pending">{{item.statusText}}</view>
+          <view class="feed-side-stack">
+            <view class="feed-side pending">{{item.statusText}}</view>
+            <view class="feed-quick-trace" data-id="{{item.id}}" catchtap="quickTrace">{{ui.quickTrace}}</view>
+          </view>
         </view>
       </block>
       <view class="empty-text" wx:else>{{ui.todoEmpty}}</view>
