@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "统计",
-  "usingComponents": {
-    "main-tabbar": "/components/main-tabbar/main-tabbar"
-  }
-}
