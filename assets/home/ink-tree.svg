@@ -1,105 +1,74 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 150" width="120" height="150">
   <defs>
-    <radialGradient id="leafCloud" cx="50%" cy="40%" r="60%">
-      <stop offset="0%" stop-color="#a8b78a" stop-opacity="0.9"/>
-      <stop offset="60%" stop-color="#7d9167" stop-opacity="0.75"/>
-      <stop offset="100%" stop-color="#5a6e3f" stop-opacity="0.5"/>
+    <radialGradient id="leafGradient" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#a8c78a" stop-opacity="0.95"/>
+      <stop offset="45%" stop-color="#7d9a67" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#4a6a3a" stop-opacity="0.6"/>
     </radialGradient>
-    <radialGradient id="leafCloudSoft" cx="50%" cy="50%" r="55%">
-      <stop offset="0%" stop-color="#bcc99d" stop-opacity="0.8"/>
-      <stop offset="70%" stop-color="#8aa074" stop-opacity="0.6"/>
-      <stop offset="100%" stop-color="#5a6e3f" stop-opacity="0.25"/>
-    </radialGradient>
-    <radialGradient id="soilBase" cx="50%" cy="60%" r="70%">
-      <stop offset="0%" stop-color="#7a6348" stop-opacity="0.45"/>
-      <stop offset="60%" stop-color="#8b7355" stop-opacity="0.32"/>
+    <radialGradient id="soilGradient" cx="50%" cy="60%" r="70%">
+      <stop offset="0%" stop-color="#6b5340" stop-opacity="0.5"/>
+      <stop offset="65%" stop-color="#8b7355" stop-opacity="0.35"/>
       <stop offset="100%" stop-color="#a68c6c" stop-opacity="0"/>
     </radialGradient>
   </defs>
 
-  <!-- 不规则手绘土壤 -->
-  <path d="M 22 145 Q 28 140 34 144 Q 40 147 48 142 Q 56 138 60 143 Q 66 148 74 143 Q 82 139 88 144 Q 94 149 100 144 Q 106 139 112 145 L 112 150 L 22 150 Z"
-        fill="url(#soilBase)" opacity="0.7"/>
-  <path d="M 28 143 Q 33 139 40 142 Q 46 145 54 140 Q 60 136 64 141 Q 70 146 78 141 Q 84 137 90 142 Q 96 147 102 142 L 102 148 L 28 148 Z"
-        fill="#5a4a38" opacity="0.25"/>
-  <path d="M 32 142 Q 36 138 42 141 Q 48 144 56 139 Q 62 135 66 140 Q 72 145 80 140 Q 86 136 92 141 Q 98 146 104 141 L 104 147 L 32 147 Z"
-        fill="#3a3a3a" opacity="0.18"/>
-
-  <!-- 土壤颗粒点缀 -->
-  <circle cx="34" cy="143" r="1.2" fill="#4a3a28" opacity="0.4"/>
-  <circle cx="46" cy="141" r="1" fill="#4a3a28" opacity="0.35"/>
-  <circle cx="58" cy="144" r="0.9" fill="#4a3a28" opacity="0.32"/>
-  <circle cx="70" cy="142" r="1.1" fill="#4a3a28" opacity="0.38"/>
-  <circle cx="82" cy="143" r="1" fill="#4a3a28" opacity="0.34"/>
-  <circle cx="94" cy="142" r="1.2" fill="#4a3a28" opacity="0.36"/>
+  <!-- 土壤 -->
+  <path d="M 18 144 Q 24 139 32 143 Q 40 146 52 140 Q 60 137 62 142 Q 72 147 84 141 Q 92 138 98 143 Q 104 148 110 144 L 110 151 L 18 151 Z"
+        fill="url(#soilGradient)" opacity="0.78"/>
 
   <!-- 主干 -->
-  <path d="M 60 140 C 56 126 64 116 60 102 C 57 94 63 86 60 76 C 57 68 63 60 60 50"
-        stroke="#3a3a3a" stroke-width="2.8" fill="none"
+  <path d="M 60 142 C 58 130 62 120 60 108 C 59 100 61 92 60 84 C 59 76 61 68 60 60 C 59 54 61 48 60 42"
+        stroke="#3a3a3a" stroke-width="2.7" fill="none"
         stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
 
-  <!-- 阶段1：小苗（第一对叶子） -->
-  <path d="M 60 105 Q 55 102 52 96 Q 50 92 52 88 Q 54 84 58 82 Q 60 81 62 83 Q 66 87 68 92 Q 70 97 68 102 Q 66 106 60 105 Z"
-        fill="url(#leafCloudSoft)"/>
-  <path d="M 60 105 Q 65 102 68 96 Q 70 92 68 88 Q 66 84 62 82 Q 60 81 58 83 Q 54 87 52 92 Q 50 97 52 102 Q 54 106 60 105 Z"
-        fill="url(#leafCloudSoft)"/>
-  <path d="M 60 105 Q 55 102 53 96 Q 51 92 53 87 Q 56 83 60 82"
-        stroke="#5a6e3f" stroke-width="1.2" fill="none" opacity="0.7"/>
-  <path d="M 60 105 Q 65 102 67 96 Q 69 92 67 87 Q 64 83 60 82"
-        stroke="#5a6e3f" stroke-width="1.2" fill="none" opacity="0.7"/>
+  <!-- 阶段1：小苗 -->
+  <path d="M 60 102 Q 56 98 52 94 Q 49 91 51 87 Q 53 83 57 81 Q 60 80 63 82 Q 67 86 69 90 Q 71 94 69 98 Q 66 102 60 102 Z"
+        fill="url(#leafGradient)"/>
+  <path d="M 60 102 Q 64 98 68 94 Q 71 91 69 87 Q 67 83 63 81 Q 60 80 57 82 Q 53 86 51 90 Q 49 94 51 98 Q 54 102 60 102 Z"
+        fill="url(#leafGradient)"/>
+  <path d="M 60 102 Q 56 98 53 94 Q 51 91 52 87 Q 54 83 58 81"
+        stroke="#4a6a3a" stroke-width="1.1" fill="none" opacity="0.7"/>
+  <path d="M 60 102 Q 64 98 67 94 Q 69 91 68 87 Q 66 83 62 81"
+        stroke="#4a6a3a" stroke-width="1.1" fill="none" opacity="0.7"/>
 
-  <!-- 阶段2：第二层叶子 -->
-  <path d="M 60 92 Q 48 88 42 82 Q 38 78 40 74 Q 42 70 48 68 Q 54 66 60 68"
-        fill="url(#leafCloudSoft)" opacity="0.95"/>
-  <path d="M 60 92 Q 72 88 78 82 Q 82 78 80 74 Q 78 70 72 68 Q 66 66 60 68"
-        fill="url(#leafCloudSoft)" opacity="0.95"/>
-  <path d="M 60 92 Q 50 88 44 82 Q 40 78 42 74 Q 45 70 50 68 Q 56 66 60 68"
-        stroke="#5a6e3f" stroke-width="1.3" fill="none" opacity="0.65"/>
-  <path d="M 60 92 Q 70 88 76 82 Q 80 78 78 74 Q 75 70 70 68 Q 64 66 60 68"
-        stroke="#5a6e3f" stroke-width="1.3" fill="none" opacity="0.65"/>
+  <!-- 阶段2：第二层枝条+叶子 -->
+  <path d="M 60 88 Q 53 84 48 79 Q 45 76 44 71"
+        stroke="#3a3a3a" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.85"/>
+  <path d="M 60 84 Q 67 80 72 75 Q 75 72 76 67"
+        stroke="#3a3a3a" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.85"/>
+  
+  <path d="M 44 71 Q 41 67 39 63 Q 38 59 40 55 Q 42 51 47 49 Q 52 48 55 50 Q 58 53 59 57 Q 60 61 58 65 Q 56 69 51 71 Q 48 72 44 71 Z"
+        fill="url(#leafGradient)" opacity="0.93"/>
+  <path d="M 76 67 Q 79 63 81 59 Q 82 55 80 51 Q 78 47 73 45 Q 68 44 65 46 Q 62 49 61 53 Q 60 57 62 61 Q 64 65 69 67 Q 72 68 76 67 Z"
+        fill="url(#leafGradient)" opacity="0.93"/>
+  <path d="M 44 71 Q 42 68 40 64 Q 39 61 41 57 Q 44 53 49 51 Q 53 50 56 52"
+        stroke="#4a6a3a" stroke-width="1.2" fill="none" opacity="0.6"/>
+  <path d="M 76 67 Q 78 64 80 60 Q 81 57 79 53 Q 76 49 71 47 Q 67 46 64 48"
+        stroke="#4a6a3a" stroke-width="1.2" fill="none" opacity="0.6"/>
 
-  <!-- 阶段2-3：第三层叶子 -->
-  <path d="M 60 80 Q 44 76 38 68 Q 36 62 38 56 Q 40 50 48 46 Q 56 42 60 44"
-        fill="url(#leafCloud)" opacity="0.9"/>
-  <path d="M 60 80 Q 76 76 82 68 Q 84 62 82 56 Q 80 50 72 46 Q 64 42 60 44"
-        fill="url(#leafCloud)" opacity="0.9"/>
-  <path d="M 60 80 Q 46 76 40 68 Q 38 62 40 56 Q 42 50 50 46 Q 58 42 60 44"
-        stroke="#5a6e3f" stroke-width="1.4" fill="none" opacity="0.6"/>
-  <path d="M 60 80 Q 74 76 80 68 Q 82 62 80 56 Q 78 50 70 46 Q 62 42 60 44"
-        stroke="#5a6e3f" stroke-width="1.4" fill="none" opacity="0.6"/>
+  <!-- 阶段3：第三层 -->
+  <path d="M 60 72 Q 53 67 49 61 Q 47 57 47 52"
+        stroke="#3a3a3a" stroke-width="1.4" fill="none" stroke-linecap="round" opacity="0.82"/>
+  <path d="M 60 68 Q 67 63 71 57 Q 73 53 73 48"
+        stroke="#3a3a3a" stroke-width="1.4" fill="none" stroke-linecap="round" opacity="0.82"/>
 
-  <!-- 阶段3-4：第四层大叶子 -->
-  <path d="M 60 64 Q 42 58 36 48 Q 34 38 38 30 Q 42 22 52 18 Q 60 16 64 18"
-        fill="url(#leafCloud)" opacity="0.95"/>
-  <path d="M 60 64 Q 78 58 84 48 Q 86 38 82 30 Q 78 22 68 18 Q 60 16 56 18"
-        fill="url(#leafCloud)" opacity="0.95"/>
-  <path d="M 60 64 Q 44 58 38 48 Q 36 38 40 30 Q 44 22 54 18 Q 62 16 64 18"
-        stroke="#5a6e3f" stroke-width="1.5" fill="none" opacity="0.55"/>
-  <path d="M 60 64 Q 76 58 82 48 Q 84 38 80 30 Q 76 22 66 18 Q 58 16 56 18"
-        stroke="#5a6e3f" stroke-width="1.5" fill="none" opacity="0.55"/>
+  <path d="M 47 52 Q 42 48 39 43 Q 37 38 39 33 Q 41 28 47 25 Q 54 23 60 26 Q 65 29 68 34 Q 70 39 68 44 Q 66 49 60 52 Q 55 54 47 52 Z"
+        fill="url(#leafGradient)" opacity="0.96"/>
+  <path d="M 73 48 Q 78 44 81 39 Q 83 34 81 29 Q 79 24 73 21 Q 66 19 60 22 Q 55 25 52 30 Q 50 35 52 40 Q 54 45 60 48 Q 65 50 73 48 Z"
+        fill="url(#leafGradient)" opacity="0.96"/>
+  <path d="M 47 52 Q 44 49 41 45 Q 39 41 41 37 Q 44 33 50 31 Q 56 30 61 33"
+        stroke="#4a6a3a" stroke-width="1.3" fill="none" opacity="0.55"/>
+  <path d="M 73 48 Q 76 45 79 41 Q 81 37 79 33 Q 76 29 70 27 Q 64 26 59 29"
+        stroke="#4a6a3a" stroke-width="1.3" fill="none" opacity="0.55"/>
 
-  <!-- 阶段4：顶部小叶子 -->
-  <path d="M 60 48 Q 54 44 52 38 Q 50 32 54 28 Q 58 24 60 22"
-        fill="url(#leafCloudSoft)" opacity="0.9"/>
-  <path d="M 60 48 Q 66 44 68 38 Q 70 32 66 28 Q 62 24 60 22"
-        fill="url(#leafCloudSoft)" opacity="0.9"/>
-
-  <!-- 枝条 -->
-  <path d="M 60 98 Q 52 94 46 88 Q 43 85 42 80"
-        stroke="#3a3a3a" stroke-width="1.7" fill="none"
-        stroke-linecap="round" opacity="0.85"/>
-  <path d="M 60 92 Q 68 88 74 82 Q 77 79 78 74"
-        stroke="#3a3a3a" stroke-width="1.7" fill="none"
-        stroke-linecap="round" opacity="0.85"/>
-  <path d="M 60 66 Q 55 60 57 52"
-        stroke="#3a3a3a" stroke-width="1.5" fill="none"
-        stroke-linecap="round" opacity="0.82"/>
-  <path d="M 60 60 Q 65 55 68 48"
-        stroke="#3a3a3a" stroke-width="1.4" fill="none"
-        stroke-linecap="round" opacity="0.82"/>
+  <!-- 阶段4：顶层大叶子 -->
+  <path d="M 60 60 Q 56 55 53 50 Q 51 45 52 40 Q 53 35 57 31 Q 62 28 67 30 Q 72 33 74 38 Q 76 43 75 48 Q 74 53 70 56 Q 66 59 60 60 Q 55 61 51 60 Q 48 59 46 56 Q 45 53 46 50 Q 47 47 51 45 Q 55 44 59 45 Q 62 47 64 50 Q 65 53 64 56 Q 63 59 60 60 Z"
+        fill="url(#leafGradient)" opacity="0.98"/>
+  <path d="M 60 60 Q 64 55 67 50 Q 69 45 68 40 Q 67 35 63 31 Q 58 28 53 30 Q 48 33 46 38 Q 44 43 45 48 Q 46 53 50 56 Q 54 59 60 60 Q 65 61 69 60 Q 72 59 74 56 Q 75 53 74 50 Q 73 47 69 45 Q 65 44 61 45 Q 58 47 56 50 Q 55 53 56 56 Q 57 59 60 60 Z"
+        fill="url(#leafGradient)" opacity="0.98"/>
 
   <!-- 梅花点缀 -->
-  <circle cx="49" cy="34" r="1.45" fill="#c04848" opacity="0.88"/>
-  <circle cx="66" cy="38" r="1.38" fill="#c04848" opacity="0.82"/>
-  <circle cx="58" cy="27" r="1.32" fill="#c04848" opacity="0.76"/>
+  <circle cx="50" cy="38" r="1.35" fill="#c04848" opacity="0.88"/>
+  <circle cx="68" cy="40" r="1.3" fill="#c04848" opacity="0.83"/>
+  <circle cx="59" cy="30" r="1.25" fill="#c04848" opacity="0.78"/>
 </svg>

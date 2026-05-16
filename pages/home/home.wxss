@@ -546,14 +546,14 @@
 }
 
 .progress-tree.stage-1 .ink-tree-image {
-  clip-path: inset(62% 26% 0 26%);
-  -webkit-clip-path: inset(62% 26% 0 26%);
-  opacity: 0.93;
+  clip-path: inset(60% 25% 0 25%);
+  -webkit-clip-path: inset(60% 25% 0 25%);
+  opacity: 0.95;
 }
 
 .progress-tree.stage-2 .ink-tree-image {
-  clip-path: inset(40% 10% 0 10%);
-  -webkit-clip-path: inset(40% 10% 0 10%);
+  clip-path: inset(38% 10% 0 10%);
+  -webkit-clip-path: inset(38% 10% 0 10%);
   opacity: 0.98;
 }
 
