@@ -67,6 +67,22 @@ function deleteCloudFile(fileID) {
   });
 }
 
+function buildLocalDraft(content, source, draftId, localSource) {
+  const parsed = createDraftFromInput(content, source);
+  const localDraft = {
+    ...parsed,
+    id: draftId,
+    categoryName: getCategoryName(parsed.categoryId),
+    isDraft: true,
+    status: RECORD_STATUS.DRAFT,
+    aiParseStatus: AI_PARSE_STATUS.PARSED,
+    source: localSource || "local-draft"
+  };
+  upsertLocalRecord(localDraft);
+  setTempRecord(localDraft);
+  return localDraft;
+}
+
 async function recognizeVoiceInput(filePath) {
   if (!isRemoteEnabled()) {
     throw new Error("cloud-unavailable");
@@ -93,32 +109,27 @@ async function createRemoteDraftFromInput(text, source) {
   const draftId = `record_${Date.now()}`;
 
   if (!isRemoteEnabled()) {
-    const parsed = createDraftFromInput(content, source);
-    const localDraft = {
-      ...parsed,
-      id: draftId,
-      categoryName: getCategoryName(parsed.categoryId),
-      isDraft: true,
-      status: RECORD_STATUS.DRAFT,
-      aiParseStatus: AI_PARSE_STATUS.PARSED,
-      source: "local-draft"
-    };
-    upsertLocalRecord(localDraft);
-    return localDraft;
+    return buildLocalDraft(content, source, draftId, "local-draft");
   }
 
-  const data = await callBridge("createDraftRecord", buildScopePayload({
-    id: draftId,
-    originalContent: content,
-    source: source || "text"
-  }));
-  const draft = normalizeRemoteRecord(data.record || {});
-  setTempRecord({
-    ...draft,
-    source: "remote-draft-prefill"
-  });
-  mergeRemoteCacheRecord(draft);
-  return draft;
+  try {
+    const data = await callBridge("createDraftRecord", buildScopePayload({
+      id: draftId,
+      originalContent: content,
+      source: source || "text"
+    }));
+    const draft = normalizeRemoteRecord(data.record || {});
+    setTempRecord({
+      ...draft,
+      source: "remote-draft-prefill"
+    });
+    mergeRemoteCacheRecord(draft);
+    return draft;
+  } catch (error) {
+    const fallback = buildLocalDraft(content, source, draftId, "remote-draft-fallback");
+    fallback.remoteError = error.message || "bridge-failed";
+    return fallback;
+  }
 }
 
 function getPrefilledRecord() {

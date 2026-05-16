@@ -112,7 +112,12 @@ function normalizeRecord(record, categoryMap) {
     createdAt,
     createdAtDisplay: buildCreatedAtDisplay(createdAt),
     updatedAt: record.updatedAt || createdAt,
+    creatorUserId: record.creatorUserId || "",
+    creatorDisplayName: record.creatorDisplayName || "\u672a\u77e5\u6210\u5458",
+    creatorAvatarUrl: record.creatorAvatarUrl || "",
     isDraft: Boolean(record.isDraft),
+    isDeleted: Boolean(record.isDeleted),
+    deletedAt: record.deletedAt || "",
     draftSource: record.draftSource || record.source || "text",
     dueDate: record.dueDate || "",
     dueTime: record.dueTime || "",
@@ -166,7 +171,7 @@ function getRecords() {
   const categoryMap = getCategoryMetaMap(getCategories());
   const current = readScoped(RECORD_KEY, [], true);
   if (Array.isArray(current) && current.length) {
-    return current.map((item) => normalizeRecord(item, categoryMap)).sort(sortByActionTime);
+    return current.map((item) => normalizeRecord(item, categoryMap)).filter((item) => !item.isDeleted).sort(sortByActionTime);
   }
   return migrateLegacyRecords().sort(sortByActionTime);
 }

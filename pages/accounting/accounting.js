@@ -89,7 +89,7 @@ Page({
       home: "\u9996\u9875",
       todo: "TODO",
       accounting: "\u8bb0\u8d26",
-      statistics: "\u7edf\u8ba1",
+      statistics: "\u4e60\u60ef",
       mine: "\u6211\u7684"
     },
     currentTab: "/pages/accounting/accounting",

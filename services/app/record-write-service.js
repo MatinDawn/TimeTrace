@@ -30,9 +30,51 @@ const {
   getRecordById
 } = require("./record-read-service");
 const { getDrafts } = require("./record-draft-service");
+const { getCurrentUserProfile } = require("../../utils/session");
+
+function clearHomeDerivedCache() {
+  if (typeof getApp !== "function") {
+    return;
+  }
+  try {
+    const app = getApp();
+    if (!app || !app.globalData) {
+      return;
+    }
+    app.globalData.dailySummaryCache = {};
+    app.globalData.lastHomeData = null;
+    app.globalData.lastTodoCalendar = null;
+  } catch (error) {
+    // cache invalidation is best-effort
+  }
+}
+
+function buildCreatorFields(previous, payload) {
+  if (previous) {
+    return {
+      creatorUserId: previous.creatorUserId || "",
+      creatorDisplayName: previous.creatorDisplayName || "\u672a\u77e5\u6210\u5458",
+      creatorAvatarUrl: previous.creatorAvatarUrl || ""
+    };
+  }
+  if (payload && payload.creatorUserId) {
+    return {
+      creatorUserId: payload.creatorUserId,
+      creatorDisplayName: payload.creatorDisplayName || "\u672a\u77e5\u6210\u5458",
+      creatorAvatarUrl: payload.creatorAvatarUrl || ""
+    };
+  }
+  const profile = getCurrentUserProfile();
+  return {
+    creatorUserId: profile.userId || "",
+    creatorDisplayName: profile.displayName || "\u672a\u77e5\u6210\u5458",
+    creatorAvatarUrl: profile.avatarUrl || ""
+  };
+}
 
 function buildPlanTraceCompletion(record, now, todayId) {
   const direction = normalizeDirection(record.direction);
+  const creator = buildCreatorFields(null, {});
   return {
     nextPlan: {
       ...record,
@@ -66,7 +108,8 @@ function buildPlanTraceCompletion(record, now, todayId) {
       budgetAmount: 0,
       reminderEnabled: false,
       reminderTime: "",
-      source: "todo-quick-trace"
+      source: "todo-quick-trace",
+      ...creator
     }
   };
 }
@@ -85,6 +128,7 @@ async function saveRecordDetail(payload) {
   const nextRecord = {
     ...(previous || {}),
     ...payload,
+    ...buildCreatorFields(previous, payload),
     recordType,
     categoryId: nextCategoryId,
     categoryName: nextCategoryName,
@@ -105,6 +149,7 @@ async function saveRecordDetail(payload) {
   if (!isRemoteEnabled()) {
     upsertLocalRecord(nextRecord);
     clearTempRecord();
+    clearHomeDerivedCache();
     return nextRecord;
   }
 
@@ -112,6 +157,7 @@ async function saveRecordDetail(payload) {
   const normalized = normalizeRemoteRecord((data && data.record) || nextRecord);
   mergeRemoteCacheRecord(normalized);
   clearTempRecord();
+  clearHomeDerivedCache();
   return normalized;
 }
 
@@ -137,6 +183,7 @@ async function completePlanWithTrace(recordId) {
     const { nextPlan, traceRecord } = buildPlanTraceCompletion(record, now, todayId);
     upsertLocalRecord(nextPlan);
     upsertLocalRecord(traceRecord);
+    clearHomeDerivedCache();
     return {
       plan: nextPlan,
       trace: traceRecord
@@ -149,6 +196,7 @@ async function completePlanWithTrace(recordId) {
       today: toDateId(getToday())
     }));
     invalidateRemoteCache();
+    clearHomeDerivedCache();
     return data;
   } catch (error) {
     const record = getLocalRecordById(recordId);
@@ -160,6 +208,7 @@ async function completePlanWithTrace(recordId) {
     const { nextPlan, traceRecord } = buildPlanTraceCompletion(record, now, todayId);
     upsertLocalRecord(nextPlan);
     upsertLocalRecord(traceRecord);
+    clearHomeDerivedCache();
     return {
       plan: nextPlan,
       trace: traceRecord
@@ -169,12 +218,15 @@ async function completePlanWithTrace(recordId) {
 
 async function batchDeleteRecords(ids) {
   if (!isRemoteEnabled()) {
-    return deleteLocalRecords(ids);
+    const result = deleteLocalRecords(ids);
+    clearHomeDerivedCache();
+    return result;
   }
   await callBridge("deleteRecords", buildScopePayload({
     recordIds: ids
   }));
   invalidateRemoteCache();
+  clearHomeDerivedCache();
   return getDrafts();
 }
 
@@ -193,6 +245,7 @@ async function batchUpdateCategory(ids, categoryId) {
       };
     });
     next.forEach((item) => upsertLocalRecord(item));
+    clearHomeDerivedCache();
     return next;
   }
 
@@ -209,6 +262,7 @@ async function batchUpdateCategory(ids, categoryId) {
     }));
   }
   invalidateRemoteCache();
+  clearHomeDerivedCache();
   return getDrafts();
 }
 

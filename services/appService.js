@@ -13,5 +13,6 @@ module.exports = {
   deleteCategory,
   ...recordService,
   ...spaceService,
+  getHabitData: statsService.getHabitData,
   ...statsService
 };

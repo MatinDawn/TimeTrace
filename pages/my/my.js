@@ -45,7 +45,7 @@ Page({
       searchDesc: "\u641c\u7d22\u7559\u75d5\u3001\u89c4\u5212\u548c\u5386\u53f2\u5185\u5bb9",
       home: "\u9996\u9875",
       accounting: "\u8bb0\u8d26",
-      statistics: "\u7edf\u8ba1",
+      statistics: "\u4e60\u60ef",
       mine: "\u6211\u7684"
     },
     overview: {

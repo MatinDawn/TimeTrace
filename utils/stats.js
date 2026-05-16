@@ -176,7 +176,9 @@ function buildHabitStats(records) {
         count: 0
       };
     }
-    behaviorMap[name].dates.push(item.recordTime);
+    if (item.recordTime) {
+      behaviorMap[name].dates.push(item.recordTime);
+    }
     behaviorMap[name].count += 1;
   });
 
@@ -249,11 +251,31 @@ function buildHabitStats(records) {
     .sort((a, b) => b.totalCount - a.totalCount)
     .slice(0, 5);
 
+  const topStreak = streakRanking[0] || null;
+  const topRecent = recentRanking[0] || null;
+  const topFrequent = frequentRanking[0] || null;
+  const growthScore = Math.max(
+    topStreak ? topStreak.latestStreak : 0,
+    topRecent ? topRecent.recentCount : 0,
+    topFrequent ? topFrequent.totalCount : 0
+  );
+
   return {
-    topStreakName: streakRanking.length ? streakRanking[0].name : "",
-    topStreakDays: streakRanking.length ? streakRanking[0].latestStreak : 0,
-    topRecentName: recentRanking.length ? recentRanking[0].name : "",
-    topRecentCount: recentRanking.length ? recentRanking[0].recentCount : 0,
+    overview: {
+      totalHabits: behaviorList.length,
+      growthLevel: Math.min(3, growthScore),
+      topStreakName: topStreak ? topStreak.name : "",
+      topStreakDays: topStreak ? topStreak.latestStreak : 0,
+      topLongestStreakDays: topFrequent ? topFrequent.longestStreak : 0,
+      topRecentName: topRecent ? topRecent.name : "",
+      topRecentCount: topRecent ? topRecent.recentCount : 0,
+      topFrequentName: topFrequent ? topFrequent.name : "",
+      topFrequentCount: topFrequent ? topFrequent.totalCount : 0
+    },
+    topStreakName: topStreak ? topStreak.name : "",
+    topStreakDays: topStreak ? topStreak.latestStreak : 0,
+    topRecentName: topRecent ? topRecent.name : "",
+    topRecentCount: topRecent ? topRecent.recentCount : 0,
     streakRanking,
     recentRanking,
     frequentRanking

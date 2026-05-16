@@ -78,6 +78,8 @@ Page({
       selectedDateSubtitle: "\u6311\u4e00\u4ef6\u5148\u5b8c\u6210\uff0c\u518d\u628a\u75d5\u8ff9\u8f7b\u8f7b\u7559\u4e0b\u3002",
       quickTrace: "\u5feb\u901f\u7559\u75d5",
       quickTraceDone: "\u5df2\u7559\u4e0b\u4eca\u5929\u7684\u75d5\u8ff9",
+      creatorPrefix: "\u586b\u5199\u4eba\uff1a",
+      unknownMember: "\u672a\u77e5\u6210\u5458",
       today: "\u4eca\u5929"
     },
     currentTab: "/pages/todo-list/todo-list",
@@ -88,7 +90,8 @@ Page({
     monthLabel: "",
     weekHeaders: [],
     plans: [],
-    overduePlans: []
+    overduePlans: [],
+    showCreatorInfo: false
   },
 
   onLoad() {
@@ -115,6 +118,9 @@ Page({
 
   async onShow() {
     perf.markPageShow(PAGE_PATH);
+    this.setData({
+      showCreatorInfo: Boolean(getApp().globalData.activeSpace)
+    });
     const cached = getApp().globalData.lastTodoCalendar;
     if (cached) {
       this.setData(cached);

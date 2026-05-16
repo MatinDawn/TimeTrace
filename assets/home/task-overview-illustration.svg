@@ -5,19 +5,17 @@
     </filter>
 
     <linearGradient id="bottomFade" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#FCF8F3" stop-opacity="0" />
-      <stop offset="40%" stop-color="#FCF8F3" stop-opacity="0.6" />
-      <stop offset="100%" stop-color="#FCF8F3" stop-opacity="1" />
+      <stop offset="0%" stop-color="#F7F1E7" stop-opacity="0" />
+      <stop offset="40%" stop-color="#F7F1E7" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#F7F1E7" stop-opacity="1" />
     </linearGradient>
 
     <clipPath id="cardClip">
-      <rect x="50" y="50" width="900" height="400" rx="40" />
+      <rect x="0" y="0" width="1000" height="500" rx="40" />
     </clipPath>
   </defs>
 
-  <rect width="1000" height="500" fill="#FFFFFF"/>
-
-  <rect x="50" y="50" width="900" height="400" rx="40" fill="#FCF8F3" filter="url(#cardShadow)"/>
+  <rect x="0" y="0" width="1000" height="500" rx="40" fill="#F7F1E7"/>
 
   <g clip-path="url(#cardClip)">
     <g fill="#D0C4B8" transform="translate(100, 160)">

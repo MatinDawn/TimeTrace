@@ -4,7 +4,7 @@ const MAIN_PAGES = [
   "/pages/home/home",
   "/pages/todo-list/todo-list",
   "/pages/accounting/accounting",
-  "/pages/statistics/statistics",
+  "/pages/habit/habit",
   "/pages/my/my"
 ];
 

@@ -480,9 +480,99 @@ async function switchActiveSpace(session, payload) {
   return buildBootstrap(session);
 }
 
+async function findActiveSpaceById(spaceId) {
+  const res = await db.collection(COLLECTIONS.spaces).where({
+    spaceId,
+    status: "active"
+  }).limit(1).get();
+  return res.data[0] || null;
+}
+
+async function deleteSpace(session, payload) {
+  await ensureCollections();
+  const spaceId = String(payload.spaceId || "").trim();
+  if (!spaceId) {
+    throw new Error("space-id-required");
+  }
+
+  const space = await findActiveSpaceById(spaceId);
+  if (!space) {
+    throw new Error("space-not-found");
+  }
+
+  const membership = await findMembership(spaceId, session.userId);
+  if (!membership || membership.status !== "active" || membership.role !== "owner") {
+    throw new Error("space-owner-required");
+  }
+
+  const deletedAt = nowIso();
+  await db.collection(COLLECTIONS.spaces).where({
+    spaceId
+  }).update({
+    data: {
+      status: "deleted",
+      deletedAt,
+      updatedAt: deletedAt
+    }
+  });
+
+  await db.collection(COLLECTIONS.members).where({
+    spaceId,
+    status: "active"
+  }).update({
+    data: {
+      status: "inactive",
+      updatedAt: deletedAt
+    }
+  });
+
+  await db.collection(COLLECTIONS.records).where({
+    scopeType: "space",
+    spaceId,
+    isDeleted: _.neq(true)
+  }).update({
+    data: {
+      isDeleted: true,
+      deletedAt,
+      updatedAt: deletedAt
+    }
+  });
+
+  const user = await ensureUser(session);
+  if (user.activeSpaceId === spaceId) {
+    await updateUser(session.userId, {
+      activeSpaceId: ""
+    });
+  }
+
+  return buildBootstrap(session);
+}
+
 function getScopeFromPayload(payload) {
   return {
     activeSpaceId: String(payload.activeSpaceId || "").trim()
+  };
+}
+
+function buildCreatorMeta(record, existing, user) {
+  if (existing) {
+    return {
+      creatorUserId: existing.creatorUserId || "",
+      creatorDisplayName: existing.creatorDisplayName || "\u672a\u77e5\u6210\u5458",
+      creatorAvatarUrl: existing.creatorAvatarUrl || ""
+    };
+  }
+  if (record && record.creatorUserId) {
+    return {
+      creatorUserId: String(record.creatorUserId || "").trim(),
+      creatorDisplayName: String(record.creatorDisplayName || "\u672a\u77e5\u6210\u5458").trim() || "\u672a\u77e5\u6210\u5458",
+      creatorAvatarUrl: String(record.creatorAvatarUrl || "").trim()
+    };
+  }
+  return {
+    creatorUserId: user.userId || "",
+    creatorDisplayName: user.displayName || "\u672a\u77e5\u6210\u5458",
+    creatorAvatarUrl: user.avatarUrl || ""
   };
 }
 
@@ -511,6 +601,8 @@ function sanitizeRecordInput(record, existing) {
     recordTime: String(record.recordTime || base.recordTime || "").trim(),
     createdAt,
     updatedAt,
+    isDeleted: Boolean(record.isDeleted !== undefined ? record.isDeleted : base.isDeleted),
+    deletedAt: String(record.deletedAt || base.deletedAt || "").trim(),
     isDraft: nextIsDraft,
     draftSource: String(record.draftSource || base.draftSource || "text").trim() || "text",
     createdLocalDate: String(record.createdLocalDate || base.createdLocalDate || "").trim(),
@@ -552,7 +644,12 @@ function normalizeRecord(doc) {
     createdAt: doc.createdAt || nowIso(),
     createdAtDisplay: doc.createdAt ? `${toDateId(createdAtDate)} ${pad(createdAtDate.getHours())}:${pad(createdAtDate.getMinutes())}:${pad(createdAtDate.getSeconds())}` : "",
     updatedAt: doc.updatedAt || doc.createdAt || nowIso(),
+    creatorUserId: doc.creatorUserId || "",
+    creatorDisplayName: doc.creatorDisplayName || "\u672a\u77e5\u6210\u5458",
+    creatorAvatarUrl: doc.creatorAvatarUrl || "",
     isDraft: Boolean(doc.isDraft),
+    isDeleted: Boolean(doc.isDeleted),
+    deletedAt: doc.deletedAt || "",
     draftSource: doc.draftSource || "text",
     createdLocalDate: doc.createdLocalDate || "",
     lastTouchedLocalDate: doc.lastTouchedLocalDate || "",
@@ -769,12 +866,14 @@ async function listRecords(session, scope) {
   if (scope.activeSpaceId) {
     query = {
       scopeType: "space",
-      spaceId: scope.activeSpaceId
+      spaceId: scope.activeSpaceId,
+      isDeleted: _.neq(true)
     };
   } else {
     query = {
       scopeType: "personal",
-      ownerUserId: session.userId
+      ownerUserId: session.userId,
+      isDeleted: _.neq(true)
     };
   }
 
@@ -799,24 +898,31 @@ async function fetchAllByQuery(query) {
   return all;
 }
 
+function getHomeCreatedDateId(item) {
+  if (!item) {
+    return "";
+  }
+  if (item.createdLocalDate) {
+    return item.createdLocalDate;
+  }
+  const createdAtDate = fromDateLike(item.createdAt);
+  return createdAtDate ? toDateId(createdAtDate) : "";
+}
+
+function isHomeCreatedToday(item, todayId) {
+  return getHomeCreatedDateId(item) === todayId;
+}
+
 async function getHomeSummary(session, scope, payload) {
   const records = await listRecords(session, scope);
   const todayId = (payload && payload.todayId) || toDateId(new Date());
-  const todayCompleted = records.filter((item) => !item.isDraft && item.recordType === "done" && item.recordTime === todayId).slice(0, 10);
-  const todayPlans = records.filter((item) => !item.isDraft && item.recordType === "plan" && item.status !== "done" && item.dueDate && item.dueDate > todayId).slice(0, 10);
-  // "今日留痕动作"按 createdLocalDate 计数，未携带该字段的老数据兜底用 recordTime
-  const todayRecordCount = records.filter((item) => {
-    if (item.isDraft) {
-      return false;
-    }
-    const actionDate = item.createdLocalDate || item.recordTime;
-    return actionDate === todayId;
-  }).length;
+  const allTodayCompleted = records.filter((item) => !item.isDraft && item.recordType === "done" && isHomeCreatedToday(item, todayId));
+  const allTodayPlans = records.filter((item) => !item.isDraft && item.recordType === "plan" && item.status !== "done" && isHomeCreatedToday(item, todayId));
   return {
     draftCount: records.filter((item) => item.isDraft).length,
-    todayRecordCount,
-    todayCompleted,
-    todayPlans
+    todayRecordCount: allTodayCompleted.length + allTodayPlans.length,
+    todayCompleted: allTodayCompleted.slice(0, 10),
+    todayPlans: allTodayPlans.slice(0, 10)
   };
 }
 
@@ -852,8 +958,8 @@ async function getTodoCalendarSummary(session, scope, payload) {
   const selectedDateId = String(payload.selectedDateId || todayId).trim();
 
   const baseQuery = scope.activeSpaceId
-    ? { scopeType: "space", spaceId: scope.activeSpaceId }
-    : { scopeType: "personal", ownerUserId: session.userId };
+    ? { scopeType: "space", spaceId: scope.activeSpaceId, isDeleted: _.neq(true) }
+    : { scopeType: "personal", ownerUserId: session.userId, isDeleted: _.neq(true) };
 
   // 注意：建议在云开发后台为 liuhen_records 集合建立复合索引：
   //   {scopeType, spaceId, recordType, dueDate}
@@ -1019,7 +1125,9 @@ function buildHabitStats(records) {
         count: 0
       };
     }
-    behaviorMap[name].dates.push(item.recordTime);
+    if (item.recordTime) {
+      behaviorMap[name].dates.push(item.recordTime);
+    }
     behaviorMap[name].count += 1;
   });
 
@@ -1035,6 +1143,7 @@ function buildHabitStats(records) {
     const item = behaviorMap[key];
     const uniqueDays = Array.from(new Set(item.dates)).sort();
     let currentStreak = 0;
+    let longestStreak = 0;
     let previous = null;
     uniqueDays.forEach((day) => {
       if (!previous) {
@@ -1043,6 +1152,7 @@ function buildHabitStats(records) {
         const diff = (parseDateId(day).getTime() - parseDateId(previous).getTime()) / (1000 * 60 * 60 * 24);
         currentStreak = diff === 1 ? currentStreak + 1 : 1;
       }
+      longestStreak = Math.max(longestStreak, currentStreak);
       previous = day;
     });
 
@@ -1059,7 +1169,8 @@ function buildHabitStats(records) {
       name: item.name,
       totalCount: item.count,
       recentCount,
-      latestStreak
+      latestStreak,
+      longestStreak
     };
   });
 
@@ -1075,43 +1186,46 @@ function buildHabitStats(records) {
     .sort((a, b) => b.totalCount - a.totalCount)
     .slice(0, 5);
 
+  const topStreak = streakRanking[0] || null;
+  const topRecent = recentRanking[0] || null;
+  const topFrequent = frequentRanking[0] || null;
+  const growthScore = Math.max(
+    topStreak ? topStreak.latestStreak : 0,
+    topRecent ? topRecent.recentCount : 0,
+    topFrequent ? topFrequent.totalCount : 0
+  );
+
   return {
-    topStreakName: streakRanking.length ? streakRanking[0].name : "",
-    topStreakDays: streakRanking.length ? streakRanking[0].latestStreak : 0,
-    topRecentName: recentRanking.length ? recentRanking[0].name : "",
-    topRecentCount: recentRanking.length ? recentRanking[0].recentCount : 0,
+    overview: {
+      totalHabits: behaviorList.length,
+      growthLevel: Math.min(3, growthScore),
+      topStreakName: topStreak ? topStreak.name : "",
+      topStreakDays: topStreak ? topStreak.latestStreak : 0,
+      topLongestStreakDays: topFrequent ? topFrequent.longestStreak : 0,
+      topRecentName: topRecent ? topRecent.name : "",
+      topRecentCount: topRecent ? topRecent.recentCount : 0,
+      topFrequentName: topFrequent ? topFrequent.name : "",
+      topFrequentCount: topFrequent ? topFrequent.totalCount : 0
+    },
+    topStreakName: topStreak ? topStreak.name : "",
+    topStreakDays: topStreak ? topStreak.latestStreak : 0,
+    topRecentName: topRecent ? topRecent.name : "",
+    topRecentCount: topRecent ? topRecent.recentCount : 0,
     streakRanking,
     recentRanking,
     frequentRanking
   };
 }
 
-async function getStatisticsSummary(session, scope, payload) {
+async function getHabitSummary(session, scope) {
   const records = await listRecords(session, scope);
-  const granularity = payload.granularity || "month";
-  const selectedYear = Number(payload.selectedYear || new Date().getFullYear());
-  const scopeInfo = buildScopeInfo(granularity, payload.selectedDate, selectedYear);
-  const activeRecords = records.filter((item) => !item.isDraft);
-  const activityRecords = filterRecordsByDate(activeRecords.filter((item) => item.recordType === "done"), scopeInfo.start, scopeInfo.end, "recordTime");
-  const taskRecords = filterRecordsByDate(activeRecords.filter((item) => item.recordType === "plan"), scopeInfo.start, scopeInfo.end, "dueDate");
-  const financeRecords = activityRecords.filter(isExpenseRecord);
-  const financeExpense = financeRecords.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-  return {
-    scope: scopeInfo,
-    activity: buildActivityStats(activityRecords),
-    task: buildTaskStats(taskRecords),
-    finance: {
-      expense: Number(financeExpense.toFixed(2)),
-      count: financeRecords.length,
-      trend: buildTrend(records.filter(isExpenseRecord), granularity, payload.selectedDate, selectedYear)
-    },
-    habit: buildHabitStats(activityRecords)
-  };
+  return buildHabitStats(records.filter((item) => !item.isDraft && item.recordType === "done" && item.recordTime));
 }
 
 async function findRecordDoc(recordId) {
   const res = await db.collection(COLLECTIONS.records).where({
-    recordId
+    recordId,
+    isDeleted: _.neq(true)
   }).limit(1).get();
   return res.data[0] || null;
 }
@@ -1141,6 +1255,7 @@ async function getRecordById(recordId, session) {
 
 async function upsertRecord(record, session, scope) {
   await ensureCollections();
+  const user = await ensureUser(session);
   if (scope.activeSpaceId) {
     await assertSpaceAccess(scope.activeSpaceId, session.userId);
   }
@@ -1170,6 +1285,7 @@ async function upsertRecord(record, session, scope) {
 
   const next = {
     ...sanitizeRecordInput(record, existing),
+    ...buildCreatorMeta(record, existing, user),
     ...scopedMeta
   };
 
@@ -1338,13 +1454,14 @@ function buildHandlers(session, scope, payload) {
     createSpace: async () => createSpace(session, payload),
     joinSpaceByCode: async () => joinSpaceByCode(session, payload),
     switchActiveSpace: async () => switchActiveSpace(session, payload),
+    deleteSpace: async () => deleteSpace(session, payload),
     listRecords: async () => ({
       records: await listRecords(session, scope)
     }),
     getHomeSummary: async () => getHomeSummary(session, scope, payload),
     getTodoCalendarSummary: async () => getTodoCalendarSummary(session, scope, payload),
     getAccountingSummary: async () => getAccountingSummary(session, scope, payload),
-    getStatisticsSummary: async () => getStatisticsSummary(session, scope, payload),
+    getHabitSummary: async () => getHabitSummary(session, scope),
     createDraftRecord: async () => createDraftRecord(payload, session, scope),
     recognizeVoice: async () => recognizeVoice(payload),
     getRecordById: async () => ({

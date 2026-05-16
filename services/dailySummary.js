@@ -146,7 +146,18 @@ function buildRecordsFingerprint(records) {
     return "empty";
   }
   return records
-    .map((r) => `${r.id || ""}|${r.actionName || r.title || ""}|${r.recordType || ""}`)
+    .map((r) => [
+      r.id || "",
+      r.actionName || r.title || "",
+      r.recordType || "",
+      r.updatedAt || "",
+      r.status || "",
+      r.description || "",
+      r.amount || "",
+      r.recordTime || "",
+      r.dueDate || "",
+      r.dueTime || ""
+    ].join("|"))
     .join("#");
 }
 

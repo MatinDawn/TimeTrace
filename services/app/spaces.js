@@ -13,6 +13,23 @@ const {
 } = require("./service-runtime");
 const { invalidateRemoteCache } = require("./record-cache");
 
+function clearHomeDerivedCache() {
+  if (typeof getApp !== "function") {
+    return;
+  }
+  try {
+    const app = getApp();
+    if (!app || !app.globalData) {
+      return;
+    }
+    app.globalData.dailySummaryCache = {};
+    app.globalData.lastHomeData = null;
+    app.globalData.lastTodoCalendar = null;
+  } catch (error) {
+    // cache invalidation is best-effort
+  }
+}
+
 async function getAppBootstrap(options) {
   const settings = options || {};
   const data = await withRemoteFallback(
@@ -99,11 +116,47 @@ async function switchSpace(spaceId) {
   return data;
 }
 
+async function deleteSpace(spaceId) {
+  const targetSpaceId = String(spaceId || "").trim();
+  if (!targetSpaceId) {
+    throw new Error("space-id-required");
+  }
+
+  if (!isRemoteEnabled()) {
+    const activeSpace = getCurrentSpace();
+    if (activeSpace && activeSpace.spaceId === targetSpaceId) {
+      clearCurrentSpace();
+    }
+    invalidateRemoteCache();
+    clearHomeDerivedCache();
+    return {
+      activeSpace: null,
+      spaces: []
+    };
+  }
+
+  const data = await callBridge("deleteSpace", {
+    spaceId: targetSpaceId
+  });
+  if (data.profile) {
+    setCurrentUserProfile(data.profile);
+  }
+  if (data.activeSpace) {
+    setCurrentSpace(data.activeSpace);
+  } else {
+    clearCurrentSpace();
+  }
+  invalidateRemoteCache();
+  clearHomeDerivedCache();
+  return data;
+}
+
 module.exports = {
   getAppBootstrap,
   saveUserProfile,
   createSpace,
   joinSpace,
   switchSpace,
+  deleteSpace,
   isProfileComplete
 };

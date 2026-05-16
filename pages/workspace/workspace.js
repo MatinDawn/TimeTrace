@@ -1,4 +1,4 @@
-const { getAppBootstrap, createSpace, joinSpace, switchSpace } = require("../../services/appService");
+const { getAppBootstrap, createSpace, joinSpace, switchSpace, deleteSpace } = require("../../services/appService");
 const { logError, showErrorToast } = require("../../utils/error-handler");
 const { setCurrentSpace, clearCurrentSpace } = require("../../utils/session");
 const { invalidateRemoteCache } = require("../../services/app/record-cache");
@@ -34,6 +34,10 @@ Page({
       inviteCode: "\u9080\u8bf7\u7801",
       copied: "\u5df2\u590d\u5236",
       memberCount: "\u6210\u5458",
+      deleteSpace: "\u5220\u9664\u7a7a\u95f4",
+      deleteConfirmTitle: "\u5220\u9664\u7a7a\u95f4",
+      deleteConfirmContent: "\u5220\u9664\u540e\uff0c\u8be5\u7a7a\u95f4\u548c\u7a7a\u95f4\u5185\u7559\u75d5\u5c06\u4e0d\u518d\u663e\u793a\u3002\u786e\u5b9a\u5220\u9664\u5417\uff1f",
+      deleteDone: "\u7a7a\u95f4\u5df2\u5220\u9664",
       emptyText: "\u8fd8\u6ca1\u6709\u7a7a\u95f4\uff0c\u53ef\u4ee5\u5148\u521b\u5efa\u4e00\u4e2a\uff0c\u6216\u901a\u8fc7\u9080\u8bf7\u7801\u52a0\u5165\u3002"
     },
     profile: null,
@@ -45,7 +49,8 @@ Page({
     spaceSheetMode: "create",
     creating: false,
     joining: false,
-    switching: false
+    switching: false,
+    deletingSpaceId: ""
   },
 
   refreshBootstrapSeq: 0,
@@ -288,6 +293,45 @@ Page({
     });
     this.goHomeAfterSwitch();
     this.syncSpaceSwitchInBackground(spaceId, "workspace.switchSpace", { spaceId });
+  },
+
+  handleDeleteSpace(event) {
+    const dataset = event.currentTarget.dataset || {};
+    const spaceId = getSpaceIdFromDataset(dataset);
+    const space = (this.data.spaces || []).find((item) => item.spaceId === spaceId);
+    if (!space || space.role !== "owner" || this.data.deletingSpaceId) {
+      return;
+    }
+
+    wx.showModal({
+      title: this.data.ui.deleteConfirmTitle,
+      content: this.data.ui.deleteConfirmContent,
+      confirmText: "\u5220\u9664",
+      confirmColor: "#b45b3f",
+      success: async (res) => {
+        if (!res.confirm) {
+          return;
+        }
+        await this.deleteSpaceById(spaceId);
+      }
+    });
+  },
+
+  async deleteSpaceById(spaceId) {
+    this.setData({ deletingSpaceId: spaceId });
+    try {
+      const result = await deleteSpace(spaceId);
+      this.applyBootstrap(result);
+      wx.showToast({
+        title: this.data.ui.deleteDone,
+        icon: "success"
+      });
+    } catch (error) {
+      logError("workspace.deleteSpace", error, { spaceId });
+      showErrorToast(error, "\u5220\u9664\u7a7a\u95f4\u5931\u8d25");
+    } finally {
+      this.setData({ deletingSpaceId: "" });
+    }
   },
 
   showCreatedSpaceModal(space) {

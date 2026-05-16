@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "习惯",
+  "usingComponents": {
+    "main-tabbar": "/components/main-tabbar/main-tabbar"
+  }
+}

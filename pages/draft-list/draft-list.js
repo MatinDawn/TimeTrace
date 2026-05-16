@@ -21,8 +21,11 @@ Page({
       batchCategory: "\u6279\u91cf\u6539\u5206\u7c7b",
       batchDelete: "\u6279\u91cf\u5220\u9664",
       delete: "\u5220\u9664",
+      deleteAction: "\u5220\u9664",
+      categoryAction: "\u6539\u5206\u7c7b",
       improve: "\u5f85\u786e\u8ba4",
       selected: "\u5df2\u9009",
+      itemUnit: "\u9879",
       sourceText: "\u6765\u6e90",
       timeText: "\u65f6\u95f4",
       categoryText: "\u5206\u7c7b",
@@ -57,6 +60,17 @@ Page({
     });
   },
 
+  enterManageWithSelection(event) {
+    const recordId = event.currentTarget.dataset.id;
+    if (!recordId) {
+      return;
+    }
+    this.setData({
+      manageMode: true,
+      selectedIds: [recordId]
+    });
+  },
+
   toggleSelect(event) {
     const recordId = event.currentTarget.dataset.id;
     const selectedIds = this.data.selectedIds.slice();
@@ -71,6 +85,14 @@ Page({
     this.setData({
       selectedIds
     });
+  },
+
+  handleDraftTap(event) {
+    if (this.data.manageMode) {
+      this.toggleSelect(event);
+      return;
+    }
+    this.openDetail(event);
   },
 
   async removeDraft(event) {
@@ -89,6 +111,7 @@ Page({
 
     await batchDeleteRecords(this.data.selectedIds);
     this.setData({
+      manageMode: false,
       selectedIds: []
     });
     await this.loadDrafts();
@@ -110,6 +133,7 @@ Page({
         const category = this.data.categories[res.tapIndex];
         await batchUpdateCategory(this.data.selectedIds, category.id);
         this.setData({
+          manageMode: false,
           selectedIds: []
         });
         await this.loadDrafts();

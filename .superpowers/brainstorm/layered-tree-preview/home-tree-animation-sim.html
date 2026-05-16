@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>首页小树动画模拟</title>
+  <style>
+    :root {
+      --rpx: 0.5px;
+      --paper: #f7f0df;
+      --ink: #2d2a25;
+      --muted: #756a57;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 20% 12%, rgba(132, 107, 64, 0.12), transparent 30%),
+        linear-gradient(135deg, #fbf7ee, #f0e4cd);
+    }
+
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 30px 24px 40px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      letter-spacing: 0.06em;
+    }
+
+    .subtitle {
+      margin: 0 0 24px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .sim-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .phone {
+      position: relative;
+      height: 520px;
+      border: 1px solid rgba(83, 71, 51, 0.13);
+      border-radius: 34px;
+      background:
+        linear-gradient(180deg, rgba(255, 253, 247, 0.96), rgba(246, 238, 221, 0.92)),
+        radial-gradient(circle at 50% 78%, rgba(93, 75, 45, 0.08), transparent 36%);
+      box-shadow: 0 20px 50px rgba(71, 56, 35, 0.12);
+      overflow: hidden;
+    }
+
+    .mock-progress {
+      position: absolute;
+      left: 30px;
+      right: 30px;
+      top: 198px;
+      height: 126px;
+      border-radius: 28px;
+      background: rgba(244, 235, 214, 0.54);
+      border: 1px solid rgba(90, 77, 55, 0.08);
+    }
+
+    .track-line {
+      position: absolute;
+      left: 28px;
+      right: 52px;
+      top: 106px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(116, 94, 61, 0.2);
+    }
+
+    .progress-tree-zone {
+      position: absolute;
+      right: -6px;
+      bottom: 18px;
+      width: 118px;
+      height: 142px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      transform: scale(1.7);
+      transform-origin: 100% 100%;
+    }
+
+    .progress-tree {
+      position: relative;
+      width: 112px;
+      height: 140px;
+      transform-origin: 50% 100%;
+    }
+
+    .ink-tree-soil {
+      position: absolute;
+      left: 18px;
+      right: 14px;
+      bottom: 2px;
+      height: 12px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center, rgba(58, 58, 58, 0.14) 0%, rgba(141, 111, 76, 0.1) 48%, rgba(217, 193, 159, 0) 76%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .ink-tree-image {
+      position: absolute;
+      left: 2px;
+      right: 2px;
+      bottom: -2px;
+      width: calc(100% - 4px);
+      height: calc(100% + 2px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: transform 0.72s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.5s ease;
+      transform-origin: 50% 100%;
+      transform: translateY(8px) scale(0.92);
+    }
+
+    .progress-tree.stage-1 .stage-image-1,
+    .progress-tree.stage-2 .stage-image-2,
+    .progress-tree.stage-3 .stage-image-3 {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .progress-tree.stage-0 .ink-tree-image {
+      opacity: 0;
+    }
+
+    .progress-tree.stage-2 .stage-image-1,
+    .progress-tree.stage-3 .stage-image-1,
+    .progress-tree.stage-3 .stage-image-2 {
+      opacity: 0;
+    }
+
+    .progress-tree.stage-3 .ink-tree-image {
+      transform: translateY(0) scale(1);
+    }
+
+    .progress-tree.stage-1.growing .stage-image-1,
+    .progress-tree.stage-2.growing .stage-image-2,
+    .progress-tree.stage-3.growing .stage-image-3 {
+      animation: inkTreeReveal 1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+
+    .progress-tree.stage-3.growing,
+    .progress-tree.complete {
+      animation: treeGentleSway 1.7s ease-in-out 0.7s;
+    }
+
+    @keyframes inkTreeReveal {
+      0% {
+        transform: scale(0.82) translateY(8px);
+        opacity: 0.3;
+      }
+      60% {
+        transform: scale(1.04) translateY(-2px);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes treeGentleSway {
+      0%,
+      100% {
+        transform: rotate(0deg);
+      }
+      35% {
+        transform: rotate(-2deg);
+      }
+      70% {
+        transform: rotate(2deg);
+      }
+    }
+
+    .stage-chip {
+      position: absolute;
+      left: 26px;
+      top: 28px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: #6b573a;
+      background: rgba(255, 252, 244, 0.74);
+      border: 1px solid rgba(90, 77, 55, 0.1);
+      font-size: 13px;
+    }
+
+    .controls {
+      display: grid;
+      gap: 12px;
+      padding: 18px;
+      border: 1px solid rgba(83, 71, 51, 0.13);
+      border-radius: 24px;
+      background: rgba(255, 252, 244, 0.72);
+      box-shadow: 0 16px 36px rgba(71, 56, 35, 0.08);
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 14px;
+      color: #fff;
+      background: #6e8460;
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+    }
+
+    button.secondary {
+      color: #5e523d;
+      background: rgba(116, 94, 61, 0.14);
+    }
+
+    .status {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 13px;
+    }
+
+    .thumbs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .thumb {
+      position: relative;
+      height: 152px;
+      border-radius: 18px;
+      border: 1px solid rgba(83, 71, 51, 0.1);
+      background: rgba(255, 255, 255, 0.38);
+      overflow: hidden;
+    }
+
+    .thumb .progress-tree-zone {
+      right: 4px;
+      bottom: 8px;
+      transform: scale(0.84);
+    }
+
+    .thumb-label {
+      position: absolute;
+      left: 9px;
+      top: 8px;
+      color: #705b3f;
+      font-size: 12px;
+      z-index: 2;
+    }
+
+    .checks {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.85;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>首页小树动画模拟</h1>
+    <p class="subtitle">这是近似微信小程序 WebView 的模拟页：使用当前首页的树容器尺寸、阶段 class、裁切比例和 keyframes。真实 DevTools CLI 未安装时，用它先观察动画露出是否自然。</p>
+
+    <section class="sim-grid">
+      <div class="phone">
+        <div class="stage-chip" id="stageText">stage-0 · 土壤</div>
+        <div class="mock-progress">
+          <div class="track-line"></div>
+          <div class="progress-tree-zone">
+            <div id="tree" class="progress-tree stage-0">
+              <div class="ink-tree-soil"></div>
+              <img class="ink-tree-image ink-tree-stage stage-image-1" src="resources/tree-stage-1.svg" alt="Stage 1 ink tree" />
+              <img class="ink-tree-image ink-tree-stage stage-image-2" src="resources/tree-stage-2.svg" alt="Stage 2 ink tree" />
+              <img class="ink-tree-image ink-tree-stage stage-image-3" src="resources/tree-stage-3.svg" alt="Stage 3 ink tree" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="controls">
+        <div class="buttons">
+          <button onclick="play()">自动播放</button>
+          <button class="secondary" onclick="setStage(0, true)">stage 0</button>
+          <button class="secondary" onclick="setStage(1, true)">stage 1</button>
+          <button class="secondary" onclick="setStage(2, true)">stage 2</button>
+          <button class="secondary" onclick="setStage(3, true)">stage 3</button>
+        </div>
+        <p class="status" id="status">状态：等待播放。每次切换都会短暂加上 growing class，模拟保存后触发的小树生长。</p>
+        <ul class="checks">
+          <li>资源路径：<code>resources/trees.svg</code></li>
+          <li>动画时长：<code>inkTreeReveal 1s</code></li>
+          <li>完成态：<code>treeGentleSway 1.7s</code></li>
+          <li>注意观察 stage-1 是否只露嫩芽，stage-2 是否枝叶不过度截断。</li>
+        </ul>
+        <div class="thumbs">
+          <div class="thumb"><div class="thumb-label">stage 0</div><div class="progress-tree-zone"><div class="progress-tree stage-0"><div class="ink-tree-soil"></div><img class="ink-tree-image ink-tree-stage stage-image-1" src="resources/tree-stage-1.svg" alt="" /><img class="ink-tree-image ink-tree-stage stage-image-2" src="resources/tree-stage-2.svg" alt="" /><img class="ink-tree-image ink-tree-stage stage-image-3" src="resources/tree-stage-3.svg" alt="" /></div></div></div>
+          <div class="thumb"><div class="thumb-label">stage 1</div><div class="progress-tree-zone"><div class="progress-tree stage-1"><div class="ink-tree-soil"></div><img class="ink-tree-image ink-tree-stage stage-image-1" src="resources/tree-stage-1.svg" alt="" /><img class="ink-tree-image ink-tree-stage stage-image-2" src="resources/tree-stage-2.svg" alt="" /><img class="ink-tree-image ink-tree-stage stage-image-3" src="resources/tree-stage-3.svg" alt="" /></div></div></div>
+          <div class="thumb"><div class="thumb-label">stage 2</div><div class="progress-tree-zone"><div class="progress-tree stage-2"><div class="ink-tree-soil"></div><img class="ink-tree-image ink-tree-stage stage-image-1" src="resources/tree-stage-1.svg" alt="" /><img class="ink-tree-image ink-tree-stage stage-image-2" src="resources/tree-stage-2.svg" alt="" /><img class="ink-tree-image ink-tree-stage stage-image-3" src="resources/tree-stage-3.svg" alt="" /></div></div></div>
+          <div class="thumb"><div class="thumb-label">stage 3</div><div class="progress-tree-zone"><div class="progress-tree stage-3 complete"><div class="ink-tree-soil"></div><img class="ink-tree-image ink-tree-stage stage-image-1" src="resources/tree-stage-1.svg" alt="" /><img class="ink-tree-image ink-tree-stage stage-image-2" src="resources/tree-stage-2.svg" alt="" /><img class="ink-tree-image ink-tree-stage stage-image-3" src="resources/tree-stage-3.svg" alt="" /></div></div></div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const labels = ["土壤", "嫩芽", "枝叶", "成树"];
+    const tree = document.getElementById("tree");
+    const statusEl = document.getElementById("status");
+    const stageText = document.getElementById("stageText");
+    let timer = null;
+
+    function setStage(stage, grow) {
+      tree.className = `progress-tree stage-${stage}`;
+      if (stage === 3) {
+        tree.classList.add("complete");
+      }
+      stageText.textContent = `stage-${stage} · ${labels[stage]}`;
+      statusEl.textContent = `状态：当前 stage-${stage}，${grow ? "已触发生长动画" : "静态预览"}。`;
+      if (grow) {
+        tree.classList.remove("growing");
+        void tree.offsetWidth;
+        tree.classList.add("growing");
+        window.setTimeout(() => tree.classList.remove("growing"), 1050);
+      }
+    }
+
+    function play() {
+      if (timer) {
+        window.clearInterval(timer);
+      }
+      let stage = 0;
+      setStage(stage, true);
+      timer = window.setInterval(() => {
+        stage += 1;
+        if (stage > 3) {
+          window.clearInterval(timer);
+          timer = null;
+          setStage(3, false);
+          return;
+        }
+        setStage(stage, true);
+      }, 1450);
+    }
+
+    window.addEventListener("load", () => {
+      const img = document.querySelector(".stage-image-3");
+      img.decode?.().then(() => {
+        statusEl.textContent = "状态：SVG 资源已加载，点击自动播放观察阶段切换。";
+      }).catch(() => {
+        statusEl.textContent = "状态：SVG decode 不可用或失败，请检查图片是否显示。";
+      });
+    });
+  </script>
+</body>
+</html>

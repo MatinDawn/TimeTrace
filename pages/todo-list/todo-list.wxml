@@ -57,6 +57,7 @@
           <view class="plan-copy">
             <view class="plan-title">{{item.actionName}}</view>
             <view class="plan-meta">{{item.categoryName}} · {{item.dueDate}}{{item.dueTime ? (' · ' + item.dueTime) : ''}}</view>
+            <view wx:if="{{showCreatorInfo}}" class="plan-creator">{{ui.creatorPrefix}}{{item.creatorDisplayName || ui.unknownMember}}</view>
             <view wx:if="{{item.description}}" class="plan-desc">{{item.description}}</view>
           </view>
         </view>
@@ -80,6 +81,7 @@
         <view class="plan-copy">
           <view class="plan-title">{{item.actionName}}</view>
           <view class="plan-meta">{{item.categoryName}} · {{item.dueDate}}{{item.dueTime ? (' · ' + item.dueTime) : ''}}</view>
+          <view wx:if="{{showCreatorInfo}}" class="plan-creator">{{ui.creatorPrefix}}{{item.creatorDisplayName || ui.unknownMember}}</view>
           <view wx:if="{{item.description}}" class="plan-desc">{{item.description}}</view>
         </view>
       </view>

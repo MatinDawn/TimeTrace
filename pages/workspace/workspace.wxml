@@ -37,6 +37,15 @@
         <view class="space-top-row">
           <view class="space-name-row">
             <view class="space-name">{{item.name}}</view>
+            <view
+              wx:if="{{item.role === 'owner'}}"
+              class="delete-space-button {{deletingSpaceId === item.spaceId ? 'loading' : ''}}"
+              data-space-id="{{item.spaceId}}"
+              data-spaceid="{{item.spaceId}}"
+              catchtap="handleDeleteSpace"
+            >
+              {{ui.deleteSpace}}
+            </view>
             <view wx:if="{{item.isActive}}" class="active-tag">{{ui.currentTag}}</view>
           </view>
           <view class="member-ring">

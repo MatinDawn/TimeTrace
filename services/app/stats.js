@@ -19,8 +19,7 @@ const {
   buildTrend,
   buildActivityStats,
   buildTaskStats,
-  buildHabitStats,
-  getTodayRecords
+  buildHabitStats
 } = require("../../utils/stats");
 const {
   RECORD_TYPE,
@@ -38,20 +37,37 @@ const {
   getDrafts
 } = require("./records");
 
+function getHomeCreatedDateId(item) {
+  if (!item) {
+    return "";
+  }
+  if (item.createdLocalDate) {
+    return item.createdLocalDate;
+  }
+  if (!item.createdAt) {
+    return "";
+  }
+  return toDateId(new Date(item.createdAt));
+}
+
+function isCreatedToday(item, todayId) {
+  return getHomeCreatedDateId(item) === todayId;
+}
+
 async function getHomeData() {
   const todayId = toDateId(getToday());
   return withRemoteFallback(
     () => callBridge("getHomeSummary", buildScopePayload({ todayId })),
     async () => {
       const records = await getRecords();
-      const todayCompleted = records.filter((item) => !item.isDraft && item.recordType === RECORD_TYPE.DONE && item.recordTime === todayId);
-      const todayPlans = records.filter((item) => !item.isDraft && item.recordType === RECORD_TYPE.PLAN && item.status !== RECORD_STATUS.DONE && item.dueDate && item.dueDate > todayId);
+      const todayCompleted = records.filter((item) => !item.isDraft && item.recordType === RECORD_TYPE.DONE && isCreatedToday(item, todayId));
+      const todayPlans = records.filter((item) => !item.isDraft && item.recordType === RECORD_TYPE.PLAN && item.status !== RECORD_STATUS.DONE && isCreatedToday(item, todayId));
 
       return {
         todayCompleted,
         todayPlans,
         draftCount: (await getDrafts()).length,
-        todayRecordCount: getTodayRecords(records).length
+        todayRecordCount: todayCompleted.length + todayPlans.length
       };
     }
   );
@@ -330,39 +346,12 @@ function saveAnnualGoal(year, amount) {
   return setAnnualGoal(year, amount);
 }
 
-async function getStatisticsData(granularity, selectedDate, selectedYear) {
+async function getHabitData() {
   return withRemoteFallback(
-    () => callBridge("getStatisticsSummary", buildScopePayload({
-      granularity,
-      selectedDate,
-      selectedYear
-    })),
+    () => callBridge("getHabitSummary", buildScopePayload({})),
     async () => {
       const records = (await getRecords()).filter((item) => !item.isDraft);
-      const scope = getScopeInfo(granularity, selectedDate, selectedYear);
-      const activityScopedRecords = filterRecordsByScope(
-        records.filter((item) => item.recordType === RECORD_TYPE.DONE && item.recordTime),
-        scope
-      );
-      const taskScopedRecords = filterRecordsByScope(
-        records.filter((item) => item.recordType === RECORD_TYPE.PLAN && item.dueDate),
-        {
-          ...scope,
-          dateField: "dueDate"
-        }
-      );
-      const financeRecords = activityScopedRecords.filter(isExpenseRecord);
-
-      return {
-        scope,
-        activity: buildActivityStats(activityScopedRecords),
-        task: buildTaskStats(taskScopedRecords),
-        finance: {
-          ...decorateFinanceSummary(buildFinanceSummary(financeRecords)),
-          trend: buildTrend(records.filter(isExpenseRecord), granularity, selectedDate, selectedYear)
-        },
-        habit: buildHabitStats(activityScopedRecords)
-      };
+      return buildHabitStats(records.filter((item) => item.recordType === RECORD_TYPE.DONE && item.recordTime));
     }
   );
 }
@@ -373,5 +362,5 @@ module.exports = {
   getPlans,
   getAccountingData,
   saveAnnualGoal,
-  getStatisticsData
+  getHabitData
 };

@@ -141,8 +141,9 @@
 }
 
 .space-name {
-  flex: 1;
+  flex: 0 1 auto;
   min-width: 0;
+  max-width: 360rpx;
   font-size: 32rpx;
   font-weight: 700;
   color: var(--ink-800);
@@ -186,6 +187,20 @@
   border-top: 3rpx solid rgba(116, 93, 68, 0.46);
   border-right: 3rpx solid rgba(116, 93, 68, 0.46);
   transform: rotate(45deg);
+}
+
+.delete-space-button {
+  flex-shrink: 0;
+  padding: 9rpx 16rpx;
+  border-radius: 999rpx;
+  background: rgba(180, 91, 63, 0.1);
+  color: #9d5139;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.delete-space-button.loading {
+  opacity: 0.58;
 }
 
 .member-ring {

@@ -1,0 +1,89 @@
+<view class="screen habit-screen">
+  <view class="habit-hero">
+    <view class="hero-copy">
+      <view class="hero-title">{{ui.title}}</view>
+      <view class="hero-subtitle">{{ui.subtitle}}</view>
+      <view class="growth-pill">{{ui.growthLabel}} · {{growthText}}</view>
+    </view>
+    <view class="habit-tree stage-{{habit.overview.growthLevel || 0}}">
+      <view class="tree-soil"></view>
+      <view class="tree-glow"></view>
+      <view class="tree-trunk"></view>
+      <view class="tree-branch branch-left"></view>
+      <view class="tree-branch branch-right"></view>
+      <view class="tree-leaf leaf-top-left"></view>
+      <view class="tree-leaf leaf-top-right"></view>
+      <view class="tree-leaf leaf-mid-left"></view>
+      <view class="tree-leaf leaf-mid-right"></view>
+      <view class="tree-leaf leaf-low-left"></view>
+      <view class="tree-leaf leaf-low-right"></view>
+    </view>
+  </view>
+
+  <view class="overview-grid">
+    <view class="overview-card">
+      <view class="overview-label">{{ui.currentStreak}}</view>
+      <view class="overview-value">{{habit.overview.topStreakDays || 0}}</view>
+      <view class="overview-caption">{{habit.overview.topStreakName || ui.noStreak}}</view>
+    </view>
+    <view class="overview-card">
+      <view class="overview-label">{{ui.recentActive}}</view>
+      <view class="overview-value">{{habit.overview.topRecentCount || 0}}</view>
+      <view class="overview-caption">{{habit.overview.topRecentName || ui.noRecent}}</view>
+    </view>
+    <view class="overview-card">
+      <view class="overview-label">{{ui.totalHabits}}</view>
+      <view class="overview-value">{{habit.overview.totalHabits || 0}}</view>
+      <view class="overview-caption">{{ui.growthLabel}}</view>
+    </view>
+    <view class="overview-card">
+      <view class="overview-label">{{ui.totalTimes}}</view>
+      <view class="overview-value">{{habit.overview.topFrequentCount || 0}}</view>
+      <view class="overview-caption">{{habit.overview.topFrequentName || ui.noFrequent}}</view>
+    </view>
+  </view>
+
+  <view class="card habit-list-card">
+    <view class="section-title">{{ui.streakRanking}}</view>
+    <block wx:if="{{habit.streakRanking && habit.streakRanking.length}}">
+      <view wx:for="{{habit.streakRanking}}" wx:key="name" class="habit-row">
+        <view class="habit-row-main">
+          <view class="habit-name">{{item.name}}</view>
+          <view class="habit-meta">历史最长 {{item.longestStreak || 0}} {{ui.days}}</view>
+        </view>
+        <view class="habit-badge">{{item.latestStreak}} {{ui.days}}</view>
+      </view>
+    </block>
+    <view wx:else class="empty-card">{{ui.noStreak}}</view>
+  </view>
+
+  <view class="card habit-list-card">
+    <view class="section-title">{{ui.recentRanking}}</view>
+    <block wx:if="{{habit.recentRanking && habit.recentRanking.length}}">
+      <view wx:for="{{habit.recentRanking}}" wx:key="name" class="habit-row">
+        <view class="habit-row-main">
+          <view class="habit-name">{{item.name}}</view>
+          <view class="habit-meta">累计 {{item.totalCount || 0}} {{ui.times}}</view>
+        </view>
+        <view class="habit-badge">{{item.recentCount}} {{ui.times}}</view>
+      </view>
+    </block>
+    <view wx:else class="empty-card">{{ui.noRecent}}</view>
+  </view>
+
+  <view class="card habit-list-card">
+    <view class="section-title">{{ui.frequentRanking}}</view>
+    <block wx:if="{{habit.frequentRanking && habit.frequentRanking.length}}">
+      <view wx:for="{{habit.frequentRanking}}" wx:key="name" class="habit-row">
+        <view class="habit-row-main">
+          <view class="habit-name">{{item.name}}</view>
+          <view class="habit-meta">当前连续 {{item.latestStreak || 0}} {{ui.days}}</view>
+        </view>
+        <view class="habit-badge">{{item.totalCount}} {{ui.times}}</view>
+      </view>
+    </block>
+    <view wx:else class="empty-card">{{ui.noHabit}}</view>
+  </view>
+
+  <main-tabbar current="{{currentTab}}"></main-tabbar>
+</view>

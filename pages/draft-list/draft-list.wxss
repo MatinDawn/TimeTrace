@@ -1,14 +1,10 @@
-.action-card {
-  display: flex;
-  gap: 16rpx;
-}
-
-.batch-button {
-  flex: 1;
+.draft-screen {
+  padding-bottom: calc(var(--screen-bottom-pad) + 120rpx);
 }
 
 .list-card {
   margin-top: 24rpx;
+  padding: 18rpx 24rpx;
 }
 
 .draft-screen .section-header > view:first-child {
@@ -16,9 +12,18 @@
   min-width: 0;
 }
 
-/* .draft-item 共性 (display/justify/gap/padding/border-bottom + :last-child) 来自 .list-row */
+.draft-screen .search-input {
+  box-sizing: border-box;
+  min-height: 72rpx;
+  padding: 14rpx 24rpx;
+}
+
 .draft-item {
-  align-items: flex-start; /* 差异化：左侧对齐顶部以容纳多行内容 */
+  position: relative;
+  z-index: 1;
+  align-items: flex-start;
+  gap: 18rpx;
+  padding: 24rpx 0;
 }
 
 .draft-main {
@@ -26,10 +31,28 @@
   min-width: 0;
 }
 
+.draft-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
 .draft-title {
+  flex: 1;
+  min-width: 0;
   font-size: 28rpx;
   font-weight: 600;
+  line-height: 1.45;
   color: var(--ink-800);
+  word-break: break-all;
+}
+
+.draft-delete {
+  flex-shrink: 0;
+  min-height: 56rpx;
+  padding: 0 20rpx;
+  font-size: 23rpx;
 }
 
 .draft-meta,
@@ -40,10 +63,22 @@
   color: var(--ink-500);
 }
 
+.draft-meta {
+  word-break: break-all;
+}
+
+.draft-content {
+  display: -webkit-box;
+  overflow: hidden;
+  word-break: break-all;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
 .select-mark {
   width: 42rpx;
   height: 42rpx;
-  margin-top: 4rpx;
+  margin-top: 7rpx;
   flex-shrink: 0;
   border-radius: 50%;
   border: 2rpx solid #c3ac91;
@@ -66,4 +101,73 @@
 
 .select-mark.active .select-inner {
   background: #2d6b4b;
+}
+
+.batch-bottom-bar {
+  position: fixed;
+  z-index: 60;
+  left: 28rpx;
+  right: 28rpx;
+  bottom: calc(28rpx + env(safe-area-inset-bottom));
+  min-height: 96rpx;
+  padding: 16rpx 18rpx 16rpx 24rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18rpx;
+  background: rgba(54, 45, 36, 0.82);
+  border: 1rpx solid rgba(255, 250, 243, 0.36);
+  box-shadow: 0 18rpx 46rpx rgba(51, 40, 30, 0.22);
+  backdrop-filter: blur(18rpx);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(140%);
+  transition: opacity 0.2s ease, transform 0.24s ease;
+}
+
+.batch-bottom-bar.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.selected-count {
+  flex: 1;
+  min-width: 0;
+  color: #fff8ed;
+  font-size: 25rpx;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.batch-actions {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.batch-icon-button {
+  min-width: 120rpx;
+  min-height: 66rpx;
+  padding: 0 18rpx;
+  border-radius: 999rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  color: #fff8ed;
+  font-size: 22rpx;
+  font-weight: 600;
+  background: rgba(255, 250, 243, 0.14);
+}
+
+.batch-icon-button.danger {
+  color: #ffe1d8;
+  background: rgba(190, 86, 58, 0.24);
+}
+
+.batch-icon {
+  font-size: 26rpx;
+  line-height: 1;
 }

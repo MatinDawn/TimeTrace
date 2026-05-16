@@ -213,11 +213,16 @@
 }
 
 .plan-meta,
+.plan-creator,
 .plan-desc {
   margin-top: 8rpx;
   font-size: 22rpx;
   line-height: 1.7;
   color: #8e7a65;
+}
+
+.plan-creator {
+  color: #9a7f61;
 }
 
 .quick-trace {

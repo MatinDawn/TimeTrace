@@ -39,7 +39,7 @@ async function fetchRemoteRecords(forceRefresh) {
   }
 
   const data = await callBridge("listRecords", buildScopePayload());
-  const records = (data.records || []).map(normalizeRemoteRecord).sort(sortByActionTime);
+  const records = (data.records || []).map(normalizeRemoteRecord).filter((item) => !item.isDeleted).sort(sortByActionTime);
   remoteCache.records = records;
   remoteCache.expiresAt = Date.now() + REMOTE_CACHE_TTL;
   return records;
