@@ -3,7 +3,8 @@ const {
   createRemoteDraftFromInput,
   recognizeVoiceInput,
   getHomeData,
-  switchSpace
+  switchSpace,
+  completePlanWithTrace
 } = require("../../services/appService");
 const { isRemoteEnabled } = require("../../utils/runtime");
 const { logError, showErrorToast } = require("../../utils/error-handler");
@@ -40,13 +41,37 @@ function formatVoiceDuration(seconds) {
   return `${String(minute).padStart(2, "0")}:${String(second).padStart(2, "0")}`;
 }
 
-function filterFutureHomePlans(plans, todayId) {
+function getCreatedDateId(item) {
+  if (!item) {
+    return "";
+  }
+  if (item.createdLocalDate) {
+    return item.createdLocalDate;
+  }
+  if (!item.createdAt) {
+    return "";
+  }
+  return toDateId(new Date(item.createdAt));
+}
+
+function isCreatedToday(item, todayId) {
+  return getCreatedDateId(item) === todayId;
+}
+
+function filterTodayHomeCompleted(records, todayId) {
+  return (records || []).filter((item) =>
+    !item.isDraft &&
+    item.recordType === "done" &&
+    isCreatedToday(item, todayId)
+  );
+}
+
+function filterTodayHomePlans(plans, todayId) {
   return (plans || []).filter((item) =>
     !item.isDraft &&
     item.recordType === "plan" &&
     item.status !== "done" &&
-    item.dueDate &&
-    item.dueDate > todayId
+    isCreatedToday(item, todayId)
   );
 }
 
@@ -86,6 +111,10 @@ Page({
       todoEmpty: "\u4eca\u5929\u8fd8\u6ca1\u6709\u5f85\u529e\u4e8b\u9879\uff0c\u53ef\u4ee5\u53bb\u7559\u4e0b\u65b0\u7684\u8ba1\u5212\u3002",
       doneEmpty: "\u4eca\u5929\u8fd8\u6ca1\u6709\u8bb0\u5f55\uff0c\u70b9\u4e0a\u9762\u7684\u201c\u7559\u75d5\u201d\u5f00\u59cb\u7b2c\u4e00\u6761\u3002",
       noDueDate: "\u672a\u8bbe\u7f6e\u622a\u6b62\u65e5\u671f",
+      creatorPrefix: "\u586b\u5199\u4eba\uff1a",
+      unknownMember: "\u672a\u77e5\u6210\u5458",
+      quickTrace: "\u5feb\u901f\u7559\u75d5",
+      quickTraceDone: "\u5df2\u7559\u4e0b\u4eca\u5929\u7684\u75d5\u8ff9",
       metaSeparator: "\u00b7",
       high: "\u9ad8\u4f18\u5148\u7ea7",
       medium: "\u4e2d\u4f18\u5148\u7ea7",
@@ -119,6 +148,7 @@ Page({
     todayCompletedCount: 0,
     todayPlanCount: 0,
     currentScopeLabel: "",
+    showCreatorInfo: false,
     statusBarHeight: 20,
     navBarHeight: 88,
     menuRightWidth: 96,
@@ -128,6 +158,7 @@ Page({
     progressBeyond: false,
     progressBubbleText: "",
     traceHintText: "",
+    treeGrowAnimating: false,
     dailySummary: { line1: "", line2: "", source: "preset" },
     composerVisible: false,
     composerText: "",
@@ -162,9 +193,17 @@ Page({
 
   async onShow() {
     perf.markPageShow(PAGE_PATH);
-    // 1) 立即从 globalData 快照预填，避免空白
+    // 1) 立即重置所有交互锁，防止前序操作卡住按钮
+    this.setData({
+      composerSubmitting: false,
+      voiceRecording: false,
+      voiceRecognizing: false,
+      heroPressed: false,
+      heroLoading: false
+    });
+    // 2) 立即从 globalData 快照预填，避免空白
     this.hydrateFromCache();
-    // 2) syncBootstrap 与 loadHome 并行（loadHome 不依赖 bootstrap 结果）
+    // 3) syncBootstrap 与 loadHome 并行（loadHome 不依赖 bootstrap 结果）
     try {
       await Promise.all([
         this.syncBootstrap().catch((error) => {
@@ -191,7 +230,8 @@ Page({
     const activeSpace = app.globalData.activeSpace;
     if (activeSpace || this.data.ui.personalMode) {
       this.setData({
-        currentScopeLabel: activeSpace ? activeSpace.name : this.data.ui.personalMode
+        currentScopeLabel: activeSpace ? activeSpace.name : this.data.ui.personalMode,
+        showCreatorInfo: Boolean(activeSpace)
       });
     }
   },
@@ -224,7 +264,8 @@ Page({
     const bootstrap = await app.syncBootstrap();
     const activeSpace = bootstrap.activeSpace;
     this.setData({
-      currentScopeLabel: activeSpace ? activeSpace.name : this.data.ui.personalMode
+      currentScopeLabel: activeSpace ? activeSpace.name : this.data.ui.personalMode,
+      showCreatorInfo: Boolean(activeSpace)
     });
   },
 
@@ -235,11 +276,12 @@ Page({
   },
 
   applyHomeData(homeData, fromCache) {
-    const todayCompletedCount = (homeData.todayCompleted || []).length;
     const todayId = toDateId(new Date());
-    const todayPlans = filterFutureHomePlans(homeData.todayPlans, todayId);
+    const todayCompleted = filterTodayHomeCompleted(homeData.todayCompleted, todayId);
+    const todayPlans = filterTodayHomePlans(homeData.todayPlans, todayId);
+    const todayCompletedCount = todayCompleted.length;
     const todayPlanCount = todayPlans.length;
-    const todayRecordCount = Number(homeData.todayRecordCount || 0);
+    const todayRecordCount = todayCompletedCount + todayPlanCount;
     const remaining = Math.max(0, DAILY_TARGET - todayRecordCount);
     const progressLevel = Math.min(DAILY_TARGET, Math.max(0, todayRecordCount));
     const indicatorStep = Math.max(1, progressLevel);
@@ -257,7 +299,7 @@ Page({
     this.setData({
       draftCount: homeData.draftCount,
       todayRecordCount,
-      todayCompleted: homeData.todayCompleted || [],
+      todayCompleted,
       todayPlans,
       todayCompletedCount,
       todayPlanCount,
@@ -265,14 +307,41 @@ Page({
       progressLevel,
       progressBeyond,
       progressBubbleText,
-      traceHintText: todayRecordCount ? this.data.ui.traceHintDone : this.data.ui.traceHintEmpty
+      traceHintText: todayRecordCount ? this.data.ui.traceHintDone : this.data.ui.traceHintEmpty,
+      showCreatorInfo: Boolean(getApp().globalData.activeSpace)
     });
 
     // 异步刷新今日文艺总结（不阻塞主流程）
+    this.consumePendingTreeGrow(progressLevel, fromCache);
+
     this.refreshDailySummary({
       ...homeData,
+      todayCompleted,
       todayPlans
     });
+  },
+
+  consumePendingTreeGrow(progressLevel, fromCache) {
+    if (fromCache || !progressLevel) {
+      return;
+    }
+    const app = getApp();
+    if (!app.globalData || !app.globalData.pendingTreeGrow) {
+      return;
+    }
+    app.globalData.pendingTreeGrow = false;
+    this.triggerTreeGrowAnimation();
+  },
+
+  triggerTreeGrowAnimation() {
+    clearTimeout(this.treeGrowTimer);
+    this.setData({ treeGrowAnimating: false });
+    setTimeout(() => {
+      this.setData({ treeGrowAnimating: true });
+      this.treeGrowTimer = setTimeout(() => {
+        this.setData({ treeGrowAnimating: false });
+      }, 1180);
+    }, 30);
   },
 
   /**
@@ -809,18 +878,19 @@ Page({
           composerHintVisible: false,
           heroVoiceStatusText: ""
         });
+        const detailMode = draft && draft.source === "remote-draft-fallback" ? "temp" : "remoteDraft";
         // 状态 5：成功联动反馈（quick voice 模式）
         if (source === "voice" && draft && draft.id) {
           this.playSuccessBurst(draft.id);
           // 等待爆开动画播放一会儿再跳转，让用户感知成就
           setTimeout(() => {
             wx.navigateTo({
-              url: `/pages/detail-edit/detail-edit?id=${draft.id}&mode=remoteDraft`
+              url: `/pages/detail-edit/detail-edit?id=${draft.id}&mode=${detailMode}`
             });
           }, 480);
         } else {
           wx.navigateTo({
-            url: `/pages/detail-edit/detail-edit?id=${draft.id}&mode=remoteDraft`
+            url: `/pages/detail-edit/detail-edit?id=${draft.id}&mode=${detailMode}`
           });
         }
       } catch (error) {
@@ -869,6 +939,25 @@ Page({
     wx.navigateTo({
       url: `/pages/detail-edit/detail-edit?id=${event.currentTarget.dataset.id}`
     });
+  },
+
+  async quickTrace(event) {
+    const recordId = event.currentTarget.dataset.id;
+    if (!recordId) {
+      return;
+    }
+    try {
+      await completePlanWithTrace(recordId);
+      getApp().globalData.pendingTreeGrow = true;
+      wx.showToast({
+        title: this.data.ui.quickTraceDone,
+        icon: "success"
+      });
+      await this.loadHome();
+    } catch (error) {
+      logError("home.quickTrace", error, { recordId });
+      showErrorToast(error, "\u5feb\u901f\u7559\u75d5\u5931\u8d25");
+    }
   },
 
   openWorkspaceSheet() {
@@ -955,6 +1044,7 @@ Page({
     this.clearVoiceTimer();
     this.stopRippleLoop();
     clearTimeout(this.heroHoldTimer);
+    clearTimeout(this.treeGrowTimer);
     if (this.data.voiceRecording && this.recorderManager) {
       this.skipNextVoiceRecognition = true;
       this.recorderManager.stop();
