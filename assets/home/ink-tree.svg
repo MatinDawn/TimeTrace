@@ -38,52 +38,65 @@
         stroke="#3a3a3a" stroke-width="2.8" fill="none"
         stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
 
-  <!-- 阶段1：底部小叶子 -->
-  <ellipse cx="50" cy="102" rx="5.5" ry="4" fill="url(#leafCloudSoft)"/>
-  <ellipse cx="70" cy="100" rx="5" ry="3.8" fill="url(#leafCloudSoft)"/>
-  <ellipse cx="50.5" cy="101.5" rx="3.5" ry="2.5" fill="#5a6e3f" opacity="0.52"/>
-  <ellipse cx="69.5" cy="99.5" rx="3.2" ry="2.3" fill="#5a6e3f" opacity="0.48"/>
+  <!-- 阶段1：小苗（第一对叶子） -->
+  <path d="M 60 105 Q 55 102 52 96 Q 50 92 52 88 Q 54 84 58 82 Q 60 81 62 83 Q 66 87 68 92 Q 70 97 68 102 Q 66 106 60 105 Z"
+        fill="url(#leafCloudSoft)"/>
+  <path d="M 60 105 Q 65 102 68 96 Q 70 92 68 88 Q 66 84 62 82 Q 60 81 58 83 Q 54 87 52 92 Q 50 97 52 102 Q 54 106 60 105 Z"
+        fill="url(#leafCloudSoft)"/>
+  <path d="M 60 105 Q 55 102 53 96 Q 51 92 53 87 Q 56 83 60 82"
+        stroke="#5a6e3f" stroke-width="1.2" fill="none" opacity="0.7"/>
+  <path d="M 60 105 Q 65 102 67 96 Q 69 92 67 87 Q 64 83 60 82"
+        stroke="#5a6e3f" stroke-width="1.2" fill="none" opacity="0.7"/>
 
-  <!-- 阶段2：第一层枝条 + 叶子 -->
+  <!-- 阶段2：第二层叶子 -->
+  <path d="M 60 92 Q 48 88 42 82 Q 38 78 40 74 Q 42 70 48 68 Q 54 66 60 68"
+        fill="url(#leafCloudSoft)" opacity="0.95"/>
+  <path d="M 60 92 Q 72 88 78 82 Q 82 78 80 74 Q 78 70 72 68 Q 66 66 60 68"
+        fill="url(#leafCloudSoft)" opacity="0.95"/>
+  <path d="M 60 92 Q 50 88 44 82 Q 40 78 42 74 Q 45 70 50 68 Q 56 66 60 68"
+        stroke="#5a6e3f" stroke-width="1.3" fill="none" opacity="0.65"/>
+  <path d="M 60 92 Q 70 88 76 82 Q 80 78 78 74 Q 75 70 70 68 Q 64 66 60 68"
+        stroke="#5a6e3f" stroke-width="1.3" fill="none" opacity="0.65"/>
+
+  <!-- 阶段2-3：第三层叶子 -->
+  <path d="M 60 80 Q 44 76 38 68 Q 36 62 38 56 Q 40 50 48 46 Q 56 42 60 44"
+        fill="url(#leafCloud)" opacity="0.9"/>
+  <path d="M 60 80 Q 76 76 82 68 Q 84 62 82 56 Q 80 50 72 46 Q 64 42 60 44"
+        fill="url(#leafCloud)" opacity="0.9"/>
+  <path d="M 60 80 Q 46 76 40 68 Q 38 62 40 56 Q 42 50 50 46 Q 58 42 60 44"
+        stroke="#5a6e3f" stroke-width="1.4" fill="none" opacity="0.6"/>
+  <path d="M 60 80 Q 74 76 80 68 Q 82 62 80 56 Q 78 50 70 46 Q 62 42 60 44"
+        stroke="#5a6e3f" stroke-width="1.4" fill="none" opacity="0.6"/>
+
+  <!-- 阶段3-4：第四层大叶子 -->
+  <path d="M 60 64 Q 42 58 36 48 Q 34 38 38 30 Q 42 22 52 18 Q 60 16 64 18"
+        fill="url(#leafCloud)" opacity="0.95"/>
+  <path d="M 60 64 Q 78 58 84 48 Q 86 38 82 30 Q 78 22 68 18 Q 60 16 56 18"
+        fill="url(#leafCloud)" opacity="0.95"/>
+  <path d="M 60 64 Q 44 58 38 48 Q 36 38 40 30 Q 44 22 54 18 Q 62 16 64 18"
+        stroke="#5a6e3f" stroke-width="1.5" fill="none" opacity="0.55"/>
+  <path d="M 60 64 Q 76 58 82 48 Q 84 38 80 30 Q 76 22 66 18 Q 58 16 56 18"
+        stroke="#5a6e3f" stroke-width="1.5" fill="none" opacity="0.55"/>
+
+  <!-- 阶段4：顶部小叶子 -->
+  <path d="M 60 48 Q 54 44 52 38 Q 50 32 54 28 Q 58 24 60 22"
+        fill="url(#leafCloudSoft)" opacity="0.9"/>
+  <path d="M 60 48 Q 66 44 68 38 Q 70 32 66 28 Q 62 24 60 22"
+        fill="url(#leafCloudSoft)" opacity="0.9"/>
+
+  <!-- 枝条 -->
   <path d="M 60 98 Q 52 94 46 88 Q 43 85 42 80"
         stroke="#3a3a3a" stroke-width="1.7" fill="none"
         stroke-linecap="round" opacity="0.85"/>
   <path d="M 60 92 Q 68 88 74 82 Q 77 79 78 74"
         stroke="#3a3a3a" stroke-width="1.7" fill="none"
         stroke-linecap="round" opacity="0.85"/>
-
-  <!-- 阶段2-3：第二层叶子 -->
-  <ellipse cx="46" cy="86" rx="8" ry="5.5" fill="url(#leafCloudSoft)"/>
-  <ellipse cx="76" cy="78" rx="7.5" ry="5" fill="url(#leafCloudSoft)"/>
-  <ellipse cx="46.5" cy="85.5" rx="5" ry="3.5" fill="#5a6e3f" opacity="0.55"/>
-  <ellipse cx="75.5" cy="77.5" rx="4.8" ry="3.3" fill="#5a6e3f" opacity="0.52"/>
-
-  <!-- 阶段3：顶部主干 + 叶子 -->
   <path d="M 60 66 Q 55 60 57 52"
         stroke="#3a3a3a" stroke-width="1.5" fill="none"
         stroke-linecap="round" opacity="0.82"/>
   <path d="M 60 60 Q 65 55 68 48"
         stroke="#3a3a3a" stroke-width="1.4" fill="none"
         stroke-linecap="round" opacity="0.82"/>
-  <path d="M 60 76 Q 53 72 48 66 Q 45 62 44 56"
-        stroke="#3a3a3a" stroke-width="1.6" fill="none"
-        stroke-linecap="round" opacity="0.83"/>
-  <path d="M 60 70 Q 67 66 73 60 Q 76 56 78 50"
-        stroke="#3a3a3a" stroke-width="1.6" fill="none"
-        stroke-linecap="round" opacity="0.83"/>
-
-  <!-- 阶段3-4：大叶子团 -->
-  <ellipse cx="42" cy="62" rx="11" ry="7.5" fill="url(#leafCloudSoft)"/>
-  <ellipse cx="78" cy="54" rx="10.5" ry="7" fill="url(#leafCloudSoft)"/>
-  <ellipse cx="42.5" cy="61.5" rx="7" ry="5" fill="#5a6e3f" opacity="0.58"/>
-  <ellipse cx="77.5" cy="53.5" rx="6.8" ry="4.8" fill="#5a6e3f" opacity="0.56"/>
-
-  <!-- 阶段4：完整树冠 -->
-  <ellipse cx="58" cy="38" rx="21" ry="13" fill="url(#leafCloud)"/>
-  <ellipse cx="56" cy="36" rx="14" ry="9" fill="#5a6e3f" opacity="0.62"/>
-  <ellipse cx="64" cy="40" rx="9" ry="6" fill="#7d9167" opacity="0.72"/>
-  <ellipse cx="60" cy="24" rx="7.5" ry="5" fill="url(#leafCloudSoft)"/>
-  <ellipse cx="60" cy="24" rx="4.5" ry="3.2" fill="#5a6e3f" opacity="0.58"/>
 
   <!-- 梅花点缀 -->
   <circle cx="49" cy="34" r="1.45" fill="#c04848" opacity="0.88"/>
