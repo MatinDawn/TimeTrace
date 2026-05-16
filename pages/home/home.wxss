@@ -28,6 +28,7 @@
 }
 
 .nav-row-title {
+  position: relative;
   justify-content: center;
 }
 
@@ -38,6 +39,9 @@
 }
 
 .nav-brand-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
   font-size: 40rpx;
   line-height: 1.1;
@@ -839,13 +843,16 @@
   margin-top: 30rpx;
   width: 292rpx;
   padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: "STKaiti", "Kaiti SC", "Songti SC", serif;
   font-size: 88rpx;
   font-weight: 700;
   line-height: 1.1;
-  letter-spacing: 12rpx;
+  letter-spacing: 8rpx;
   text-align: center;
-  text-indent: 12rpx;
+  text-indent: 8rpx;
   white-space: nowrap;
   /* 防止周边动画引起的字符亚像素抖动 */
   will-change: transform;
